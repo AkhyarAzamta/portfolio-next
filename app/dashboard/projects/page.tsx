@@ -1,0 +1,263 @@
+// app/dashboard/projects/page.tsx
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
+import { MoreHorizontal, Edit, Trash2, Plus } from 'lucide-react'
+import Image from 'next/image'
+
+interface Project {
+  id: number
+  title: string
+  description: string
+  technologies: string[]
+  githubLink: string | null
+  demoLink: string | null
+  image: string
+  freeToUse: boolean
+  featured: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const router = useRouter()
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
+        const response = await fetch('/api/admin/projects', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            router.push('/login')
+            return
+          }
+          throw new Error('Failed to fetch projects')
+        }
+
+        const data = await response.json()
+        setProjects(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProjects()
+  }, [router])
+
+  const fetchProjects = async () => {
+    try {
+      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
+      const response = await fetch('/api/admin/projects', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          router.push('/login')
+          return
+        }
+        throw new Error('Failed to fetch projects')
+      }
+
+      const data = await response.json()
+      setProjects(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this project?')) {
+      return
+    }
+
+    try {
+      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
+      const response = await fetch(`/api/admin/projects/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete project')
+      }
+
+      // Refresh the projects list
+      fetchProjects()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-red-500">Error: {error}</div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Manage Projects</h1>
+        <Button onClick={() => router.push('/dashboard/projects/new')}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add New Project
+        </Button>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Projects</CardTitle>
+          <CardDescription>
+            Manage your portfolio projects
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {projects.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No projects found.</p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Image</TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Technologies</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {projects.map((project) => (
+                  <TableRow key={project.id}>
+                 <TableCell>
+  <div className="h-12 w-12 relative">
+    {project.image ? (
+      <Image
+        src={project.image}
+        alt={project.title}
+        width={120}
+        height={120}
+        className="object-cover rounded-md"
+        onError={(e) => {
+          e.currentTarget.src = '/placeholder-image.jpg'
+        }}
+      />
+    ) : (
+      <div className="w-full h-full bg-gray-200 rounded-md flex items-center justify-center">
+        <span className="text-xs text-gray-500">No Image</span>
+      </div>
+    )}
+  </div>
+</TableCell>
+                    <TableCell className="font-medium">{project.title}</TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {project.technologies.slice(0, 3).map((tech, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {tech}
+                          </Badge>
+                        ))}
+                        {project.technologies.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{project.technologies.length - 3} more
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col gap-1">
+                        {project.featured && (
+                          <Badge variant="default" className="w-fit">Featured</Badge>
+                        )}
+                        {project.freeToUse && (
+                          <Badge variant="secondary" className="w-fit">Free to Use</Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => router.push(`/dashboard/projects/edit/${project.id}`)}
+                          >
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDelete(project.id)}
+                            className="text-red-600"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}

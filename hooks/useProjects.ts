@@ -9,6 +9,8 @@ export interface Project {
   githubLink: string;
   demoLink: string;
   image: string;
+  freeToUse: boolean;
+  featured: boolean;
 }
 
 export const useProjects = () => {

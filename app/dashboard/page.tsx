@@ -20,19 +20,19 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-const response = await fetch('/api/auth/me', {
-  credentials: 'include', // ensures cookies are sent
-});        
+        const response = await fetch('/api/auth/me', {
+          credentials: 'include', // ensures cookies are sent
+        });
         if (response.status === 401) {
           // Token tidak valid, redirect ke login
           router.push('/login')
           return
         }
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch user data')
         }
-        
+
         const userData = await response.json()
         setUser(userData)
       } catch (error) {

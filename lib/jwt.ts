@@ -18,12 +18,11 @@ export async function generateToken(payload: JWTPayload): Promise<string> {
 
 export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
-    console.log('Token from cookie:', token)
     const { payload } = await jwtVerify(token, secret)
     // jwtVerify mengembalikan payload sebagai Record<string, any>
     return payload as unknown as JWTPayload
   } catch (error) {
-    console.error('Token verification failed:', error)
+    console.error('Error verifying token:', error)
     return null
   }
 }

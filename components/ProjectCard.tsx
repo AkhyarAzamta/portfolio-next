@@ -57,7 +57,6 @@ export default function ProjectCard({ project, index = 0, layout = 'grid' }: Pro
         >
           {project.description}
         </motion.p>
-        
         <motion.div 
           className="flex flex-wrap gap-2 mb-4"
           initial={{ opacity: 0 }}
@@ -75,13 +74,13 @@ export default function ProjectCard({ project, index = 0, layout = 'grid' }: Pro
             </motion.span>
           ))}
         </motion.div>
-        
         <motion.div 
           className="flex gap-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 + (index * 0.1) }}
         >
+          {project.freeToUse && (
           <motion.a
             href={project.githubLink}
             target="_blank"
@@ -93,6 +92,7 @@ export default function ProjectCard({ project, index = 0, layout = 'grid' }: Pro
             <FaGithub className="h-5 w-5" />
             <span>Code</span>
           </motion.a>
+          )}
           <motion.a
             href={project.demoLink}
             target="_blank"
