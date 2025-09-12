@@ -28,6 +28,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { MoreHorizontal, Edit, Trash2, Plus } from 'lucide-react'
 import Image from 'next/image'
+import { Loading } from '@/components/ui/loading'
 
 interface Project {
   id: number
@@ -130,11 +131,7 @@ export default function ProjectsPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    )
+    return <Loading size={150} blur="sm" />
   }
 
   if (error) {
@@ -181,26 +178,26 @@ export default function ProjectsPage() {
               <TableBody>
                 {projects.map((project) => (
                   <TableRow key={project.id}>
-                 <TableCell>
-  <div className="h-12 w-12 relative">
-    {project.image ? (
-      <Image
-        src={project.image}
-        alt={project.title}
-        width={120}
-        height={120}
-        className="object-cover rounded-md"
-        onError={(e) => {
-          e.currentTarget.src = '/placeholder-image.jpg'
-        }}
-      />
-    ) : (
-      <div className="w-full h-full bg-gray-200 rounded-md flex items-center justify-center">
-        <span className="text-xs text-gray-500">No Image</span>
-      </div>
-    )}
-  </div>
-</TableCell>
+                    <TableCell>
+                      <div className="h-12 w-12 relative">
+                        {project.image ? (
+                          <Image
+                            src={project.image}
+                            alt={project.title}
+                            width={120}
+                            height={120}
+                            className="object-cover rounded-md"
+                            onError={(e) => {
+                              e.currentTarget.src = '/placeholder-image.jpg'
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 rounded-md flex items-center justify-center">
+                            <span className="text-xs text-gray-500">No Image</span>
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell className="font-medium">{project.title}</TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">

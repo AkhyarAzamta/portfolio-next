@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Loading } from '@/components/ui/loading'
 
 interface User {
   id: number
@@ -53,9 +54,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <Loading size={150} blur="sm" />
     )
   }
 

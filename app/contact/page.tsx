@@ -5,6 +5,7 @@ import { FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { fadeInUp, fadeIn, slideInLeft, slideInRight } from '@/utils/animations'
 import { useRouter } from 'next/navigation'
+import { Loading } from '@/components/ui/loading'
 
 interface FormData {
   name: string;
@@ -106,11 +107,7 @@ export default function Contact() {
 
   if (loading) {
     return (
-      <div className="container max-w-7xl mx-auto py-12">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
-      </div>
+      <Loading size={150} blur="sm" />
     )
   }
 

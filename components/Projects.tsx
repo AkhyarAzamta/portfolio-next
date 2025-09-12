@@ -3,7 +3,7 @@
 
 import { useProjects } from '@/hooks/useProjects'
 import ProjectList from './ProjectList'
-import ProjectLoading from './ProjectLoading'
+import { Loading } from './ui/loading'
 
 interface ProjectsProps {
   limit?: number
@@ -22,7 +22,7 @@ export default function Projects({
 }: ProjectsProps) {
   const { projects, loading, error } = useProjects()
 
-  if (loading) return <ProjectLoading />
+  if (loading) return <Loading size={150} blur="sm" />
   if (error) return <div>Error: {error}</div>
 
   // Apply limit if provided

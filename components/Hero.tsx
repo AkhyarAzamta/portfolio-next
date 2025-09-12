@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { fadeInUp, fadeIn, scaleIn } from '@/utils/animations'
+import { Loading } from './ui/loading'
 
 interface User {
   id: number
@@ -82,15 +83,7 @@ export default function Hero() {
   }, [])
 
   if (loading) {
-    return (
-      <section className="py-10">
-        <div className="container max-w-7xl mx-auto px-4">
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          </div>
-        </div>
-      </section>
-    )
+    return <Loading size={150} blur="sm" />
   }
 
   return (

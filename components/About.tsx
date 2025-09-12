@@ -13,6 +13,7 @@ import {
   cardHoverSmall 
 } from '@/utils/animations'
 import Image from 'next/image'
+import { Loading } from './ui/loading'
 
 interface AboutData {
   id: number;
@@ -92,13 +93,7 @@ export default function About() {
   }, [])
 
   if (loading) {
-    return (
-      <div className="container max-w-7xl mx-auto py-12">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
-      </div>
-    )
+    return <Loading size={150} blur="sm" />
   }
 
   // Fungsi untuk mendapatkan komponen icon berdasarkan nama

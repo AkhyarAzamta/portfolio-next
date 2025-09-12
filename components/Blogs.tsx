@@ -3,7 +3,7 @@
 
 import { useBlogs } from '@/hooks/useBlogs'
 import BlogList from './BlogList'
-import BlogLoading from './BlogLoading'
+import { Loading } from './ui/loading'
 
 interface BlogsProps {
   limit?: number
@@ -14,7 +14,7 @@ interface BlogsProps {
 export default function Blogs({ limit, title, showViewAll = false }: BlogsProps) {
   const { blogs, loading, error } = useBlogs()
 
-  if (loading) return <BlogLoading />
+  if (loading) return <Loading size={150} blur="sm" />
   if (error) return <div>Error: {error}</div>
 
   // Apply limit if provided

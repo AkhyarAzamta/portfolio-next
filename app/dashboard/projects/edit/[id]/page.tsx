@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ImageUpload'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Loading } from '@/components/ui/loading'
 
 interface Project {
   id: number
@@ -67,6 +68,24 @@ export default function EditProjectPage() {
       fetchProject()
     }
   }, [id, fetchProject])
+
+    // Jika masih loading, tampilkan komponen loading full-page supaya halaman tidak muncul dulu
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loading size={150} blur="sm" />
+      </div>
+    )
+  }
+
+  // Jika error atau project tidak ada
+  if (!formData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-red-500"> {error || 'Project not found'} </div>
+      </div>
+    )
+  }
 
   const handleAddTech = () => {
     if (techInput.trim() && !formData.technologies.includes(techInput.trim())) {
