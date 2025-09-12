@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { fadeInUp, fadeIn, slideInLeft, slideInRight } from '@/utils/animations'
+import { useRouter } from 'next/navigation'
 
 interface FormData {
   name: string;
@@ -13,6 +14,12 @@ interface FormData {
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
+interface ContactInfo {
+  id: number;
+  type: string;
+  value: string;
+}
+
 export default function Contact() {
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -20,6 +27,26 @@ export default function Contact() {
     message: ''
   })
   const [status, setStatus] = useState<FormStatus>('idle')
+  const [contactInfos, setContactInfos] = useState<ContactInfo[]>([])
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      try {
+        const response = await fetch('/api/contact-info')
+        if (!response.ok) throw new Error('Failed to fetch contact info')
+        const data = await response.json()
+        setContactInfos(data)
+      } catch (error) {
+        console.error('Error fetching contact info:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchContactInfo()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,11 +61,19 @@ export default function Contact() {
         body: JSON.stringify(formData),
       })
 
-      if (!response.ok) throw new Error('Failed to send message')
+      const data = await response.json()
+      
+      if (!response.ok) throw new Error(data.message || 'Failed to send message')
       
       setStatus('success')
       setFormData({ name: '', email: '', message: '' })
-    } catch {
+      
+      // Optional: redirect or show success message
+      setTimeout(() => {
+        router.refresh() // Refresh the page if needed
+      }, 2000)
+    } catch (error) {
+      console.error('Error submitting form:', error)
       setStatus('error')
     }
   }
@@ -48,6 +83,35 @@ export default function Contact() {
       ...prev,
       [e.target.name]: e.target.value
     }))
+  }
+
+  // Fungsi untuk mendapatkan icon berdasarkan type
+  const getIcon = (type: string) => {
+    switch (type) {
+      case 'email': return <FaEnvelope className="h-6 w-6 text-primary" />
+      case 'phone': return <FaPhone className="h-6 w-6 text-primary" />
+      case 'location': return <FaMapMarkerAlt className="h-6 w-6 text-primary" />
+      default: return null
+    }
+  }
+
+  // Fungsi untuk mendapatkan link berdasarkan type dan value
+  const getLink = (type: string, value: string) => {
+    switch (type) {
+      case 'email': return `mailto:${value}`
+      case 'phone': return `tel:${value}`
+      default: return '#'
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="container max-w-7xl mx-auto py-12">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -79,48 +143,27 @@ export default function Contact() {
             initial="initial"
             animate="animate"
           >
-            <motion.div 
-              className="flex items-center gap-4"
-              variants={fadeInUp}
-              whileHover={{ x: 10 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <FaEnvelope className="h-6 w-6 text-primary" />
-              <div>
-                <h3 className="font-semibold">Email</h3>
-                <a href="mailto:akhyar.azamta@gmail.com" className="text-secondary hover:text-primary">
-                  akhyar.azamta@gmail.com
-                </a>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="flex items-center gap-4"
-              variants={fadeInUp}
-              whileHover={{ x: 10 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <FaPhone className="h-6 w-6 text-primary" />
-              <div>
-                <h3 className="font-semibold">Phone</h3>
-                <a href="tel:+6285173490114" className="text-secondary hover:text-primary">
-                  +6285173490114
-                </a>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="flex items-center gap-4"
-              variants={fadeInUp}
-              whileHover={{ x: 10 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <FaMapMarkerAlt className="h-6 w-6 text-primary" />
-              <div>
-                <h3 className="font-semibold">Location</h3>
-                <p className="text-secondary">Bandung, West Java, Indonesia</p>
-              </div>
-            </motion.div>
+            {contactInfos.map((info) => (
+              <motion.div 
+                key={info.id}
+                className="flex items-center gap-4"
+                variants={fadeInUp}
+                whileHover={{ x: 10 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                {getIcon(info.type)}
+                <div>
+                  <h3 className="font-semibold capitalize">{info.type}</h3>
+                  {info.type === 'email' || info.type === 'phone' ? (
+                    <a href={getLink(info.type, info.value)} className="text-secondary hover:text-primary">
+                      {info.value}
+                    </a>
+                  ) : (
+                    <p className="text-secondary">{info.value}</p>
+                  )}
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </motion.div>
         
@@ -215,4 +258,4 @@ export default function Contact() {
       </div>
     </div>
   )
-} 
+}

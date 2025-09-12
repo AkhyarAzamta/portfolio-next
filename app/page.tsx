@@ -8,8 +8,13 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <Projects />
-      <Blogs />
+      <Projects 
+        limit={3} 
+        title="Featured Projects" 
+        description="Here are some of my recent projects. Click on the links to view the code or live demo."
+        showViewAll={true}
+      />
+      <Blogs limit={3} title="Latest Blog Posts" showViewAll={true} />
       <Newsletter />
     </main>
   );

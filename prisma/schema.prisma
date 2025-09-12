@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  password    String
+  role        UserRole  @default(USER)
+  avatar      String?
+  title       String?
+  bio         String?
+  githubUrl   String?
+  linkedinUrl String?
+  instagramUrl String?
+  blogs       Blog[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Blog {
+  id        Int      @id @default(autoincrement())
+  title     String
+  excerpt   String
+  content   String?
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  slug      String   @unique
+  published Boolean  @default(false)
+  archived  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blogs")
+}
+
+model Project {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String
+  technologies String[]
+  githubLink   String?
+  demoLink     String?
+  image        String
+  freeToUse    Boolean  @default(false)
+  featured     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contact_messages")
+}
+
+model About {
+  id        Int      @id @default(autoincrement())
+  bio       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("about")
+}
+
+model SkillCategory {
+  id          Int      @id @default(autoincrement())
+  name        String
+  icon        String
+  description String?
+  skills      Skill[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("skill_categories")
+}
+
+model Skill {
+  id          Int      @id @default(autoincrement())
+  name        String
+  logo        String
+  category    SkillCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("skills")
+}
+
+model Experience {
+  id          Int      @id @default(autoincrement())
+  title       String
+  company     String
+  period      String
+  description String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("experiences")
+}
+
+model Education {
+  id          Int      @id @default(autoincrement())
+  degree      String
+  institution String
+  period      String
+  description String?
+  grade       Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("education")
+}
+
+model ContactInfo {
+  id        Int      @id @default(autoincrement())
+  type      String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contact_info")
+}
