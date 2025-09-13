@@ -4,13 +4,13 @@
 import { useState, useEffect } from 'react'
 import { FaCode, FaLaptopCode, FaGraduationCap } from 'react-icons/fa'
 import { motion } from 'framer-motion'
-import { 
-  fadeInUp, 
-  fadeInDown, 
-  fadeIn, 
-  staggerContainer, 
-  cardHover, 
-  cardHoverSmall 
+import {
+  fadeInUp,
+  fadeInDown,
+  fadeIn,
+  staggerContainer,
+  cardHover,
+  cardHoverSmall
 } from '@/utils/animations'
 import Image from 'next/image'
 import { Loading } from '@/components/ui/loading'
@@ -111,15 +111,15 @@ export default function About() {
 
   return (
     <div className="container max-w-7xl mx-auto py-12">
-      <motion.h1 
+      <motion.h1
         className="text-4xl font-bold mb-8 text-center"
         {...fadeInDown}
       >
         About Me
       </motion.h1>
-      
+
       {/* Bio Section */}
-      <motion.section 
+      <motion.section
         className="mb-16"
         {...fadeInUp}
       >
@@ -129,25 +129,25 @@ export default function About() {
       </motion.section>
 
       {/* Skills Section */}
-      <motion.section 
+      <motion.section
         className="mb-16"
         {...fadeIn}
         transition={{ delay: 0.2 }}
       >
-        <motion.h2 
+        <motion.h2
           className="section-title"
           {...fadeInUp}
         >
           Skills
         </motion.h2>
-        <motion.div 
+        <motion.div
           className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           variants={staggerContainer}
           initial="initial"
           animate="animate"
         >
           {skillCategories.map((category) => (
-            <motion.div 
+            <motion.div
               key={category.id}
               className="bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md"
               variants={fadeInUp}
@@ -175,25 +175,25 @@ export default function About() {
       </motion.section>
 
       {/* Experience Section */}
-      <motion.section 
+      <motion.section
         className="mb-16"
         {...fadeIn}
         transition={{ delay: 0.4 }}
       >
-        <motion.h2 
+        <motion.h2
           className="section-title"
           {...fadeInUp}
         >
           Experience
         </motion.h2>
-        <motion.div 
+        <motion.div
           className="max-w-3xl mx-auto space-y-8"
           variants={staggerContainer}
           initial="initial"
           animate="animate"
         >
           {experience.map((exp) => (
-            <motion.div 
+            <motion.div
               key={exp.id}
               className="bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md"
               variants={fadeInUp}
@@ -213,23 +213,24 @@ export default function About() {
 
       {/* Education Section */}
       <motion.section
+        className="mb-16"
         {...fadeIn}
         transition={{ delay: 0.6 }}
       >
-        <motion.h2 
+        <motion.h2
           className="section-title"
           {...fadeInUp}
         >
           Education
         </motion.h2>
-        <motion.div 
+        <motion.div
           className="max-w-3xl mx-auto"
           variants={staggerContainer}
           initial="initial"
           animate="animate"
         >
           {education.map((edu) => (
-            <motion.div 
+            <motion.div
               key={edu.id}
               className="bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md"
               variants={fadeInUp}
