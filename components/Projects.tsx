@@ -4,6 +4,7 @@
 import { useProjects } from '@/hooks/useProjects'
 import ProjectList from './ProjectList'
 import { Loading } from './ui/loading'
+import { Project } from '@/types/index' // ✅ pakai types sesuai schema
 
 interface ProjectsProps {
   limit?: number
@@ -26,7 +27,9 @@ export default function Projects({
   if (error) return <div>Error: {error}</div>
 
   // Apply limit if provided
-  const displayedProjects = limit ? projects.slice(0, limit) : projects
+  const displayedProjects: Project[] = limit 
+    ? projects.slice(0, limit) 
+    : projects
 
   return (
     <ProjectList 

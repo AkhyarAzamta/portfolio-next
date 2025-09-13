@@ -1,7 +1,7 @@
 // app/dashboard/projects/edit/[id]/page.tsx
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,17 +11,13 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ImageUpload'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loading } from '@/components/ui/loading'
+import { FileUpload } from '@/components/FileUpload'
+import { parsePrice, formatPriceRealTime } from '@/utils/currency'
+import type { Project as ProjectType } from '@/types'
 
-interface Project {
+// extend ProjectType supaya ada id
+interface Project extends ProjectType {
   id: number
-  title: string
-  description: string
-  technologies: string[]
-  githubLink: string | null
-  demoLink: string | null
-  image: string
-  freeToUse: boolean
-  featured: boolean
 }
 
 export default function EditProjectPage() {
@@ -30,34 +26,47 @@ export default function EditProjectPage() {
     title: '',
     description: '',
     technologies: [],
-    githubLink: '',
+    sourceCode: '',
     demoLink: '',
     image: '',
-    freeToUse: false,
-    featured: false
+    archived: false,
+    price: null,
+    createdAt: '',
+    updatedAt: '',
   })
   const [techInput, setTechInput] = useState('')
+  const [priceInput, setPriceInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const priceInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const params = useParams()
   const id = params.id as string
 
   const fetchProject = useCallback(async () => {
     try {
-      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
+      const token = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('token='))
+        ?.split('=')[1]
+
       const response = await fetch(`/api/admin/projects/${id}`, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       })
 
       if (!response.ok) {
         throw new Error('Failed to fetch project')
       }
 
-      const project = await response.json()
+      const project: Project = await response.json()
       setFormData(project)
+      
+      // Format harga awal
+      if (project.price) {
+        setPriceInput(formatPriceRealTime(project.price.toString()))
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     }
@@ -69,29 +78,12 @@ export default function EditProjectPage() {
     }
   }, [id, fetchProject])
 
-    // Jika masih loading, tampilkan komponen loading full-page supaya halaman tidak muncul dulu
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loading size={150} blur="sm" />
-      </div>
-    )
-  }
-
-  // Jika error atau project tidak ada
-  if (!formData) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-red-500"> {error || 'Project not found'} </div>
-      </div>
-    )
-  }
-
   const handleAddTech = () => {
-    if (techInput.trim() && !formData.technologies.includes(techInput.trim())) {
+    const tech = techInput.trim()
+    if (tech && !formData.technologies.includes(tech)) {
       setFormData({
         ...formData,
-        technologies: [...formData.technologies, techInput.trim()]
+        technologies: [...formData.technologies, tech],
       })
       setTechInput('')
     }
@@ -100,8 +92,22 @@ export default function EditProjectPage() {
   const handleRemoveTech = (tech: string) => {
     setFormData({
       ...formData,
-      technologies: formData.technologies.filter(t => t !== tech)
+      technologies: formData.technologies.filter((t) => t !== tech),
     })
+  }
+
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    
+    // Simpan nilai asli (numerik) ke formData
+    const parsedPrice = parsePrice(value)
+    setFormData({
+      ...formData,
+      price: parsedPrice,
+    })
+    
+    // Format nilai untuk ditampilkan
+    setPriceInput(formatPriceRealTime(value))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -110,14 +116,18 @@ export default function EditProjectPage() {
     setError('')
 
     try {
-      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
+      const token = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('token='))
+        ?.split('=')[1]
+
       const response = await fetch(`/api/admin/projects/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       })
 
       if (!response.ok) {
@@ -133,38 +143,51 @@ export default function EditProjectPage() {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loading size={150} blur="sm" />
+      </div>
+    )
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle>Edit Project</CardTitle>
-          <CardDescription>
-            Update your project details
-          </CardDescription>
+          <CardDescription>Update your project details</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Title */}
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
                 required
               />
             </div>
 
+            {/* Description */}
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 rows={4}
                 required
               />
             </div>
 
+            {/* Technologies */}
             <div className="space-y-2">
               <Label htmlFor="technologies">Technologies</Label>
               <div className="flex gap-2 mb-2">
@@ -173,10 +196,7 @@ export default function EditProjectPage() {
                   onChange={(e) => setTechInput(e.target.value)}
                   placeholder="Add a technology"
                 />
-                <Button
-                  type="button"
-                  onClick={handleAddTech}
-                >
+                <Button type="button" onClick={handleAddTech}>
                   Add
                 </Button>
               </div>
@@ -199,62 +219,88 @@ export default function EditProjectPage() {
               </div>
             </div>
 
+            {/* Source Code */}
             <div className="space-y-2">
-              <Label htmlFor="githubLink">GitHub Link</Label>
-              <Input
-                id="githubLink"
-                type="url"
-                value={formData.githubLink || ''}
-                onChange={(e) => setFormData({ ...formData, githubLink: e.target.value })}
+              <Label>Source Code (ZIP/RAR)</Label>
+              <FileUpload
+                value={formData.sourceCode || ''}
+                onChange={(url) =>
+                  setFormData({ ...formData, sourceCode: url })
+                }
               />
             </div>
 
+            {/* Demo Link */}
             <div className="space-y-2">
               <Label htmlFor="demoLink">Demo Link</Label>
               <Input
                 id="demoLink"
                 type="url"
                 value={formData.demoLink || ''}
-                onChange={(e) => setFormData({ ...formData, demoLink: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, demoLink: e.target.value })
+                }
               />
             </div>
 
+            {/* Price */}
+            <div className="space-y-2">
+              <Label htmlFor="price">Price</Label>
+              <Input
+                id="price"
+                ref={priceInputRef}
+                type="text"
+                value={priceInput}
+                onChange={handlePriceChange}
+                placeholder="Contoh: Rp 250.000"
+                autoComplete='off'
+              />
+            </div>
+
+            {/* Image */}
             <div className="space-y-2">
               <Label>Project Image</Label>
               <ImageUpload
                 value={formData.image}
-                onChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
+                onChange={(imageUrl) =>
+                  setFormData({ ...formData, image: imageUrl })
+                }
               />
             </div>
 
+            {/* Archived */}
             <div className="flex gap-4">
               <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="freeToUse"
-                  checked={formData.freeToUse}
-                  onCheckedChange={(checked) => setFormData({ ...formData, freeToUse: checked === true })}
-                />
-                <Label htmlFor="freeToUse">Free to Use</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="featured"
-                  checked={formData.featured}
-                  onCheckedChange={(checked) => setFormData({ ...formData, featured: checked === true })}
-                />
-                <Label htmlFor="featured">Featured</Label>
+                <Label
+                  htmlFor="archived"
+                  className="hover:bg-accept/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950"
+                >
+                  <Checkbox
+                    id="archived"
+                    checked={formData.archived}
+                    onCheckedChange={(checked) =>
+                      setFormData({
+                        ...formData,
+                        archived: checked === true,
+                      })
+                    }
+                    className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+                  />
+                  <div className="grid gap-1.5 font-normal">
+                    <p className="text-sm leading-none font-medium">Archived</p>
+                    <p className="text-muted-foreground text-sm">
+                      You can enable or disable Archived at any time.
+                    </p>
+                  </div>
+                </Label>
               </div>
             </div>
 
-            {error && (
-              <div className="text-red-500 text-sm">{error}</div>
-            )}
+            {error && <div className="text-red-500 text-sm">{error}</div>}
 
+            {/* Actions */}
             <div className="flex gap-2">
-              <Button
-                type="submit"
-                disabled={loading}
-              >
+              <Button type="submit" disabled={loading}>
                 {loading ? 'Updating...' : 'Update Project'}
               </Button>
               <Button

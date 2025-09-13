@@ -2,30 +2,51 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { verifyToken } from '@/lib/jwt'
+import { Project } from '@/types/index'
 
-type Context = { params: Promise<{ id: string }> } // note: params is a Promise-like in Next 15
+// Next.js 15: params berupa Promise<{ id: string }>
+type Context = { params: Promise<{ id: string }> }
 
-function parseId(idStr: unknown) {
+function parseId(idStr: unknown): number | null {
   const n = Number(idStr)
   return Number.isInteger(n) && n > 0 ? n : null
 }
 
 export async function GET(request: Request, ctx: Context) {
   try {
-    // await params first (important in Next 15+)
     const params = await ctx.params
     const id = parseId(params.id)
-    if (!id) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    if (!id) {
+      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    }
 
-    // verify token
     const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
     const decoded = await verifyToken(token)
-    if (decoded?.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (decoded?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
 
-    const project = await prisma.project.findUnique({ where: { id } })
-    if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+    const prismaProject = await prisma.project.findUnique({
+      where: { id }
+    })
+
+    if (!prismaProject) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+    }
+
+    const project: Project = {
+      ...prismaProject,
+      technologies: prismaProject.technologies ?? [],
+      sourceCode: prismaProject.sourceCode ?? null,
+      demoLink: prismaProject.demoLink ?? null,
+      price: prismaProject.price ?? null,
+      createdAt: prismaProject.createdAt.toISOString(),
+      updatedAt: prismaProject.updatedAt.toISOString()
+    }
 
     return NextResponse.json(project)
   } catch (error) {
@@ -38,41 +59,77 @@ export async function PUT(request: Request, ctx: Context) {
   try {
     const params = await ctx.params
     const id = parseId(params.id)
-    if (!id) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    if (!id) {
+      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    }
 
     const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
     const decoded = await verifyToken(token)
-    if (decoded?.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (decoded?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
 
-    const body = await request.json()
-    const {
-      title,
-      description,
-      technologies,
-      githubLink,
-      demoLink,
-      image,
-      freeToUse,
-      featured
-    } = body
+    const raw = (await request.json()) as unknown
+    const body = (raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {})
 
-    const project = await prisma.project.update({
+    // Validate required fields and coerce types
+    const title = typeof body.title === 'string' ? body.title.trim() : undefined
+    const description = typeof body.description === 'string' ? body.description.trim() : undefined
+
+    // technologies can be array or CSV string
+    let technologies: string[] | undefined = undefined
+    const techRaw = body.technologies
+    if (Array.isArray(techRaw)) {
+      technologies = techRaw.map((item) => String(item).trim()).filter(Boolean)
+    } else if (typeof techRaw === 'string') {
+      technologies = techRaw.split(',').map((s: string) => s.trim()).filter(Boolean)
+    }
+
+    const image = typeof body.image === 'string' ? body.image : undefined
+    const sourceCode = typeof body.sourceCode === 'string' ? body.sourceCode : null
+    const demoLink = typeof body.demoLink === 'string' ? body.demoLink : null
+
+    // price might be number or numeric string
+    let price: number | null | undefined = undefined
+    if (typeof body.price === 'number') price = body.price
+    else if (typeof body.price === 'string' && body.price.trim() !== '') {
+      const parsed = Number(body.price)
+      price = Number.isFinite(parsed) ? parsed : null
+    } else if (body.price === null) {
+      price = null
+    }
+
+    const archived = typeof body.archived === 'boolean' ? body.archived : undefined
+
+    const updatedPrismaProject = await prisma.project.update({
       where: { id },
       data: {
         title,
         description,
         technologies,
-        githubLink,
+        sourceCode,
         demoLink,
         image,
-        freeToUse,
-        featured
+        price,
+        archived
       }
     })
 
-    return NextResponse.json(project)
+    const updatedProject: Project = {
+      ...updatedPrismaProject,
+      technologies: updatedPrismaProject.technologies ?? [],
+      sourceCode: updatedPrismaProject.sourceCode ?? null,
+      demoLink: updatedPrismaProject.demoLink ?? null,
+      price: updatedPrismaProject.price ?? null,
+      createdAt: updatedPrismaProject.createdAt.toISOString(),
+      updatedAt: updatedPrismaProject.updatedAt.toISOString()
+    }
+
+    return NextResponse.json(updatedProject)
   } catch (error) {
     console.error('Error updating project:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -83,13 +140,19 @@ export async function DELETE(request: Request, ctx: Context) {
   try {
     const params = await ctx.params
     const id = parseId(params.id)
-    if (!id) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    if (!id) {
+      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    }
 
     const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
     const decoded = await verifyToken(token)
-    if (decoded?.role !== 'ADMIN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (decoded?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
 
     await prisma.project.delete({ where: { id } })
     return NextResponse.json({ message: 'Project deleted successfully' })

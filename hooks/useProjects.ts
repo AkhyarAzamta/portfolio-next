@@ -1,17 +1,6 @@
 // hooks/useProjects.ts
 import { useState, useEffect } from 'react'
-
-export interface Project {
-  id: number;
-  title: string;
-  description: string;
-  technologies: string[];
-  githubLink: string;
-  demoLink: string;
-  image: string;
-  freeToUse: boolean;
-  featured: boolean;
-}
+import type { Project } from '@/types'
 
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([])

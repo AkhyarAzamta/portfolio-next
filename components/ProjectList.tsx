@@ -4,7 +4,7 @@
 import { motion } from 'framer-motion'
 import { staggerContainer } from '@/utils/animations'
 import ProjectCard from './ProjectCard'
-import { Project } from '@/hooks/useProjects'
+import { Project } from '@/types/index'
 import Link from 'next/link'
 
 interface ProjectListProps {

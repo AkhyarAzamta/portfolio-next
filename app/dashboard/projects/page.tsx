@@ -29,19 +29,10 @@ import { Badge } from '@/components/ui/badge'
 import { MoreHorizontal, Edit, Trash2, Plus } from 'lucide-react'
 import Image from 'next/image'
 import { Loading } from '@/components/ui/loading'
+import type { Project as ProjectType } from '@/types'
 
-interface Project {
+interface Project extends ProjectType {
   id: number
-  title: string
-  description: string
-  technologies: string[]
-  githubLink: string | null
-  demoLink: string | null
-  image: string
-  freeToUse: boolean
-  featured: boolean
-  createdAt: string
-  updatedAt: string
 }
 
 export default function ProjectsPage() {
@@ -171,6 +162,7 @@ export default function ProjectsPage() {
                   <TableHead>Image</TableHead>
                   <TableHead>Title</TableHead>
                   <TableHead>Technologies</TableHead>
+                  <TableHead>Price</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -184,11 +176,11 @@ export default function ProjectsPage() {
                           <Image
                             src={project.image}
                             alt={project.title}
-                            width={120}
-                            height={120}
+                            fill
+                            sizes="100px"
                             className="object-cover rounded-md"
                             onError={(e) => {
-                              e.currentTarget.src = '/placeholder-image.jpg'
+                              e.currentTarget.src = '/placeholder-image.png'
                             }}
                           />
                         ) : (
@@ -214,12 +206,24 @@ export default function ProjectsPage() {
                       </div>
                     </TableCell>
                     <TableCell>
+                      {project.price
+                        ? new Intl.NumberFormat('id-ID', {
+                          style: 'currency',
+                          currency: 'IDR',
+                          minimumFractionDigits: 0,
+                        }).format(project.price)
+                        : 'Free'}
+                    </TableCell>
+                    <TableCell>
                       <div className="flex flex-col gap-1">
-                        {project.featured && (
-                          <Badge variant="default" className="w-fit">Featured</Badge>
-                        )}
-                        {project.freeToUse && (
-                          <Badge variant="secondary" className="w-fit">Free to Use</Badge>
+                        {project.archived ? (
+                          <Badge variant="secondary" className="text-xs">
+                            Archived
+                          </Badge>
+                        ) : (
+                          <Badge variant="default" className="text-xs">
+                            Active
+                          </Badge>
                         )}
                       </div>
                     </TableCell>

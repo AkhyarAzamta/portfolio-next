@@ -1,8 +1,7 @@
 // components/ImageUpload.tsx
 'use client'
 
-import { useState } from 'react'
-import { CldUploadWidget } from 'next-cloudinary'
+import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ImagePlus, X } from 'lucide-react'
 import Image from 'next/image'
@@ -19,13 +18,39 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   disabled
 }) => {
   const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onUpload = (result: any) => {
-    if (result.event === 'success') {
-      onChange(result.info.secure_url)
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setIsUploading(true)
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'portfolio_uploads')
+
+    try {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/df1soy4on/upload`, {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error('Upload failed')
+      }
+
+      const data = await response.json()
+      onChange(data.secure_url)
+    } catch (error) {
+      console.error('Upload error:', error)
+    } finally {
+      setIsUploading(false)
+      // Reset input file
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
     }
-    setIsUploading(false)
   }
 
   return (
@@ -37,6 +62,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
             className="object-cover rounded-md"
             src={value}
             alt="Uploaded image"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             onError={(e) => {
               e.currentTarget.src = '/placeholder-image.jpg'
             }}
@@ -52,34 +78,23 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           </Button>
         </div>
       )}
-      <CldUploadWidget
-        onUploadAdded={() => setIsUploading(true)}
-        onSuccess={onUpload}
-        onError={() => {
-          setIsUploading(false)
-          console.error('Upload failed')
-        }}
-        options={{
-          maxFiles: 1,
-          sources: ['local'],
-          multiple: false,
-          uploadPreset: 'portfolio_uploads',
-        }}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        className="hidden"
+        disabled={disabled || isUploading}
+      />
+      <Button
+        type="button"
+        variant="outline"
+        disabled={disabled || isUploading}
+        onClick={() => fileInputRef.current?.click()}
       >
-        {({ open }) => {
-          return (
-            <Button
-              type="button"
-              variant="outline"
-              disabled={disabled || isUploading}
-              onClick={() => open()}
-            >
-              <ImagePlus className="h-4 w-4 mr-2" />
-              {isUploading ? 'Uploading...' : 'Upload an Image'}
-            </Button>
-          )
-        }}
-      </CldUploadWidget>
+        <ImagePlus className="h-4 w-4 mr-2" />
+        {isUploading ? 'Uploading...' : 'Upload an Image'}
+      </Button>
     </div>
   )
 }

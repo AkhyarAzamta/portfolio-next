@@ -1,7 +1,7 @@
 // app/dashboard/projects/new/page.tsx
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,64 +10,95 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ImageUpload'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { FileUpload } from '@/components/FileUpload'
+import type { ProjectCreateInput, ApiErrorResponse } from '@/types'
+
+type FormState = Omit<ProjectCreateInput, 'price'> & {
+  priceInput: string
+}
 
 export default function NewProjectPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormState>({
     title: '',
     description: '',
-    technologies: [] as string[],
-    githubLink: '',
-    demoLink: '',
+    technologies: [],
+    sourceCode: null,
+    demoLink: null,
     image: '',
-    freeToUse: false,
-    featured: false
+    priceInput: '',
+    archived: false,
   })
-  const [techInput, setTechInput] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+
+  const [techInput, setTechInput] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string>('')
   const router = useRouter()
 
   const handleAddTech = () => {
-    if (techInput.trim() && !formData.technologies.includes(techInput.trim())) {
-      setFormData({
-        ...formData,
-        technologies: [...formData.technologies, techInput.trim()]
-      })
+    const t = techInput.trim()
+    if (t && !formData.technologies.includes(t)) {
+      setFormData((prev) => ({ ...prev, technologies: [...prev.technologies, t] }))
       setTechInput('')
     }
   }
 
   const handleRemoveTech = (tech: string) => {
-    setFormData({
-      ...formData,
-      technologies: formData.technologies.filter(t => t !== tech)
-    })
+    setFormData((prev) => ({
+      ...prev,
+      technologies: prev.technologies.filter((t) => t !== tech),
+    }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
     try {
-      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
+      if (!formData.title.trim() || !formData.description.trim()) {
+        setError('Title and description are required.')
+        setLoading(false)
+        return
+      }
+
+      let price: number | null = null
+      if (formData.priceInput.trim() !== '') {
+        const parsed = Number(formData.priceInput)
+        price = Number.isFinite(parsed) ? parsed : null
+      }
+
+      const payload: ProjectCreateInput = {
+        ...formData,
+        price,
+      }
+
+      // Ambil token dari cookie
+      const tokenCookie = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('token='))
+      const token = tokenCookie ? tokenCookie.split('=')[1] : undefined
+
       const response = await fetch('/api/admin/projects', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload),
       })
 
       if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Failed to create project')
+        const data: ApiErrorResponse = await response.json().catch(() => ({}))
+        throw new Error(data.error || data.message || 'Failed to create project')
       }
 
       router.push('/dashboard/projects')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError('An unknown error occurred')
+      }
     } finally {
       setLoading(false)
     }
@@ -78,33 +109,38 @@ export default function NewProjectPage() {
       <Card className="max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle>Add New Project</CardTitle>
-          <CardDescription>
-            Create a new project for your portfolio
-          </CardDescription>
+          <CardDescription>Create a new project for your portfolio</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Title */}
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, title: e.target.value }))
+                }
                 required
               />
             </div>
 
+            {/* Description */}
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, description: e.target.value }))
+                }
                 rows={4}
                 required
               />
             </div>
 
+            {/* Technologies */}
             <div className="space-y-2">
               <Label htmlFor="technologies">Technologies</Label>
               <div className="flex gap-2 mb-2">
@@ -113,10 +149,7 @@ export default function NewProjectPage() {
                   onChange={(e) => setTechInput(e.target.value)}
                   placeholder="Add a technology"
                 />
-                <Button
-                  type="button"
-                  onClick={handleAddTech}
-                >
+                <Button type="button" onClick={handleAddTech}>
                   Add
                 </Button>
               </div>
@@ -139,62 +172,77 @@ export default function NewProjectPage() {
               </div>
             </div>
 
+            {/* Source Code */}
             <div className="space-y-2">
-              <Label htmlFor="githubLink">GitHub Link</Label>
-              <Input
-                id="githubLink"
-                type="url"
-                value={formData.githubLink}
-                onChange={(e) => setFormData({ ...formData, githubLink: e.target.value })}
+              <Label>Source Code (ZIP/RAR)</Label>
+              <FileUpload
+                value={formData.sourceCode ?? ''}
+                onChange={(url: string) =>
+                  setFormData((p) => ({ ...p, sourceCode: url || null }))
+                }
               />
             </div>
 
+            {/* Demo Link */}
             <div className="space-y-2">
               <Label htmlFor="demoLink">Demo Link</Label>
               <Input
                 id="demoLink"
                 type="url"
-                value={formData.demoLink}
-                onChange={(e) => setFormData({ ...formData, demoLink: e.target.value })}
+                value={formData.demoLink ?? ''}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, demoLink: e.target.value }))
+                }
               />
             </div>
 
+            {/* Price */}
+            <div className="space-y-2">
+              <Label htmlFor="price">Price</Label>
+              <Input
+                id="price"
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.priceInput}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, priceInput: e.target.value }))
+                }
+                placeholder="Leave empty for free / not for sale"
+              />
+            </div>
+
+            {/* Project Image */}
             <div className="space-y-2">
               <Label>Project Image</Label>
               <ImageUpload
                 value={formData.image}
-                onChange={(imageUrl) => setFormData({ ...formData, image: imageUrl })}
+                onChange={(imageUrl: string) =>
+                  setFormData((p) => ({ ...p, image: imageUrl }))
+                }
               />
             </div>
 
+            {/* Archived */}
             <div className="flex gap-4">
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="freeToUse"
-                  checked={formData.freeToUse}
-                  onCheckedChange={(checked) => setFormData({ ...formData, freeToUse: checked === true })}
+                  id="archived"
+                  checked={formData.archived}
+                  onCheckedChange={(checked: boolean | 'indeterminate') =>
+                    setFormData((p) => ({ ...p, archived: checked === true }))
+                  }
                 />
-                <Label htmlFor="freeToUse">Free to Use</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="featured"
-                  checked={formData.featured}
-                  onCheckedChange={(checked) => setFormData({ ...formData, featured: checked === true })}
-                />
-                <Label htmlFor="featured">Featured</Label>
+                <Label htmlFor="archived">Archived</Label>
               </div>
             </div>
 
-            {error && (
-              <div className="text-red-500 text-sm">{error}</div>
-            )}
+            {/* Error */}
+            {error && <div className="text-red-500 text-sm">{error}</div>}
 
+            {/* Buttons */}
             <div className="flex gap-2">
-              <Button
-                type="submit"
-                disabled={loading}
-              >
+              <Button type="submit" disabled={loading}>
                 {loading ? 'Creating...' : 'Create Project'}
               </Button>
               <Button

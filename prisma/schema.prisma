@@ -52,11 +52,11 @@ model Project {
   title        String
   description  String
   technologies String[]
-  githubLink   String?
+  sourceCode   String?
   demoLink     String?
   image        String
-  freeToUse    Boolean  @default(false)
-  featured     Boolean  @default(false)
+  archived     Boolean  @default(false)
+  price        Float?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -141,4 +141,18 @@ model ContactInfo {
   updatedAt DateTime @updatedAt
 
   @@map("contact_info")
+}
+
+model Certificate {
+  id             Int      @id @default(autoincrement())
+  name           String
+  issuer         String
+  issueDate      String
+  expiryDate     String?
+  credentialURL  String?
+  image          String?  // New field for certificate image
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("certificates")
 }

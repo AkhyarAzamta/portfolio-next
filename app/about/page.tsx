@@ -14,6 +14,7 @@ import {
 } from '@/utils/animations'
 import Image from 'next/image'
 import { Loading } from '@/components/ui/loading'
+import Certificates from '@/components/Certificates'
 
 interface AboutData {
   id: number;
@@ -243,6 +244,8 @@ export default function About() {
           ))}
         </motion.div>
       </motion.section>
+      {/* Certificates Section */}
+      <Certificates />
     </div>
   )
 }
