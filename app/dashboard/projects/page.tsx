@@ -26,13 +26,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
-import { MoreHorizontal, Edit, Trash2, Plus } from 'lucide-react'
+import { MoreHorizontal, Edit, Trash2, Plus, Github, FileText, Key } from 'lucide-react'
 import Image from 'next/image'
 import { Loading } from '@/components/ui/loading'
 import type { Project as ProjectType } from '@/types'
 
 interface Project extends ProjectType {
-  id: number
+  id: string // Changed from number to string
 }
 
 export default function ProjectsPage() {
@@ -42,31 +42,6 @@ export default function ProjectsPage() {
   const router = useRouter()
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
-        const response = await fetch('/api/admin/projects', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
-
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            router.push('/login')
-            return
-          }
-          throw new Error('Failed to fetch projects')
-        }
-
-        const data = await response.json()
-        setProjects(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
-      } finally {
-        setLoading(false)
-      }
-    }
     fetchProjects()
   }, [router])
 
@@ -96,7 +71,7 @@ export default function ProjectsPage() {
     }
   }
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => { // Changed from number to string
     if (!confirm('Are you sure you want to delete this project?')) {
       return
     }
@@ -114,10 +89,24 @@ export default function ProjectsPage() {
         throw new Error('Failed to delete project')
       }
 
-      // Refresh the projects list
       fetchProjects()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
+    }
+  }
+
+  const copyToClipboard = async (text: string | null, type: string) => {
+    if (!text) {
+      alert(`No ${type} available to copy`)
+      return
+    }
+    
+    try {
+      await navigator.clipboard.writeText(text)
+      alert(`${type} copied to clipboard!`)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+      alert('Failed to copy to clipboard')
     }
   }
 
@@ -242,6 +231,30 @@ export default function ProjectsPage() {
                             <Edit className="h-4 w-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
+                          {project.githubLink && (
+                            <DropdownMenuItem
+                              onClick={() => copyToClipboard(project.githubLink, 'GitHub Link')}
+                            >
+                              <Github className="h-4 w-4 mr-2" />
+                              Copy GitHub Link
+                            </DropdownMenuItem>
+                          )}
+                          {project.env && (
+                            <DropdownMenuItem
+                              onClick={() => copyToClipboard(project.env, 'Environment Variables')}
+                            >
+                              <FileText className="h-4 w-4 mr-2" />
+                              Copy Env
+                            </DropdownMenuItem>
+                          )}
+                          {project.password && (
+                            <DropdownMenuItem
+                              onClick={() => copyToClipboard(project.password, 'Password')}
+                            >
+                              <Key className="h-4 w-4 mr-2" />
+                              Copy Password
+                            </DropdownMenuItem>
+                          )}
                           <DropdownMenuItem
                             onClick={() => handleDelete(project.id)}
                             className="text-red-600"

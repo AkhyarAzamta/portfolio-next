@@ -14,6 +14,9 @@ export async function seedProjects() {
     sourceCode?: string
     demoLink?: string
     image: string
+    githubLink?: string
+    env?: string
+    password?: string
   }[] = [
     {
       title: 'E-commerce Platform',
@@ -22,6 +25,9 @@ export async function seedProjects() {
       sourceCode: '/projects/sourceCode.zip',
       demoLink: 'https://demo.com',
       image: '/projects/e-commerce-website.png',
+      githubLink: 'https://github.com/yourusername/ecommerce',
+      env: `API_KEY=your_api_key_here\nDATABASE_URL=your_database_url_here`,
+      password: 'sourcecode_password123'
     },
     {
       title: 'Task Management App',
@@ -30,6 +36,9 @@ export async function seedProjects() {
       sourceCode: '/projects/sourceCode.zip',
       demoLink: 'https://demo.com',
       image: '/projects/task-manager.webp',
+      githubLink: 'https://github.com/yourusername/ecommerce',
+      env: `API_KEY=your_api_key_here\nDATABASE_URL=your_database_url_here`,
+      password: 'sourcecode_password123'
     },
     {
       title: 'Portfolio Website',
@@ -38,6 +47,9 @@ export async function seedProjects() {
       sourceCode: '/projects/sourceCode.zip',
       demoLink: 'https://demo.com',
       image: '/projects/portfolio-website.jpg',
+      githubLink: 'https://github.com/yourusername/ecommerce',
+      env: `API_KEY=your_api_key_here\nDATABASE_URL=your_database_url_here`,
+      password: 'sourcecode_password123'
     },
     {
       title: 'Blog Platform',
@@ -46,6 +58,9 @@ export async function seedProjects() {
       sourceCode: '/projects/sourceCode.zip',
       demoLink: 'https://demo.com',
       image: '/projects/blog-website.jpeg',
+      githubLink: 'https://github.com/yourusername/ecommerce',
+      env: `API_KEY=your_api_key_here\nDATABASE_URL=your_database_url_here`,
+      password: 'sourcecode_password123'
     },
     {
       title: 'Weather App',
@@ -54,6 +69,9 @@ export async function seedProjects() {
       sourceCode: '/projects/sourceCode.zip',
       demoLink: 'https://demo.com',
       image: '/projects/weather-app.png',
+      githubLink: 'https://github.com/yourusername/ecommerce',
+      env: `API_KEY=your_api_key_here\nDATABASE_URL=your_database_url_here`,
+      password: 'sourcecode_password123'
     },
     {
       title: 'Chat Application',
@@ -62,6 +80,9 @@ export async function seedProjects() {
       sourceCode: '/projects/sourceCode.zip',
       demoLink: 'https://demo.com',
       image: '/projects/chat-app.png',
+      githubLink: 'https://github.com/yourusername/ecommerce',
+      env: `API_KEY=your_api_key_here\nDATABASE_URL=your_database_url_here`,
+      password: 'sourcecode_password123'
     },
     {
       title: 'Recipe Finder',
@@ -70,6 +91,9 @@ export async function seedProjects() {
       sourceCode: '/projects/sourceCode.zip',
       demoLink: 'https://demo.com',
       image: '/projects/recipe-finder.png',
+      githubLink: 'https://github.com/yourusername/ecommerce',
+      env: `API_KEY=your_api_key_here\nDATABASE_URL=your_database_url_here`,
+      password: 'sourcecode_password123'
     },
     {
       title: 'Expense Tracker',
@@ -78,6 +102,9 @@ export async function seedProjects() {
       sourceCode: '/projects/sourceCode.zip',
       demoLink: 'https://demo.com',
       image: '/projects/expense-tracker.webp',
+      githubLink: 'https://github.com/yourusername/ecommerce',
+      env: `API_KEY=your_api_key_here\nDATABASE_URL=your_database_url_here`,
+      password: 'sourcecode_password123'
     }
   ]
 

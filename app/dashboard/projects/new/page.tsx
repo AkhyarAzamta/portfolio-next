@@ -11,10 +11,19 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ImageUpload'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FileUpload } from '@/components/FileUpload'
-import type { ProjectCreateInput, ApiErrorResponse } from '@/types'
 
-type FormState = Omit<ProjectCreateInput, 'price'> & {
+type FormState = {
+  title: string
+  description: string
+  technologies: string[]
+  sourceCode: string | null
+  demoLink: string | null
+  image: string
   priceInput: string
+  archived: boolean
+  githubLink: string | null
+  env: string | null
+  password: string | null
 }
 
 export default function NewProjectPage() {
@@ -27,6 +36,9 @@ export default function NewProjectPage() {
     image: '',
     priceInput: '',
     archived: false,
+    githubLink: null,
+    env: null,
+    password: null,
   })
 
   const [techInput, setTechInput] = useState<string>('')
@@ -67,12 +79,17 @@ export default function NewProjectPage() {
         price = Number.isFinite(parsed) ? parsed : null
       }
 
-      const payload: ProjectCreateInput = {
+      const payload = {
         ...formData,
         price,
+        // Ensure empty strings are converted to null
+        githubLink: formData.githubLink || null,
+        env: formData.env || null,
+        password: formData.password || null,
       }
 
-      // Ambil token dari cookie
+      delete (payload as Partial<typeof payload>).priceInput
+
       const tokenCookie = document.cookie
         .split('; ')
         .find((row) => row.startsWith('token='))
@@ -88,7 +105,7 @@ export default function NewProjectPage() {
       })
 
       if (!response.ok) {
-        const data: ApiErrorResponse = await response.json().catch(() => ({}))
+        const data = await response.json().catch(() => ({}))
         throw new Error(data.error || data.message || 'Failed to create project')
       }
 
@@ -193,6 +210,48 @@ export default function NewProjectPage() {
                 onChange={(e) =>
                   setFormData((p) => ({ ...p, demoLink: e.target.value }))
                 }
+              />
+            </div>
+
+            {/* GitHub Link */}
+            <div className="space-y-2">
+              <Label htmlFor="githubLink">GitHub Link (Admin Only)</Label>
+              <Input
+                id="githubLink"
+                type="url"
+                value={formData.githubLink ?? ''}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, githubLink: e.target.value }))
+                }
+                placeholder="https://github.com/username/repo"
+              />
+            </div>
+
+            {/* Environment Variables */}
+            <div className="space-y-2">
+              <Label htmlFor="env">Environment Variables (Admin Only)</Label>
+              <Textarea
+                id="env"
+                value={formData.env ?? ''}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, env: e.target.value }))
+                }
+                rows={3}
+                placeholder="API_KEY=your_api_key_here"
+              />
+            </div>
+
+            {/* Password */}
+            <div className="space-y-2">
+              <Label htmlFor="password">Source Code Password (Admin Only)</Label>
+              <Input
+                id="password"
+                type="text"
+                value={formData.password ?? ''}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, password: e.target.value }))
+                }
+                placeholder="Password for source code archive"
               />
             </div>
 

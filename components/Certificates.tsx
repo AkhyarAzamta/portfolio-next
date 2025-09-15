@@ -64,7 +64,7 @@ export default function Certificates() {
                   fill
                   className="object-cover rounded-md"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-50">
                   <Eye className="h-8 w-8 text-white" />
                 </div>
               </div>

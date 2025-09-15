@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { verifyToken } from '@/lib/jwt'
-import type { Project as ProjectType } from '@/types'
 
 export async function GET(request: Request) {
   try {
@@ -16,7 +15,7 @@ export async function GET(request: Request) {
 
     const prismaProjects = await prisma.project.findMany({ orderBy: { createdAt: 'desc' } })
 
-    const projects: ProjectType[] = prismaProjects.map((p) => ({
+    const projects = prismaProjects.map((p) => ({
       id: p.id,
       title: p.title,
       description: p.description,
@@ -26,6 +25,9 @@ export async function GET(request: Request) {
       image: p.image,
       archived: p.archived,
       price: p.price ?? null,
+      githubLink: p.githubLink ?? null,
+      env: p.env ?? null,
+      password: p.password ?? null,
       createdAt: p.createdAt.toISOString(),
       updatedAt: p.updatedAt.toISOString()
     }))
@@ -47,7 +49,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // Parse body safely (unknown -> Record)
     const raw = (await request.json()) as unknown
     const body = (raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {})
 
@@ -60,10 +61,8 @@ export async function POST(request: Request) {
     let technologies: string[] = []
 
     if (Array.isArray(techRaw)) {
-      // convert everything to string and trim
       technologies = techRaw.map((item) => String(item).trim()).filter(Boolean)
     } else if (typeof techRaw === 'string') {
-      // explicit typing for s to avoid implicit any
       technologies = techRaw.split(',').map((s: string) => s.trim()).filter(Boolean)
     }
 
@@ -74,6 +73,9 @@ export async function POST(request: Request) {
     const image = typeof body.image === 'string' ? body.image : ''
     const sourceCode = typeof body.sourceCode === 'string' ? body.sourceCode : null
     const demoLink = typeof body.demoLink === 'string' ? body.demoLink : null
+    const githubLink = typeof body.githubLink === 'string' ? body.githubLink : null
+    const env = typeof body.env === 'string' ? body.env : null
+    const password = typeof body.password === 'string' ? body.password : null
 
     // price might be number or numeric string
     let price: number | null = null
@@ -95,11 +97,14 @@ export async function POST(request: Request) {
         demoLink,
         image,
         price,
-        archived
+        archived,
+        githubLink,
+        env,
+        password
       }
     })
 
-    const project: ProjectType = {
+    const project = {
       id: created.id,
       title: created.title,
       description: created.description,
@@ -109,6 +114,9 @@ export async function POST(request: Request) {
       image: created.image,
       archived: created.archived,
       price: created.price ?? null,
+      githubLink: created.githubLink ?? null,
+      env: created.env ?? null,
+      password: created.password ?? null,
       createdAt: created.createdAt.toISOString(),
       updatedAt: created.updatedAt.toISOString()
     }

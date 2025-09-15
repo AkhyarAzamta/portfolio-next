@@ -2,23 +2,14 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { verifyToken } from '@/lib/jwt'
-import { Project } from '@/types/index'
 
 // Next.js 15: params berupa Promise<{ id: string }>
 type Context = { params: Promise<{ id: string }> }
 
-function parseId(idStr: unknown): number | null {
-  const n = Number(idStr)
-  return Number.isInteger(n) && n > 0 ? n : null
-}
-
 export async function GET(request: Request, ctx: Context) {
   try {
     const params = await ctx.params
-    const id = parseId(params.id)
-    if (!id) {
-      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
-    }
+    const id = params.id
 
     const token = request.headers.get('authorization')?.replace('Bearer ', '')
     if (!token) {
@@ -38,12 +29,15 @@ export async function GET(request: Request, ctx: Context) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
-    const project: Project = {
+    const project = {
       ...prismaProject,
       technologies: prismaProject.technologies ?? [],
       sourceCode: prismaProject.sourceCode ?? null,
       demoLink: prismaProject.demoLink ?? null,
       price: prismaProject.price ?? null,
+      githubLink: prismaProject.githubLink ?? null,
+      env: prismaProject.env ?? null,
+      password: prismaProject.password ?? null,
       createdAt: prismaProject.createdAt.toISOString(),
       updatedAt: prismaProject.updatedAt.toISOString()
     }
@@ -58,10 +52,7 @@ export async function GET(request: Request, ctx: Context) {
 export async function PUT(request: Request, ctx: Context) {
   try {
     const params = await ctx.params
-    const id = parseId(params.id)
-    if (!id) {
-      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
-    }
+    const id = params.id
 
     const token = request.headers.get('authorization')?.replace('Bearer ', '')
     if (!token) {
@@ -92,6 +83,9 @@ export async function PUT(request: Request, ctx: Context) {
     const image = typeof body.image === 'string' ? body.image : undefined
     const sourceCode = typeof body.sourceCode === 'string' ? body.sourceCode : null
     const demoLink = typeof body.demoLink === 'string' ? body.demoLink : null
+    const githubLink = typeof body.githubLink === 'string' ? body.githubLink : null
+    const env = typeof body.env === 'string' ? body.env : null
+    const password = typeof body.password === 'string' ? body.password : null
 
     // price might be number or numeric string
     let price: number | null | undefined = undefined
@@ -115,16 +109,22 @@ export async function PUT(request: Request, ctx: Context) {
         demoLink,
         image,
         price,
-        archived
+        archived,
+        githubLink,
+        env,
+        password
       }
     })
 
-    const updatedProject: Project = {
+    const updatedProject = {
       ...updatedPrismaProject,
       technologies: updatedPrismaProject.technologies ?? [],
       sourceCode: updatedPrismaProject.sourceCode ?? null,
       demoLink: updatedPrismaProject.demoLink ?? null,
       price: updatedPrismaProject.price ?? null,
+      githubLink: updatedPrismaProject.githubLink ?? null,
+      env: updatedPrismaProject.env ?? null,
+      password: updatedPrismaProject.password ?? null,
       createdAt: updatedPrismaProject.createdAt.toISOString(),
       updatedAt: updatedPrismaProject.updatedAt.toISOString()
     }
@@ -139,10 +139,7 @@ export async function PUT(request: Request, ctx: Context) {
 export async function DELETE(request: Request, ctx: Context) {
   try {
     const params = await ctx.params
-    const id = parseId(params.id)
-    if (!id) {
-      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
-    }
+    const id = params.id
 
     const token = request.headers.get('authorization')?.replace('Bearer ', '')
     if (!token) {

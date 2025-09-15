@@ -81,17 +81,20 @@ export interface Blog {
 
 /* --------------------- Project --------------------- */
 export interface Project {
-  id: number
-  title: string
-  description: string
-  technologies: string[]           // String[] di Prisma
-  sourceCode?: string | null      // sourceCode nullable
-  demoLink?: string | null
-  image: string
-  archived: boolean
-  price?: number | null
-  createdAt: string
-  updatedAt: string
+  id: string; // Changed from number to string
+  title: string;
+  description: string;
+  technologies: string[];
+  sourceCode: string | null;
+  demoLink: string | null;
+  image: string;
+  archived: boolean;
+  price: number | null;
+  githubLink: string | null; // New field
+  env: string | null; // New field
+  password: string | null; // New field
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ProjectsProps {

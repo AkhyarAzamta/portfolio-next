@@ -13,24 +13,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Loading } from '@/components/ui/loading'
 import { FileUpload } from '@/components/FileUpload'
 import { parsePrice, formatPriceRealTime } from '@/utils/currency'
-import type { Project as ProjectType } from '@/types'
 
-// extend ProjectType supaya ada id
-interface Project extends ProjectType {
-  id: number
+interface Project {
+  id: string // Changed from number to string
+  title: string
+  description: string
+  technologies: string[]
+  sourceCode: string | null
+  demoLink: string | null
+  image: string
+  archived: boolean
+  price: number | null
+  githubLink: string | null // New field
+  env: string | null // New field
+  password: string | null // New field
+  createdAt: string
+  updatedAt: string
 }
 
 export default function EditProjectPage() {
   const [formData, setFormData] = useState<Project>({
-    id: 0,
+    id: '',
     title: '',
     description: '',
     technologies: [],
-    sourceCode: '',
-    demoLink: '',
+    sourceCode: null,
+    demoLink: null,
     image: '',
     archived: false,
     price: null,
+    githubLink: null,
+    env: null,
+    password: null,
     createdAt: '',
     updatedAt: '',
   })
@@ -240,6 +254,48 @@ export default function EditProjectPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, demoLink: e.target.value })
                 }
+              />
+            </div>
+
+            {/* GitHub Link */}
+            <div className="space-y-2">
+              <Label htmlFor="githubLink">GitHub Link (Admin Only)</Label>
+              <Input
+                id="githubLink"
+                type="url"
+                value={formData.githubLink || ''}
+                onChange={(e) =>
+                  setFormData({ ...formData, githubLink: e.target.value })
+                }
+                placeholder="https://github.com/username/repo"
+              />
+            </div>
+
+            {/* Environment Variables */}
+            <div className="space-y-2">
+              <Label htmlFor="env">Environment Variables (Admin Only)</Label>
+              <Textarea
+                id="env"
+                value={formData.env || ''}
+                onChange={(e) =>
+                  setFormData({ ...formData, env: e.target.value })
+                }
+                rows={3}
+                placeholder="API_KEY=your_api_key_here"
+              />
+            </div>
+
+            {/* Password */}
+            <div className="space-y-2">
+              <Label htmlFor="password">Source Code Password (Admin Only)</Label>
+              <Input
+                id="password"
+                type="text"
+                value={formData.password || ''}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                placeholder="Password for source code archive"
               />
             </div>
 

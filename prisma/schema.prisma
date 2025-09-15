@@ -48,7 +48,7 @@ model Blog {
 }
 
 model Project {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(cuid()) // Using cuid() instead of autoincrement()
   title        String
   description  String
   technologies String[]
@@ -57,6 +57,9 @@ model Project {
   image        String
   archived     Boolean  @default(false)
   price        Float?
+  githubLink   String?  
+  env          String?  
+  password     String?  
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
