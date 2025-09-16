@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FaCode, FaLaptopCode, FaGraduationCap } from 'react-icons/fa'
+import { FaCode, FaLaptopCode, FaTools } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import {
   fadeInUp,
@@ -104,7 +104,7 @@ export default function About() {
     switch (iconName) {
       case 'FaCode': return <FaCode className="h-8 w-8 text-primary mb-4" />
       case 'FaLaptopCode': return <FaLaptopCode className="h-8 w-8 text-primary mb-4" />
-      case 'FaGraduationCap': return <FaGraduationCap className="h-8 w-8 text-primary mb-4" />
+      case 'FaTools': return <FaTools className="h-8 w-8 text-primary mb-4" />
       default: return <FaCode className="h-8 w-8 text-primary mb-4" />
     }
   }

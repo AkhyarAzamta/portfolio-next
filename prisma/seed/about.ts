@@ -46,7 +46,7 @@ export async function seedSkills() {
   const toolsCategory = await prisma.skillCategory.create({
     data: {
       name: "Tools & Others",
-      icon: "FaGraduationCap",
+      icon: "FaTools",
       description: "Development tools and other technologies"
     }
   })
@@ -54,23 +54,31 @@ export async function seedSkills() {
   // Tambah skills untuk setiap kategori
   const frontendSkills = [
     { name: "React / Next.js", logo: "/logos/react.png", categoryId: frontendCategory.id },
-    { name: "TypeScript", logo: "/logos/typescript.png", categoryId: frontendCategory.id },
+    { name: "Webpack", logo: "/logos/webpack.png", categoryId: frontendCategory.id },
     { name: "Tailwind CSS", logo: "/logos/tailwind.png", categoryId: frontendCategory.id },
-    { name: "HTML5 / CSS3", logo: "/logos/html-css.png", categoryId: frontendCategory.id },
+    { name: "HTML5", logo: "/logos/html.png", categoryId: frontendCategory.id },
   ]
-
+  
   const backendSkills = [
     { name: "Node.js", logo: "/logos/nodejs.png", categoryId: backendCategory.id },
+    { name: "Laravel", logo: "/logos/laravel.png", categoryId: backendCategory.id },
     { name: "Express", logo: "/logos/express.png", categoryId: backendCategory.id },
     { name: "PostgreSQL", logo: "/logos/postgresql.png", categoryId: backendCategory.id },
-    { name: "MongoDB", logo: "/logos/mongodb.png", categoryId: backendCategory.id },
+    { name: "MySQL", logo: "/logos/mysql.png", categoryId: backendCategory.id },
+  ]
+
+  const languagesSkills = [
+    { name: "JavaScript", logo: "/logos/javascript.png", categoryId: frontendCategory.id },
+    { name: "TypeScript", logo: "/logos/typescript.png", categoryId: frontendCategory.id },
+    { name: "C++", logo: "/logos/cpp.png", categoryId: backendCategory.id },
+    { name: "PHP", logo: "/logos/php.png", categoryId: backendCategory.id },
   ]
 
   const toolsSkills = [
     { name: "Git / GitHub", logo: "/logos/github.png", categoryId: toolsCategory.id },
-    { name: "Docker", logo: "/logos/docker.png", categoryId: toolsCategory.id },
-    { name: "AWS", logo: "/logos/aws.png", categoryId: toolsCategory.id },
-    { name: "CI/CD", logo: "/logos/cicd.png", categoryId: toolsCategory.id },
+    { name: "IoT", logo: "/logos/iot.png", categoryId: toolsCategory.id },
+    { name: "Postman", logo: "/logos/postman.png", categoryId: toolsCategory.id },
+    { name: "WebSocket", logo: "/logos/websocket.png", categoryId: toolsCategory.id },
   ]
 
   await prisma.skill.createMany({
