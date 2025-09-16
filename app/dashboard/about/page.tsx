@@ -7,6 +7,7 @@ import SkillsManager from '@/components/SkillsManager'
 import ExperienceManager from '@/components/ExperienceManager'
 import EducationManager from '@/components/EducationManager'
 import CertificateManager from '@/components/CertificateManager'
+import LanguageSkillsManager from '@/components/LanguageManager'
 
 export default function AboutDashboard() {
   return (
@@ -17,6 +18,7 @@ export default function AboutDashboard() {
         <TabsList>
           <TabsTrigger value="about">About Bio</TabsTrigger>
           <TabsTrigger value="skills">Skills</TabsTrigger>
+          <TabsTrigger value="language-skills">Language Skills</TabsTrigger>
           <TabsTrigger value="experience">Experience</TabsTrigger>
           <TabsTrigger value="education">Education</TabsTrigger>
           <TabsTrigger value="certificates">Certificates</TabsTrigger>
@@ -28,6 +30,10 @@ export default function AboutDashboard() {
         
         <TabsContent value="skills">
           <SkillsManager />
+        </TabsContent>
+        
+        <TabsContent value="language-skills">
+          <LanguageSkillsManager />
         </TabsContent>
         
         <TabsContent value="experience">

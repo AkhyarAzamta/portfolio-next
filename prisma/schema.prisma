@@ -159,3 +159,15 @@ model Certificate {
 
   @@map("certificates")
 }
+
+model LanguageSkill {
+  id          Int      @id @default(autoincrement())
+  name        String
+  level       Int      // 1-100 percentage
+  category    String?  // e.g., "Programming", "Spoken", "Written"
+  logo        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("language_skills")
+}

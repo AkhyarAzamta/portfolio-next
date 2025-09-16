@@ -12,6 +12,7 @@ export async function seedAbout() {
   await prisma.skillCategory.deleteMany()
   await prisma.experience.deleteMany()
   await prisma.education.deleteMany()
+  await prisma.languageSkill.deleteMany() 
 
   // Tambah data about
   await prisma.about.create({
@@ -28,27 +29,19 @@ export async function seedSkills() {
 
   // Tambah kategori skill
   const frontendCategory = await prisma.skillCategory.create({
-    data: {
-      name: "Frontend",
-      icon: "FaCode",
-      description: "Frontend development technologies"
-    }
+    data: { name: "Frontend", icon: "FaCode", description: "Frontend development technologies" }
   })
 
   const backendCategory = await prisma.skillCategory.create({
-    data: {
-      name: "Backend",
-      icon: "FaLaptopCode",
-      description: "Backend development technologies"
-    }
+    data: { name: "Backend", icon: "FaLaptopCode", description: "Backend development technologies" }
+  })
+
+  const languagesCategory = await prisma.skillCategory.create({
+    data: { name: "Programming Languages", icon: "FaLanguage", description: "Programming languages I use" }
   })
 
   const toolsCategory = await prisma.skillCategory.create({
-    data: {
-      name: "Tools & Others",
-      icon: "FaTools",
-      description: "Development tools and other technologies"
-    }
+    data: { name: "Tools & Others", icon: "FaTools", description: "Development tools and other technologies" }
   })
 
   // Tambah skills untuk setiap kategori
@@ -58,7 +51,7 @@ export async function seedSkills() {
     { name: "Tailwind CSS", logo: "/logos/tailwind.png", categoryId: frontendCategory.id },
     { name: "HTML5", logo: "/logos/html.png", categoryId: frontendCategory.id },
   ]
-  
+
   const backendSkills = [
     { name: "Node.js", logo: "/logos/nodejs.png", categoryId: backendCategory.id },
     { name: "Laravel", logo: "/logos/laravel.png", categoryId: backendCategory.id },
@@ -68,21 +61,22 @@ export async function seedSkills() {
   ]
 
   const languagesSkills = [
-    { name: "JavaScript", logo: "/logos/javascript.png", categoryId: frontendCategory.id },
-    { name: "TypeScript", logo: "/logos/typescript.png", categoryId: frontendCategory.id },
-    { name: "C++", logo: "/logos/cpp.png", categoryId: backendCategory.id },
-    { name: "PHP", logo: "/logos/php.png", categoryId: backendCategory.id },
+    { name: "JavaScript", logo: "/logos/javascript.png", categoryId: languagesCategory.id },
+    { name: "TypeScript", logo: "/logos/typescript.png", categoryId: languagesCategory.id },
+    { name: "C++", logo: "/logos/cpp.png", categoryId: languagesCategory.id },
+    { name: "PHP", logo: "/logos/php.png", categoryId: languagesCategory.id },
   ]
 
   const toolsSkills = [
     { name: "Git / GitHub", logo: "/logos/github.png", categoryId: toolsCategory.id },
     { name: "IoT", logo: "/logos/iot.png", categoryId: toolsCategory.id },
+    { name: "MQTT", logo: "/logos/mqtt.png", categoryId: toolsCategory.id },
     { name: "Postman", logo: "/logos/postman.png", categoryId: toolsCategory.id },
     { name: "WebSocket", logo: "/logos/websocket.png", categoryId: toolsCategory.id },
   ]
 
   await prisma.skill.createMany({
-    data: [...frontendSkills, ...backendSkills, ...toolsSkills]
+    data: [...frontendSkills, ...backendSkills, ...languagesSkills, ...toolsSkills]
   })
 
   console.log('✅ Skills seeding finished.')
@@ -134,4 +128,13 @@ export async function seedEducation() {
   })
 
   console.log('✅ Education seeding finished.')
+}
+
+// Update the main seed function to include language skills
+export async function seedAll() {
+  await seedAbout()
+  await seedSkills()
+  await seedExperience()
+  await seedEducation()
+  console.log('✅ All seeding finished!')
 }
