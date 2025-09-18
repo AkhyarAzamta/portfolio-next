@@ -17,8 +17,10 @@ export default function Blogs({ limit, title, showViewAll = false }: BlogsProps)
   if (loading) return <Loading size={150} blur="sm" />
   if (error) return <div>Error: {error}</div>
 
-  // Apply limit if provided
-  const displayedBlogs = limit ? blogs.slice(0, limit) : blogs
+  // Apply limit if provided and filter only published blogs
+  const displayedBlogs = (limit ? blogs.slice(0, limit) : blogs).filter((blog: { published: boolean }) =>
+    blog.published,
+  )
 
   return (
     <BlogList 

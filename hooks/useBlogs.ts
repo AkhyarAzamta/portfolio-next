@@ -1,36 +1,29 @@
 // hooks/useBlogs.ts
-import { useState, useEffect } from 'react'
+import useSWR from 'swr'
 
 export interface Blog {
-  id: number;
-  title: string;
-  excerpt: string;
-  date: string;
-  readTime: string;
-  slug: string;
+  id: number
+  title: string
+  excerpt: string
+  content: string | null
+  slug: string
+  published: boolean
+  createdAt: string
+  updatedAt: string
+  author: {
+    name: string
+    avatar: string | null
+  }
 }
 
-export const useBlogs = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+const fetcher = (url: string) => fetch(url).then(res => res.json())
 
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const response = await fetch('/api/blogs')
-        if (!response.ok) throw new Error('Failed to fetch blogs')
-        const data = await response.json()
-        setBlogs(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred')
-      } finally {
-        setLoading(false)
-      }
-    }
+export function useBlogs() {
+  const { data, error } = useSWR<Blog[]>('/api/blogs', fetcher)
 
-    fetchBlogs()
-  }, [])
-
-  return { blogs, loading, error }
+  return {
+    blogs: data || [],
+    loading: !error && !data,
+    error: error
+  }
 }

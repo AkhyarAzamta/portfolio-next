@@ -26,36 +26,44 @@ export default function BlogList({ blogs, title = "Latest Blog Posts", showViewA
           {title}
         </motion.h2>
 
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-        >
-          {blogs.map((blog, index) => (
-            <BlogCard key={blog.id} blog={blog} index={index} />
-          ))}
-        </motion.div>
-
-        {showViewAll && (
-          <motion.div 
-            className="text-center mt-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+        {blogs.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500">No blog posts available yet.</p>
+          </div>
+        ) : (
+          <>
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
             >
-              <Link
-                href="/blogs"
-                className="inline-block bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                View All Posts
-              </Link>
+              {blogs.map((blog, index) => (
+                <BlogCard key={blog.id} blog={blog} index={index} />
+              ))}
             </motion.div>
-          </motion.div>
+
+            {showViewAll && (
+              <motion.div 
+                className="text-center mt-12"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link
+                    href="/blogs"
+                    className="inline-block bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+                  >
+                    View All Posts
+                  </Link>
+                </motion.div>
+              </motion.div>
+            )}
+          </>
         )}
       </div>
     </section>
