@@ -35,6 +35,7 @@
     "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
+    "gsap": "^3.13.0",
     "jose": "^6.1.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.544.0",

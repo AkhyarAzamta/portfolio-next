@@ -1,6 +1,4 @@
 // scripts/seed-about.ts
-import { PrismaClient } from '@prisma/client'
-
 import prisma from '@/lib/prisma'
 
 export async function seedAbout() {
@@ -69,7 +67,7 @@ export async function seedSkills() {
 
   const toolsSkills = [
     { name: "Git / GitHub", logo: "/logos/github.png", categoryId: toolsCategory.id },
-    { name: "IoT", logo: "/logos/iot.png", categoryId: toolsCategory.id },
+    { name: "Internet of Things (IoT)", logo: "/logos/iot.png", categoryId: toolsCategory.id },
     { name: "MQTT", logo: "/logos/mqtt.png", categoryId: toolsCategory.id },
     { name: "Postman", logo: "/logos/postman.png", categoryId: toolsCategory.id },
     { name: "WebSocket", logo: "/logos/websocket.png", categoryId: toolsCategory.id },

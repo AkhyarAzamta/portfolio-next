@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { FaCalendarAlt, FaClock, FaEye } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { fadeInUp, cardHoverSmall } from '@/utils/animations'
-import { Blog } from '@/hooks/useBlogs'
+import { Blog } from '@/types'
 import Image from 'next/image'
 
 interface BlogCardProps {
@@ -23,16 +23,16 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
     return `${minutes} min read`
   }
 
-  const readTime = calculateReadTime(blog.content)
+  const readTime = calculateReadTime(blog.content || null)
 
   return (
     <motion.article
       className="bg-white dark:bg-dark/50 rounded-lg shadow-md p-6 h-full flex flex-col"
       variants={fadeInUp}
-      whileHover={cardHoverSmall.whileHover}
       initial="initial"
       animate="animate"
       transition={{ delay: index * 0.1 }}
+      whileHover={cardHoverSmall.whileHover}
     >
       <Link href={`/blogs/${blog.slug}`} className="flex flex-col flex-grow">
         <motion.h3 
@@ -69,7 +69,7 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
       
       <div className="mt-auto">
         <div className="flex items-center mb-3">
-          {blog.author.avatar && (
+          {blog.author?.avatar && (
             <div className="relative w-6 h-6 mr-2">
               <Image
                 src={blog.author.avatar}
@@ -79,7 +79,7 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
               />
             </div>
           )}
-          <span className="text-sm text-gray-500">{blog.author.name}</span>
+          <span className="text-sm text-gray-500">{blog.author?.name}</span>
         </div>
         
         <motion.div 

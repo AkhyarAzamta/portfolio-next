@@ -1,49 +1,45 @@
 // components/Hero.tsx
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa'
-import { motion } from 'framer-motion'
-import { fadeInUp, fadeIn, scaleIn } from '@/utils/animations'
-import { Loading } from './ui/loading'
+import { gsap } from 'gsap'
+import { User } from '@/types'
 
-interface User {
-  id: number
-  name: string
-  email: string
-  avatar: string
-  role: string
-  title?: string
-  bio?: string
-  socialLinks?: {
-    github?: string
-    linkedin?: string
-    instagram?: string
-  }
+interface HeroProps {
+  initialAdminUser?: User | null
 }
 
-export default function Hero() {
-  const [adminUser, setAdminUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+export default function Hero({ initialAdminUser = null }: HeroProps) {
+  const [adminUser, setAdminUser] = useState<User | null>(initialAdminUser)
+  const [loading, setLoading] = useState(!initialAdminUser)
+  const heroRef = useRef<HTMLDivElement>(null)
+  const imageRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
+  const nameRef = useRef<HTMLSpanElement>(null)
+  const subtitleRef = useRef<HTMLParagraphElement>(null)
+  const socialRef = useRef<HTMLDivElement>(null)
+  const buttonsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const fetchAdminUser = async () => {
+      if (initialAdminUser) {
+        setLoading(false)
+        return
+      }
+
       try {
-        // Fetch semua users
         const response = await fetch('/api/users')
         if (!response.ok) throw new Error('Failed to fetch users')
         const users = await response.json()
         
-        // Cari user dengan role ADMIN
         const admin = users.find((user: User) => user.role === 'ADMIN')
         
         if (admin) {
           setAdminUser(admin)
         } else {
-          console.error('No admin user found')
-          // Fallback ke data default jika tidak ada admin
           setAdminUser({
             id: 1,
             name: 'Akhyar Azamta',
@@ -60,7 +56,6 @@ export default function Hero() {
         }
       } catch (error) {
         console.error('Error fetching admin user:', error)
-        // Fallback ke data default jika terjadi error
         setAdminUser({
           id: 1,
           name: 'Akhyar Azamta',
@@ -80,115 +75,172 @@ export default function Hero() {
     }
 
     fetchAdminUser()
-  }, [])
+  }, [initialAdminUser])
 
-  if (loading) {
-    return <Loading size={150} blur="sm" />
-  }
+  useEffect(() => {
+    if (loading || !heroRef.current) return
+
+    const ctx = gsap.context(() => {
+      // Create a timeline for the hero animations
+      const tl = gsap.timeline()
+
+      // Background animation
+      const bgElements = gsap.utils.toArray<HTMLElement>('.hero-bg-element')
+      tl.fromTo(bgElements,
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 1.5, stagger: 0.2, ease: "power2.out" }
+      )
+
+      // Profile image animation
+      if (imageRef.current) {
+        tl.fromTo(imageRef.current,
+          { opacity: 0, scale: 0.5, rotation: -10 },
+          { opacity: 1, scale: 1, rotation: 0, duration: 1, ease: "back.out(1.7)" },
+          "-=1"
+        )
+      }
+
+      // Title animation
+      if (titleRef.current) {
+        tl.fromTo(titleRef.current,
+          { opacity: 0, y: 50 },
+          { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+          "-=0.5"
+        )
+      }
+
+      // Name highlight animation
+      if (nameRef.current) {
+        tl.fromTo(nameRef.current,
+          { opacity: 0, scale: 1.5 },
+          { opacity: 1, scale: 1, duration: 0.8, ease: "power2.out" },
+          "-=0.5"
+        )
+      }
+
+      // Subtitle animation
+      if (subtitleRef.current) {
+        tl.fromTo(subtitleRef.current,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+          "-=0.5"
+        )
+      }
+
+      // Social icons animation
+      if (socialRef.current) {
+        const socialIcons = gsap.utils.toArray<HTMLElement>(socialRef.current.children)
+        tl.fromTo(socialIcons,
+          { opacity: 0, y: 20, scale: 0.8 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ease: "back.out(1.7)" },
+          "-=0.5"
+        )
+      }
+
+      // Buttons animation
+      if (buttonsRef.current) {
+        const buttons = gsap.utils.toArray<HTMLElement>(buttonsRef.current.children)
+        tl.fromTo(buttons,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: "power2.out" },
+          "-=0.5"
+        )
+      }
+
+    }, heroRef)
+
+    return () => ctx.revert()
+  }, [loading])
 
   return (
-    <section className="py-10">
-      <div className="container max-w-7xl mx-auto px-4">
+    <section className="py-10 relative overflow-hidden" ref={heroRef}>
+      {/* Animated background elements */}
+      <div className="absolute inset-0 z-0">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="hero-bg-element absolute rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+            style={{
+              width: Math.random() * 100 + 50,
+              height: Math.random() * 100 + 50,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+          />
+        ))}
+      </div>
+      
+      <div className="container max-w-7xl mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
-          <motion.div 
-            className='flex justify-center items-center mb-4'
-            {...scaleIn}
-            transition={{ delay: 0.2 }}
-          >
-            <Image 
-              src={adminUser?.avatar || "/profile.jpg"} 
-              alt="Profile" 
-              width={400} 
-              height={400} 
-              className="rounded-full mb-4 w-48 h-48 object-cover ring-2 ring-primary" 
-            />
-          </motion.div>
-          <motion.h1 
-            className="text-4xl md:text-6xl font-bold mb-6"
-            {...fadeInUp}
-            transition={{ delay: 0.3 }}
-          >
-            Hi, I&apos;m <motion.span 
-              className="text-primary"
-              {...fadeIn}
-              transition={{ delay: 0.8 }}
+          <div ref={imageRef} className='flex justify-center items-center mb-4 opacity-0'>
+            <div className="rounded-full mb-4 w-48 h-48 overflow-hidden ring-4 ring-primary/20 shadow-xl">
+              <Image 
+                src={adminUser?.avatar || "/profile.jpg"} 
+                alt="Profile" 
+                width={400} 
+                height={400} 
+                className="w-full h-full object-cover" 
+                priority
+              />
+            </div>
+          </div>
+          
+          <h1 ref={titleRef} className="text-4xl md:text-6xl font-bold mb-6 opacity-0">
+            Hi, I&apos;m <span 
+              ref={nameRef}
+              className="text-primary bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 opacity-0"
             >
               {adminUser?.name || "Akhyar Azamta"}
-            </motion.span>
-          </motion.h1>
-          <motion.p 
-            className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8"
-            {...fadeInUp}
-            transition={{ delay: 0.4 }}
-          >
+            </span>
+          </h1>
+          
+          <p ref={subtitleRef} className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 opacity-0">
             {adminUser?.title || "Frontend Developer | Backend Developer | IoT Engineer"}
-          </motion.p>
-          <motion.div 
-            className="flex justify-center space-x-4 mb-8"
-            {...fadeInUp}
-            transition={{ delay: 0.5 }}
-          >
-            <motion.a
+          </p>
+          
+          <div ref={socialRef} className="flex justify-center space-x-4 mb-8">
+            <a
               href={adminUser?.socialLinks?.github || "https://github.com/akhyarazamta"}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors"
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
+              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg opacity-0"
             >
               <FaGithub />
-            </motion.a>
-            <motion.a
+            </a>
+            <a
               href={adminUser?.socialLinks?.linkedin || "https://linkedin.com/in/akhyarazamta"}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors"
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
+              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg opacity-0"
             >
               <FaLinkedin />
-            </motion.a>
-            <motion.a
+            </a>
+            <a
               href={adminUser?.socialLinks?.instagram || "https://instagram.com/akhyarazamta"}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors"
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
+              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg opacity-0"
             >
               <FaInstagram />
-            </motion.a>
-          </motion.div>
-          <motion.div 
-            className="flex flex-col md:flex-row justify-center gap-4"
-            {...fadeInUp}
-            transition={{ delay: 0.6 }}
-          >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            </a>
+          </div>
+          
+          <div ref={buttonsRef} className="flex flex-col md:flex-row justify-center gap-4">
+            <Link
+              href="/projects"
+              className="bg-gradient-to-r from-blue-500 to-purple-500 inline-block w-full md:w-auto text-white px-8 py-3 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all shadow-lg hover:shadow-xl opacity-0"
             >
-              <Link
-                href="/projects"
-                className="bg-primary inline-block w-full md:w-auto text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                View Projects
-              </Link>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              View Projects
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-block w-full bg-gray-100 dark:bg-gray-800 md:w-auto text-gray-800 dark:text-white px-8 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl opacity-0"
             >
-              <Link
-                href="/contact"
-                className=" inline-block w-full bg-gray-500  md:w-auto text-gray-800 dark:text-white px-8 py-3 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-              >
-                Contact Me
-              </Link>
-            </motion.div>
-          </motion.div>
+              Contact Me
+            </Link>
+          </div>
         </div>
       </div>
     </section>
-  );
+  )
 }

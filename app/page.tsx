@@ -1,14 +1,34 @@
 import Blogs from "@/app/blogs/components/Blogs";
 import Hero from "@/components/Hero";
 import Newsletter from "@/components/Newsletter";
-import Projects from "@/app/projects/components/Projects";
+import Projects from "@/app/projects/page";
 import About from "./about/page";
+import { User as AdminUser } from '@/types'
 
+async function getAdminUser(): Promise<AdminUser | null> {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users?role=ADMIN`, {
+      next: { revalidate: 3600 } // ISR: regenerate setiap 1 jam
+    })
+    
+    if (!res.ok) {
+      throw new Error('Failed to fetch users')
+    }
+    
+    const users: AdminUser[] = await res.json()
+    return users.find((user: AdminUser) => user.role === 'ADMIN') || null
+  } catch (error) {
+    console.error('Error fetching admin user:', error)
+    return null
+  }
+}
 
-export default function Home() {
+export default async function Home() {
+  const adminUser = await getAdminUser()
+  
   return (
     <main>
-      <Hero />
+      <Hero initialAdminUser={adminUser} />
       <About />
       <Projects 
         limit={3} 
@@ -20,4 +40,4 @@ export default function Home() {
       <Newsletter />
     </main>
   );
-} 
+}

@@ -1,22 +1,6 @@
 // hooks/useBlogs.ts
 import useSWR from 'swr'
-
-export interface Blog {
-  id: number
-  title: string
-  excerpt: string
-  content: string | null
-  slug: string
-  published: boolean
-  viewCount: number
-  tags: string[]
-  createdAt: string
-  updatedAt: string
-  author: {
-    name: string
-    avatar: string | null
-  }
-}
+import { Blog } from '@/types'
 
 const fetcher = (url: string) => fetch(url).then(res => res.json())
 

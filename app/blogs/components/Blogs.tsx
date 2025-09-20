@@ -3,7 +3,9 @@
 
 import { useBlogs } from '@/hooks/useBlogs'
 import BlogList from './BlogList'
-import { Loading } from '../../../components/ui/loading'
+import { Loading } from '@/components/ui/loading'
+import { motion } from 'framer-motion'
+import { fadeIn } from '@/utils/animations'
 
 interface BlogsProps {
   limit?: number
@@ -23,10 +25,16 @@ export default function Blogs({ limit, title, showViewAll = false }: BlogsProps)
   )
 
   return (
-    <BlogList 
-      blogs={displayedBlogs} 
-      title={title} 
-      showViewAll={showViewAll} 
-    />
+    <motion.section
+      className="py-20"
+      {...fadeIn}
+      transition={{ delay: 0.2 }}
+    >
+      <BlogList 
+        blogs={displayedBlogs} 
+        title={title} 
+        showViewAll={showViewAll} 
+      />
+    </motion.section>
   )
 }

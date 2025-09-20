@@ -8,18 +8,16 @@ export interface User {
   id: number
   name: string
   email: string
-  password: string
-  role: UserRole
-  avatar?: string | null
-  title?: string | null
-  bio?: string | null
-  githubUrl?: string | null
-  linkedinUrl?: string | null
-  instagramUrl?: string | null
-  // relations
-  blogs?: Blog[] // populated if included
-  createdAt: string
-  updatedAt: string
+  avatar: string
+  role: string
+  title?: string
+  bio?: string
+  blogs?: Blog[]
+  socialLinks?: {
+    github?: string
+    linkedin?: string
+    instagram?: string
+  }
 }
 
 export interface UserBasic {

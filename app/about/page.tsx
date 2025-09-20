@@ -1,225 +1,45 @@
-// components/About.tsx
-'use client'
+import { SkillCategory, Experience, Education, AboutData } from '@/types'
+import AboutClient from '@/components/AboutClient'
 
-import { useState, useEffect } from 'react'
-import { FaCode, FaLaptopCode, FaTools } from 'react-icons/fa'
-import { motion } from 'framer-motion'
-import {
-  fadeInUp,
-  fadeInDown,
-  fadeIn,
-  staggerContainer,
-  cardHover,
-  cardHoverSmall
-} from '@/utils/animations'
-import Image from 'next/image'
-import { Loading } from '@/components/ui/loading'
-import Certificates from '@/components/Certificates'
-import { SkillCategory, Experience, Education } from '@/types'
+async function getAboutData() {
+  try {
+    const [aboutRes, skillsRes, experienceRes, educationRes] = await Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/about`, { next: { revalidate: 3600 } }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/skills`, { next: { revalidate: 3600 } }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/experience`, { next: { revalidate: 3600 } }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/education`, { next: { revalidate: 3600 } })
+    ])
 
-interface AboutData {
-  id: number;
-  bio: string;
+    if (!aboutRes.ok || !skillsRes.ok || !experienceRes.ok || !educationRes.ok) {
+      throw new Error('Failed to fetch data')
+    }
+
+    const [aboutData, skillsData, experienceData, educationData] = await Promise.all([
+      aboutRes.json(),
+      skillsRes.json(),
+      experienceRes.json(),
+      educationRes.json()
+    ])
+
+    return {
+      about: aboutData,
+      skillCategories: skillsData,
+      experience: experienceData,
+      education: educationData
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    return {
+      about: null,
+      skillCategories: [],
+      experience: [],
+      education: []
+    }
+  }
 }
 
-export default function About() {
-  const [about, setAbout] = useState<AboutData | null>(null)
-  const [skillCategories, setSkillCategories] = useState<SkillCategory[]>([])
-  const [experience, setExperience] = useState<Experience[]>([])
-  const [education, setEducation] = useState<Education[]>([])
-  const [loading, setLoading] = useState(true)
+export default async function AboutPage() {
+  const data = await getAboutData()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [aboutRes, skillsRes, experienceRes, educationRes] = await Promise.all([
-          fetch('/api/about'),
-          fetch('/api/skills'),
-          fetch('/api/experience'),
-          fetch('/api/education')
-        ])
-
-        if (!aboutRes.ok || !skillsRes.ok || !experienceRes.ok || !educationRes.ok) {
-          throw new Error('Failed to fetch data')
-        }
-
-        const [aboutData, skillsData, experienceData, educationData] = await Promise.all([
-          aboutRes.json(),
-          skillsRes.json(),
-          experienceRes.json(),
-          educationRes.json()
-        ])
-
-        setAbout(aboutData)
-        setSkillCategories(skillsData)
-        setExperience(experienceData)
-        setEducation(educationData)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
-
-  if (loading) {
-    return (
-      <Loading size={150} blur="sm" />
-    )
-  }
-
-  // Fungsi untuk mendapatkan komponen icon berdasarkan nama
-  const getIconComponent = (iconName: string) => {
-    switch (iconName) {
-      case 'FaCode': return <FaCode className="h-8 w-8 text-primary mb-4" />
-      case 'FaLaptopCode': return <FaLaptopCode className="h-8 w-8 text-primary mb-4" />
-      case 'FaTools': return <FaTools className="h-8 w-8 text-primary mb-4" />
-      default: return <FaCode className="h-8 w-8 text-primary mb-4" />
-    }
-  }
-
-  return (
-    <div className="container max-w-7xl mx-auto py-12">
-      <motion.h1
-        className="text-4xl font-bold mb-8 text-center"
-        {...fadeInDown}
-      >
-        About Me
-      </motion.h1>
-
-      {/* Bio Section */}
-      <motion.section
-        className="mb-16"
-        {...fadeInUp}
-      >
-        <p className="text-lg text-secondary max-w-3xl mx-auto text-center">
-          {about?.bio}
-        </p>
-      </motion.section>
-
-      {/* Skills Section */}
-      <motion.section
-        className="mb-16"
-        {...fadeIn}
-        transition={{ delay: 0.2 }}
-      >
-        <motion.h2
-          className="section-title"
-          {...fadeInUp}
-        >
-          Skills
-        </motion.h2>
-        <motion.div
-          className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-        >
-          {skillCategories.map((category) => (
-            <motion.div
-              key={category.id}
-              className="bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md"
-              variants={fadeInUp}
-              whileHover={cardHover.whileHover}
-            >
-              {getIconComponent(category.icon)}
-              <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
-              {category.skills && (
-                <ul className="text-secondary space-y-2"> 
-                  {category.skills.map((skill) => (
-                    <li key={skill.id} className="flex items-center gap-2">
-                      <Image
-                        src={skill.logo}
-                        alt={skill.name}
-                        width={24}
-                        height={24}
-                        className="w-6 h-6 object-contain"
-                      />
-                      {skill.name}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.section>
-
-      {/* Experience Section */}
-      <motion.section
-        className="mb-16"
-        {...fadeIn}
-        transition={{ delay: 0.4 }}
-      >
-        <motion.h2
-          className="section-title"
-          {...fadeInUp}
-        >
-          Experience
-        </motion.h2>
-        <motion.div
-          className="max-w-3xl mx-auto space-y-8"
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-        >
-          {experience.map((exp) => (
-            <motion.div
-              key={exp.id}
-              className="bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md"
-              variants={fadeInUp}
-              whileHover={cardHoverSmall.whileHover}
-            >
-              <h3 className="text-xl font-semibold mb-2">{exp.title}</h3>
-              <p className="text-primary mb-2">{exp.company} • {exp.period}</p>
-              <ul className="text-secondary list-disc list-inside space-y-2">
-                {exp.description.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.section>
-
-      {/* Education Section */}
-      <motion.section
-        className="mb-16"
-        {...fadeIn}
-        transition={{ delay: 0.6 }}
-      >
-        <motion.h2
-          className="section-title"
-          {...fadeInUp}
-        >
-          Education
-        </motion.h2>
-        <motion.div
-          className="max-w-3xl mx-auto"
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-        >
-          {education.map((edu) => (
-            <motion.div
-              key={edu.id}
-              className="bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md"
-              variants={fadeInUp}
-              whileHover={cardHoverSmall.whileHover}
-            >
-              <h3 className="text-xl font-semibold mb-2">{edu.degree}</h3>
-              <p className="text-primary mb-2">{edu.institution} • {edu.period}</p>
-              {edu.description && (
-                <p className="text-secondary">{edu.description}</p>
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.section>
-      {/* Certificates Section */}
-      <Certificates />
-    </div>
-  )
+  return <AboutClient {...data} />
 }

@@ -8,6 +8,9 @@ export interface Blog {
   content?: string | null
   authorId: number
   // relation
+  viewCount: number
+  image?: string | null
+  tags?: string[] // optional
   author?: UserBasic // optionally populated
   slug: string
   published: boolean
