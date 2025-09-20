@@ -1,8 +1,6 @@
 // app/api/blogs/route.ts
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import prisma from '@/lib/prisma'
 
 // Function to calculate read time
 function calculateReadTime(content: string | null): string {
@@ -18,8 +16,8 @@ export async function GET() {
   try {
     const blogs = await prisma.blog.findMany({
       where: {
-        published: true, // Only fetch published blogs
-        archived: false // Exclude archived blogs
+        published: true,
+        archived: false
       },
       orderBy: {
         createdAt: 'desc'
@@ -37,8 +35,10 @@ export async function GET() {
     // Add virtual fields for frontend
     const blogsWithVirtualFields = blogs.map(blog => ({
       ...blog,
-      date: blog.createdAt, // Use createdAt as date
-      readTime: calculateReadTime(blog.content) // Calculate read time
+      date: blog.createdAt,
+      readTime: calculateReadTime(blog.content),
+      viewCount: blog.viewCount || 0,
+      tags: blog.tags || []
     }))
     
     return NextResponse.json(blogsWithVirtualFields)

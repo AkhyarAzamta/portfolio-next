@@ -41,6 +41,8 @@ model Blog {
   slug      String   @unique
   published Boolean  @default(false)
   archived  Boolean  @default(false)
+  viewCount Int      @default(0) // Added for view tracking
+  tags      String[] // Added for tags
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

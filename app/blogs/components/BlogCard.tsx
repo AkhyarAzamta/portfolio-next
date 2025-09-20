@@ -2,7 +2,7 @@
 'use client'
 
 import Link from 'next/link'
-import { FaCalendarAlt, FaClock, FaUser } from 'react-icons/fa'
+import { FaCalendarAlt, FaClock, FaEye } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { fadeInUp, cardHoverSmall } from '@/utils/animations'
 import { Blog } from '@/hooks/useBlogs'
@@ -53,6 +53,20 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
         {blog.excerpt}
       </motion.p>
       
+      {/* Tags */}
+      {blog.tags && blog.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-3">
+          {blog.tags.slice(0, 3).map(tag => (
+            <span key={tag} className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+              #{tag}
+            </span>
+          ))}
+          {blog.tags.length > 3 && (
+            <span className="text-xs text-gray-500">+{blog.tags.length - 3} more</span>
+          )}
+        </div>
+      )}
+      
       <div className="mt-auto">
         <div className="flex items-center mb-3">
           {blog.author.avatar && (
@@ -87,6 +101,13 @@ export default function BlogCard({ blog, index = 0 }: BlogCardProps) {
           >
             <FaClock className="mr-1" />
             {readTime}
+          </motion.span>
+          <motion.span 
+            className="flex items-center"
+            whileHover={{ scale: 1.05 }}
+          >
+            <FaEye className="mr-1" />
+            {blog.viewCount || 0}
           </motion.span>
         </motion.div>
       </div>

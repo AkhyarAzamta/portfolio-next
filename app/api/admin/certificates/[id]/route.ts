@@ -1,17 +1,18 @@
-// app/api/certificates/[id]/route.ts
+// app/api/admin/certificates/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
 // PUT - Update a certificate
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { name, issuer, issueDate, expiryDate, credentialURL, image } = await request.json()
     
     const certificate = await prisma.certificate.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id) },
       data: {
         name,
         issuer,
@@ -35,11 +36,12 @@ export async function PUT(
 // DELETE - Delete a certificate
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.certificate.delete({
-      where: { id: parseInt(params.id) }
+      where: { id: parseInt(id) }
     })
     
     return NextResponse.json({ message: 'Certificate deleted successfully' })

@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import BlogForm from '@/components/BlogForm'
+import BlogForm from '@/app/blogs/components/BlogForm'
 import { Loading } from '@/components/ui/loading'
 
 interface Blog {

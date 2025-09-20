@@ -1,17 +1,31 @@
 // app/api/admin/blogs/[id]/route.ts
-import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/jwt'
-import { slugify } from '@/utils/slugify'
 
-// GET - Fetch a single blog
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+import prisma from '@/lib/prisma'
+
+// Next.js 15: params is a Promise<{ id: string }>
+type Context = { params: Promise<{ id: string }> }
+
+function parseId(idStr: unknown): number | null {
+  const n = Number(idStr)
+  return Number.isInteger(n) && n > 0 ? n : null
+}
+
+export async function GET(request: Request, { params }: Context) {
   try {
+    // Await the params promise
+    const { id } = await params
+    const parsedId = parseId(id)
+    
+    if (!parsedId) {
+      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    }
+
     const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
     const decoded = await verifyToken(token)
     if (decoded?.role !== 'ADMIN') {
@@ -19,7 +33,7 @@ export async function GET(
     }
 
     const blog = await prisma.blog.findUnique({
-      where: { id: parseInt(params.id) },
+      where: { id: parsedId },
       include: {
         author: {
           select: {
@@ -32,10 +46,7 @@ export async function GET(
     })
 
     if (!blog) {
-      return NextResponse.json(
-        { error: 'Blog not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Blog not found' }, { status: 404 })
     }
 
     return NextResponse.json(blog)
@@ -48,14 +59,20 @@ export async function GET(
   }
 }
 
-// PUT - Update a blog
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, { params }: Context) {
   try {
+    // Await the params promise
+    const { id } = await params
+    const parsedId = parseId(id)
+    
+    if (!parsedId) {
+      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    }
+
     const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
     const decoded = await verifyToken(token)
     if (decoded?.role !== 'ADMIN') {
@@ -71,46 +88,12 @@ export async function PUT(
       )
     }
 
-    // Get the current blog to check if we need to update the slug
-    const currentBlog = await prisma.blog.findUnique({
-      where: { id: parseInt(params.id) }
-    })
-
-    if (!currentBlog) {
-      return NextResponse.json(
-        { error: 'Blog not found' },
-        { status: 404 }
-      )
-    }
-
-    let slug = currentBlog.slug
-    // If title changed, generate new slug
-    if (title !== currentBlog.title) {
-      slug = slugify(title)
-      
-      // Check if new slug already exists (excluding current blog)
-      const existingBlog = await prisma.blog.findFirst({
-        where: {
-          slug,
-          id: { not: parseInt(params.id) }
-        }
-      })
-
-      if (existingBlog) {
-        return NextResponse.json(
-          { error: 'A blog with this title already exists' },
-          { status: 400 }
-        )
-      }
-    }
-
     const blog = await prisma.blog.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parsedId },
       data: {
         title,
         excerpt,
         content,
-        slug,
         published,
         archived
       },
@@ -135,14 +118,20 @@ export async function PUT(
   }
 }
 
-// DELETE - Delete a blog
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, { params }: Context) {
   try {
+    // Await the params promise
+    const { id } = await params
+    const parsedId = parseId(id)
+    
+    if (!parsedId) {
+      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    }
+
     const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
     const decoded = await verifyToken(token)
     if (decoded?.role !== 'ADMIN') {
@@ -150,7 +139,7 @@ export async function DELETE(
     }
 
     await prisma.blog.delete({
-      where: { id: parseInt(params.id) }
+      where: { id: parsedId }
     })
 
     return NextResponse.json({ message: 'Blog deleted successfully' })

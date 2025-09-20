@@ -1,0 +1,56 @@
+import { UserBasic } from "./user"
+
+/* --------------------- Blog --------------------- */
+export interface Blog {
+  id: number
+  title: string
+  excerpt: string
+  content?: string | null
+  authorId: number
+  // relation
+  author?: UserBasic // optionally populated
+  slug: string
+  published: boolean
+  archived: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Blog create/update DTO
+export interface BlogBasic {
+  id: number
+  title: string
+  excerpt: string
+  slug: string
+  published: boolean
+  archived: boolean
+  createdAt: string
+  updatedAt: string
+  authorId: number
+}
+
+export interface BlogPost {
+  id: number
+  title: string
+  excerpt: string
+  content: string
+  slug: string
+  published: boolean
+  viewCount: number
+  tags: string[]
+  createdAt: string
+  updatedAt: string
+  author: {
+    name: string
+    avatar: string | null
+  }
+}
+
+export interface BlogUpdateInput {
+  title?: string
+  excerpt?: string
+  content?: string | null
+  slug?: string
+  published?: boolean
+  archived?: boolean
+}

@@ -15,40 +15,11 @@ import {
 import Image from 'next/image'
 import { Loading } from '@/components/ui/loading'
 import Certificates from '@/components/Certificates'
+import { SkillCategory, Experience, Education } from '@/types'
 
 interface AboutData {
   id: number;
   bio: string;
-}
-
-interface SkillCategory {
-  id: number;
-  name: string;
-  icon: string;
-  description?: string;
-  skills: Skill[];
-}
-
-interface Skill {
-  id: number;
-  name: string;
-  logo: string;
-}
-
-interface Experience {
-  id: number;
-  title: string;
-  company: string;
-  period: string;
-  description: string[];
-}
-
-interface Education {
-  id: number;
-  degree: string;
-  institution: string;
-  period: string;
-  description?: string;
 }
 
 export default function About() {
@@ -155,20 +126,22 @@ export default function About() {
             >
               {getIconComponent(category.icon)}
               <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
-              <ul className="text-secondary space-y-2">
-                {category.skills.map((skill) => (
-                  <li key={skill.id} className="flex items-center gap-2">
-                    <Image
-                      src={skill.logo}
-                      alt={skill.name}
-                      width={24}
-                      height={24}
-                      className="w-6 h-6 object-contain"
-                    />
-                    {skill.name}
-                  </li>
-                ))}
-              </ul>
+              {category.skills && (
+                <ul className="text-secondary space-y-2"> 
+                  {category.skills.map((skill) => (
+                    <li key={skill.id} className="flex items-center gap-2">
+                      <Image
+                        src={skill.logo}
+                        alt={skill.name}
+                        width={24}
+                        height={24}
+                        className="w-6 h-6 object-contain"
+                      />
+                      {skill.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </motion.div>
           ))}
         </motion.div>

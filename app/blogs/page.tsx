@@ -1,5 +1,5 @@
 // app/blogs/page.tsx
-import Blogs from '@/components/Blogs'
+import Blogs from '@/app/blogs/components/Blogs'
 
 export default function BlogPage() {
   return (

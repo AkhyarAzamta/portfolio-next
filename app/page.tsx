@@ -1,7 +1,7 @@
-import Blogs from "@/components/Blogs";
+import Blogs from "@/app/blogs/components/Blogs";
 import Hero from "@/components/Hero";
 import Newsletter from "@/components/Newsletter";
-import Projects from "@/components/Projects";
+import Projects from "@/app/projects/components/Projects";
 import About from "./about/page";
 
 

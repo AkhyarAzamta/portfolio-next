@@ -1,12 +1,24 @@
-// app/projects/page.tsx
-import ProjectList from "@/components/ProjectList"
+// app/dashboard/projects/page.tsx
+'use client';
+
+import { useEffect, useState } from 'react';
+import ProjectList from "@/app/projects/components/ProjectList"
 import { Project } from "@/types"
 
-export default async function ProjectsPage() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects`, {
-    next: { revalidate: 60 }, // regenerate tiap 60 detik
-  })
-  const projects: Project[] = await res.json()
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects`, {
+        next: { revalidate: 60 },
+      });
+      const data = await res.json();
+      setProjects(data);
+    };
+    
+    fetchProjects();
+  }, []); // Empty dependency array since we only want to run once
 
   return (
     <ProjectList

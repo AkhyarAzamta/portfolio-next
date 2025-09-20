@@ -1,7 +1,5 @@
 // prisma/seed/blogs.ts
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import prisma from '@/lib/prisma'
 
 export async function seedBlogs() {
   console.log('🌱 Seeding blogs...')
@@ -14,55 +12,35 @@ export async function seedBlogs() {
 
   await prisma.blog.deleteMany() // Clear existing data
 
+
   const blogs = [
     {
-      title: 'Getting Started with Next.js 14',
-      excerpt: 'Learn about the new features and improvements in Next.js 14.',
-      content: 'This is the full content of the blog post about Next.js 14...',
+      title: 'Deploy Aplikasi Next.js dengan mudah dan gratis menggunakan Vercel',
+      excerpt: 'Panduan Lengkap Step-by-Step untuk Deploy Aplikasi Next.js di Vercel.',
+      content: '<h2>Pendahuluan</h2><p>Next.js adalah salah satu framework React yang paling populer untuk membangun aplikasi web modern. Dengan dukungan <strong>Server-Side Rendering (SSR)</strong>, <strong>Static Site Generation (SSG)</strong>, hingga <strong>Incremental Static Regeneration (ISR)</strong>, Next.js menawarkan performa yang optimal sekaligus fleksibilitas tinggi.</p><p>Salah satu cara termudah dan tercepat untuk <strong>mendeploy aplikasi Next.js</strong> adalah menggunakan <strong>Vercel</strong>. Vercel sendiri merupakan platform hosting serverless yang dibuat oleh tim pembuat Next.js, sehingga integrasinya sangat mulus.</p><p>Pada artikel ini, kita akan membahas langkah demi langkah bagaimana cara mendeploy aplikasi Next.js ke Vercel.</p><hr><h2>Persiapan</h2><p>Sebelum memulai, pastikan kamu sudah menyiapkan beberapa hal berikut:</p><ul><li><p><strong>Node.js &amp; npm/yarn</strong> sudah terinstal di komputer.</p></li><li><p><strong>Aplikasi Next.js</strong> sudah berjalan di lokal.</p></li><li><p><strong>Akun Vercel</strong> (bisa daftar gratis di <a target="_blank" rel="noopener noreferrer nofollow" href="https://vercel.com">https://vercel.com</a>).</p></li><li><p><strong>GitHub/GitLab/Bitbucket repository</strong> tempat menyimpan source code project.</p></li></ul><hr><h2>Step 1: Membuat Project Next.js (Opsional)</h2><p>Jika belum punya project Next.js, buat project baru dengan perintah berikut:</p><pre><code>npx create-next-app@latest my-next-app\ncd my-next-app\nnpm run dev\n</code></pre><p>Setelah itu buka <a target="_blank" rel="noopener noreferrer nofollow" href="http://localhost:3000">http://localhost:3000</a> untuk memastikan aplikasi berjalan.</p><hr><h2>Step 2: Push Project ke GitHub</h2><p>Agar bisa dideploy di Vercel, project Next.js harus ada di repository Git (GitHub, GitLab, atau Bitbucket).</p><pre><code>git init\ngit add .\ngit commit -m "Initial commit"\ngit branch -M main\ngit remote add origin https://github.com/username/my-next-app.git\ngit push -u origin main\n</code></pre><hr><h2>Step 3: Login ke Vercel</h2><ol><li><p>Buka <a target="_blank" rel="noopener noreferrer nofollow" href="https://vercel.com">https://vercel.com</a>.</p></li><li><p>Login menggunakan GitHub/GitLab/Bitbucket.</p></li><li><p>Klik tombol <strong>"New Project"</strong>.</p></li></ol><hr><h2>Step 4: Import Project</h2><ol><li><p>Pilih repository yang sudah kamu push ke GitHub.</p></li><li><p>Klik <strong>Import</strong>.</p></li><li><p>Vercel akan otomatis mendeteksi bahwa project kamu adalah <strong>Next.js</strong>.</p></li><li><p>Klik <strong>Deploy</strong>.</p></li></ol><hr><h2>Step 5: Tunggu Proses Build</h2><p>Vercel akan menjalankan proses build secara otomatis. Biasanya membutuhkan beberapa menit, tergantung ukuran project.</p><p>Jika sukses, kamu akan mendapatkan domain default seperti:</p><pre><code>https://my-next-app.vercel.app\n</code></pre><hr><h2>Step 6: Custom Domain (Opsional)</h2><p>Jika ingin menggunakan domain sendiri:</p><ol><li><p>Buka dashboard project di Vercel.</p></li><li><p>Masuk ke tab <strong>Settings &gt; Domains</strong>.</p></li><li><p>Tambahkan domain milikmu.</p></li><li><p>Update DNS domain ke Vercel.</p></li></ol><hr><h2>Step 7: Continuous Deployment</h2><p>Setiap kali kamu melakukan <strong>push ke GitHub</strong>, Vercel akan otomatis:</p><ul><li><p>Build ulang project.</p></li><li><p>Deploy versi terbaru.</p></li></ul><p>Dengan cara ini, workflow development menjadi sangat cepat dan praktis.</p><hr><h2>Kesimpulan</h2><p>Deploying Next.js ke Vercel sangat mudah karena:</p><ul><li><p>Integrasi langsung (Next.js dibuat oleh tim yang sama dengan Vercel).</p></li><li><p>Otomatisasi penuh (build &amp; deploy langsung dari GitHub).</p></li><li><p>Gratis untuk penggunaan dasar (hobby plan).</p></li></ul><p>Dengan langkah-langkah di atas, kamu sudah bisa mendeploy aplikasi Next.js ke production dalam hitungan menit. 🚀</p>',
       authorId: author.id,
-      slug: 'getting-started-with-nextjs-14',
+      slug: 'deploy-aplikasi-nextjs-dengan-mudah-dan-gratis-menggunakan-vercel',
+      tags: ['Next.js', 'Vercel', 'Deployment'],
+      published: true
+    },
+    {
+      title: 'Membangun RESTful API dengan Node.js dan Express',
+      excerpt: 'Membuat RESTful API Menggunakan Node.js dan Express.',
+      content: `<h2>Pendahuluan</h2><p>Dalam era digital saat ini, <strong>API (Application Programming Interface)</strong> menjadi salah satu fondasi utama dalam pengembangan aplikasi modern. API memungkinkan aplikasi untuk berkomunikasi satu sama lain, berbagi data, dan menyediakan layanan yang dapat diakses oleh berbagai platform (web, mobile, IoT, dll).</p><p>Salah satu arsitektur API yang paling populer adalah <strong>RESTful API</strong>, yang didasarkan pada prinsip <strong>Representational State Transfer (REST)</strong>. REST menggunakan protokol HTTP dan memanfaatkan metode seperti <strong>GET, POST, PUT, DELETE</strong> untuk berinteraksi dengan data.</p><p>Di artikel ini, kita akan membahas langkah-langkah membangun RESTful API menggunakan <strong>Node.js</strong> dan <strong>Express</strong>, framework minimalis untuk Node.js yang sangat populer dalam pengembangan backend.</p><hr><h2>Apa Itu RESTful API?</h2><p>RESTful API adalah implementasi dari REST yang memanfaatkan resource sebagai entitas utama. Setiap resource memiliki <strong>endpoint unik (URL)</strong> dan diakses menggunakan metode HTTP standar.</p><p>Contoh resource:</p><ul><li><p><code>/users</code> → Mengelola data pengguna</p></li><li><p><code>/products</code> → Mengelola data produk</p></li><li><p><code>/orders</code> → Mengelola data pesanan</p></li></ul><p>Metode HTTP yang umum digunakan:</p><ul><li><p><strong>GET</strong> → Mengambil data</p></li><li><p><strong>POST</strong> → Menambahkan data baru</p></li><li><p><strong>PUT / PATCH</strong> → Memperbarui data</p></li><li><p><strong>DELETE</strong> → Menghapus data</p></li></ul><hr><h2>Persiapan Lingkungan</h2><p>Sebelum mulai coding, pastikan Anda sudah menyiapkan:</p><ol><li><p><strong>Node.js</strong> dan <strong>npm</strong> (Node Package Manager) → dapat diunduh di <a target="_blank" rel="noopener noreferrer nofollow" href="https://nodejs.org">https://nodejs.org</a>.</p></li><li><p>Text editor seperti <strong>VS Code</strong>.</p></li><li><p>Aplikasi untuk mengetes API seperti <strong>Postman</strong> atau menggunakan <strong>cURL</strong> di terminal.</p></li></ol><p>Buat folder project baru:</p><pre><code>mkdir rest-api-express\ncd rest-api-express\nnpm init -y\n</code></pre><p>Install dependency:</p><pre><code>npm install express\nnpm install nodemon --save-dev\n</code></pre><p>Tambahkan script di <code>package.json</code> agar mudah menjalankan server:</p><pre><code>"scripts": {\n  "dev": "nodemon index.js"\n}\n</code></pre><hr><h2>Membuat Server Dasar dengan Express</h2><p>Buat file <code>index.js</code>:</p><pre><code>const express = require('express')\nconst app = express()\nconst PORT = 3000\n\n// Middleware untuk parsing JSON\napp.use(express.json())\n\n// Route dasar\napp.get('/', (req, res) =&gt; {\n  res.send('Selamat datang di RESTful API dengan Express!')\n})\n\n// Menjalankan server\napp.listen(PORT, () =&gt; {\n  console.log('Server berjalan di http://localhost:3000')\n})\n</code></pre><p>Jalankan server:</p><pre><code>npm run dev\n</code></pre><hr><h2>Membuat Struktur RESTful API</h2><p>Kita akan membuat API sederhana untuk mengelola <strong>data pengguna</strong> (<code>users</code>).</p><h3>1. Endpoint GET (ambil semua pengguna)</h3><pre><code>let users = [\n  { id: 1, name: "Budi", email: "budi@example.com" },\n  { id: 2, name: "Siti", email: "siti@example.com" }\n]\n\napp.get('/users', (req, res) =&gt; {\n  res.json(users)\n})\n</code></pre><h3>2. Endpoint GET by ID</h3><pre><code>app.get('/users/:id', (req, res) =&gt; {\n  const user = users.find(u =&gt; u.id === parseInt(req.params.id))\n  if (!user) return res.status(404).json({ message: "User tidak ditemukan" })\n</code></pre><hr><h2>Kesimpulan</h2><p>Pada artikel ini kita telah mempelajari:</p><ul><li><p>Konsep dasar <strong>RESTful API</strong>.</p></li><li><p>Membuat server sederhana dengan <strong>Node.js + Express</strong>.</p></li><li><p>Membuat endpoint CRUD untuk resource <code>users</code>.</p></li><li><p>Menambahkan <strong>middleware</strong> dan <strong>validasi input</strong>.</p></li><li><p>Struktur folder yang lebih maintainable.</p></li></ul><p>Dengan dasar ini, Anda dapat mengembangkan RESTful API yang lebih kompleks, misalnya dengan <strong>database (MySQL, MongoDB, PostgreSQL)</strong>, <strong>JWT authentication</strong>, dan <strong>pagination</strong>.</p><hr><p>👉 Selanjutnya, Anda bisa mengintegrasikan API ini dengan <strong>frontend (React, Next.js, Vue)</strong> atau <strong>mobile app</strong> untuk membuat aplikasi full stack yang modern.</p>`,
+      authorId: author.id,
+      slug: 'membangun-restful-api-dengan-nodejs-dan-express',
+      tags: ['Node.js', 'Express', 'API'],
       published: true,
     },
     {
-      title: 'Mastering TypeScript for React',
-      excerpt: 'A comprehensive guide to using TypeScript with React applications.',
-      content: 'This is the full content of the blog post about TypeScript and React...',
+      title: '10 Tips Meningkatkan Performa Aplikasi Web',
+      excerpt: 'Tips dan trik untuk mengoptimalkan kecepatan dan performa aplikasi web Anda.',
+      content: '<h2>Pendahuluan</h2><p>Performa aplikasi web adalah faktor krusial yang memengaruhi pengalaman pengguna (UX) dan SEO. Aplikasi yang lambat dapat menyebabkan frustrasi pengguna, meningkatkan bounce rate, dan menurunkan peringkat di mesin pencari. Oleh karena itu, mengoptimalkan performa aplikasi web sangat penting bagi pengembang.</p><p>Berikut adalah 10 tips efektif untuk meningkatkan performa aplikasi web Anda:</p><hr><h2>1. Gunakan CDN (Content Delivery Network)</h2><p>CDN membantu mendistribusikan konten statis (gambar, CSS, JS) ke server di berbagai lokasi geografis. Ini mengurangi latensi dan mempercepat waktu muat halaman, terutama untuk pengguna yang jauh dari server utama.</p><hr><h2>2. Optimalkan Gambar</h2><p>Gambar sering menjadi penyebab utama lambatnya waktu muat halaman. Gunakan format gambar modern seperti WebP, kompres gambar tanpa mengorbankan kualitas, dan gunakan atribut <code>srcset</code> untuk melayani gambar dengan resolusi sesuai perangkat pengguna.</p><hr><h2>3. Minifikasi dan Bundling</h2><p>Minifikasi menghapus karakter yang tidak perlu dari file CSS dan JavaScript, sementara bundling menggabungkan beberapa file menjadi satu. Ini mengurangi ukuran file dan jumlah permintaan HTTP, mempercepat waktu muat halaman.</p><hr><h2>4. Gunakan Lazy Loading</h2><p>Lazy loading menunda pemuatan gambar dan konten lain hingga benar-benar diperlukan (misalnya saat pengguna menggulir ke bawah). Ini mengurangi beban awal halaman dan mempercepat waktu muat awal.</p><hr><h2>5. Manfaatkan Caching</h2><p>Caching menyimpan salinan data di lokasi terdekat dengan pengguna, sehingga mengurangi waktu akses ke server. Gunakan header cache yang tepat untuk mengontrol bagaimana dan kapan konten disimpan dalam cache.</p><hr><h2>6. Optimalkan Kode Backend</h2><p>Pastikan kode backend Anda efisien dan tidak melakukan operasi yang tidak perlu. Gunakan query database yang dioptimalkan, hindari loop yang tidak perlu, dan gunakan teknik seperti pagination untuk mengelola data besar.</p><hr><h2>7. Gunakan HTTP/2</h2><p>HTTP/2 menawarkan beberapa peningkatan dibandingkan HTTP/1.1, termasuk multiplexing (mengirim beberapa permintaan dalam satu koneksi), header compression, dan server push. Ini dapat secara signifikan meningkatkan performa aplikasi web.</p><hr><h2>8. Kurangi Redirects</h2><p>Setiap redirect menambah waktu muat halaman karena memerlukan permintaan tambahan ke server. Minimalkan penggunaan redirects sebanyak mungkin untuk mempercepat waktu muat.</p><hr><h2>9. Monitor Performa Secara Berkala</h2><p>Gunakan alat seperti Google Lighthouse, WebPageTest, atau GTmetrix untuk memantau performa aplikasi web Anda secara berkala. Ini membantu mengidentifikasi masalah dan area yang perlu dioptimalkan.</p><hr><h2>10. Gunakan Framework dan Library yang Ringan</h2><p>Pilih framework dan library yang sesuai dengan kebutuhan aplikasi Anda. Hindari penggunaan library besar jika hanya membutuhkan sebagian kecil fungsionalitasnya. Framework ringan seperti Preact atau Svelte dapat menjadi alternatif yang baik untuk aplikasi sederhana.</p><hr><h2>Kesimpulan</h2><p>Meningkatkan performa aplikasi web adalah proses berkelanjutan yang memerlukan perhatian terhadap detail dan pemantauan rutin. Dengan menerapkan tips di atas, Anda dapat menciptakan pengalaman pengguna yang lebih baik, meningkatkan retensi pengguna, dan mendukung kesuksesan aplikasi web Anda di pasar yang kompetitif.</p>',
       authorId: author.id,
-      slug: 'mastering-typescript-for-react',
+      slug: '10-tips-meningkatkan-performa-aplikasi-web',
+      tags: ['Performance', 'Web Development', 'Optimization'],
       published: true,
-    },
-    {
-      title: 'Building Responsive Layouts with Tailwind CSS',
-      excerpt: 'Tips and tricks for creating responsive designs using Tailwind CSS.',
-      content: 'This is the full content of the blog post about Tailwind CSS...',
-      authorId: author.id,
-      slug: 'building-responsive-layouts-with-tailwind-css',
-      published: true,
-    },
-    {
-      title: 'Understanding React Hooks',
-      excerpt: 'A deep dive into React Hooks and how to use them effectively.',
-      content: 'This is the full content of the blog post about React Hooks...',
-      authorId: author.id,
-      slug: 'understanding-react-hooks',
-      published: true,
-    },
-    {
-      title: 'Deploying Next.js Applications on Vercel',
-      excerpt: 'Step-by-step guide to deploying your Next.js applications on Vercel.',
-      content: 'This is the full content of the blog post about deploying to Vercel...',
-      authorId: author.id,
-      slug: 'deploying-nextjs-applications-on-vercel',
-      published: true,
-    },
-    {
-      title: 'Building a RESTful API with Node.js and Express',
-      excerpt: 'Learn how to create a RESTful API using Node.js and Express.',
-      content: 'This is the full content of the blog post about building APIs with Node.js...',
-      authorId: author.id,
-      slug: 'building-a-restful-api-with-nodejs-and-express',
-      published: true,
-    },
+    }
   ]
 
   for (const blog of blogs) {

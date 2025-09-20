@@ -3,8 +3,8 @@
 
 import { useProjects } from '@/hooks/useProjects'
 import ProjectList from './ProjectList'
-import { Loading } from './ui/loading'
-import { Project } from '@/types/index' // ✅ pakai types sesuai schema
+import { Loading } from '@/components/ui/loading'
+import { Project } from '@/types'
 
 interface ProjectsProps {
   limit?: number

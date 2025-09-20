@@ -5,13 +5,14 @@ import prisma from '@/lib/prisma'
 // PUT - Update an experience
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { title, company, period, description } = await request.json()
     
     const experience = await prisma.experience.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id) },
       data: {
         title,
         company,
@@ -33,11 +34,12 @@ export async function PUT(
 // DELETE - Delete an experience
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.experience.delete({
-      where: { id: parseInt(params.id) }
+      where: { id: parseInt(id) }
     })
     
     return NextResponse.json({ message: 'Experience deleted successfully' })

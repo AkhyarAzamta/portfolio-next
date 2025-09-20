@@ -3,7 +3,7 @@
 
 import { useBlogs } from '@/hooks/useBlogs'
 import BlogList from './BlogList'
-import { Loading } from './ui/loading'
+import { Loading } from '../../../components/ui/loading'
 
 interface BlogsProps {
   limit?: number

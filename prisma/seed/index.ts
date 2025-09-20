@@ -6,7 +6,7 @@ import { seedAbout, seedSkills, seedExperience, seedEducation } from './about'
 import { seedContactInfo } from './contact-info'
 import { seedUsers } from './users'
 
-const prisma = new PrismaClient()
+import prisma from '@/lib/prisma'
 
 async function main() {
   console.log('🌱 Start seeding...')

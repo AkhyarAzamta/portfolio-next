@@ -5,13 +5,14 @@ import prisma from '@/lib/prisma'
 // PUT - Update a language skill
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { name, level, category, logo } = await request.json()
     
     const languageSkill = await prisma.languageSkill.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id) },
       data: {
         name,
         level,
@@ -33,11 +34,12 @@ export async function PUT(
 // DELETE - Delete a language skill
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.languageSkill.delete({
-      where: { id: parseInt(params.id) }
+      where: { id: parseInt(id) }
     })
     
     return NextResponse.json({ message: 'Language skill deleted successfully' })

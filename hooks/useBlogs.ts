@@ -8,6 +8,8 @@ export interface Blog {
   content: string | null
   slug: string
   published: boolean
+  viewCount: number
+  tags: string[]
   createdAt: string
   updatedAt: string
   author: {
