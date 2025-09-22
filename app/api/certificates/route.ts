@@ -8,7 +8,15 @@ export async function GET() {
     const certificates = await prisma.certificate.findMany({
       orderBy: { issueDate: 'desc' }
     })
-    return NextResponse.json(certificates)
+
+    // Convert Date objects to ISO strings for proper serialization
+    const serializedCertificates = certificates.map(certificate => ({
+      ...certificate,
+      issueDate: certificate.issueDate.toISOString(),
+      expiryDate: certificate.expiryDate ? certificate.expiryDate.toISOString() : null
+    }))
+
+    return NextResponse.json(serializedCertificates)
   } catch (error) {
     console.error('Error fetching certificates:', error)
     return NextResponse.json(

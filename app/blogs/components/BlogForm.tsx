@@ -11,17 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import RichTextEditor from '@/components/RichTextEditor'
 import { Loader2, Save, ArrowLeft } from 'lucide-react'
-
-interface BlogFormProps {
-  blog?: {
-    id: number
-    title: string
-    excerpt: string
-    content: string
-    published: boolean
-    archived: boolean
-  }
-}
+import { BlogFormProps } from '@/types'
 
 export default function BlogForm({ blog }: BlogFormProps) {
   const [formData, setFormData] = useState({
@@ -47,47 +37,57 @@ export default function BlogForm({ blog }: BlogFormProps) {
     }
   }, [blog])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setLoading(true)
+  setError('')
 
-    try {
-      if (!formData.title.trim() || !formData.excerpt.trim()) {
-        setError('Title and excerpt are required.')
-        setLoading(false)
-        return
-      }
-
-      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
-      
-      const url = blog 
-        ? `/api/admin/blogs/${blog.id}`
-        : '/api/admin/blogs'
-      
-      const method = blog ? 'PUT' : 'POST'
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      })
-
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Failed to save blog')
-      }
-
-      router.push('/dashboard/blogs')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
+  try {
+    if (!formData.title.trim() || !formData.excerpt.trim()) {
+      setError('Title and excerpt are required.')
       setLoading(false)
+      return
     }
+
+    const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
+    if (!token) {
+      setError("Unauthorized: No token found")
+      setLoading(false)
+      return
+    }
+
+    const url = blog 
+      ? `/api/admin/blogs/${blog.id}`
+      : '/api/admin/blogs'
+    const method = blog ? 'PUT' : 'POST'
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(formData)
+    })
+
+    if (!response.ok) {
+      let errorMessage = 'Failed to save blog'
+      try {
+        const data = await response.json()
+        if (data?.error) errorMessage = data.error
+      } catch {
+        // ignore kalau bukan JSON
+      }
+      throw new Error(errorMessage)
+    }
+
+    router.push('/dashboard/blogs')
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'An error occurred')
+  } finally {
+    setLoading(false)
   }
+}
 
   return (
     <div className="container mx-auto px-4 py-8">

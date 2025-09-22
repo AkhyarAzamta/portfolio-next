@@ -2,12 +2,22 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { ExternalLink, Eye, X } from 'lucide-react'
-import { fadeIn, fadeInUp, staggerContainer } from '@/utils/animations'
 import Image from 'next/image'
 import { Loading } from '@/components/ui/loading'
 import { Certificate } from '@/types'
+
+// Function to format date
+const formatDate = (dateString: string | Date | null | undefined): string => {
+  if (!dateString) return 'N/A';
+  
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
 
 export default function Certificates() {
   const [certificates, setCertificates] = useState<Certificate[]>([])
@@ -53,45 +63,33 @@ export default function Certificates() {
   
   if (error) {
     return (
-      <motion.section {...fadeIn} transition={{ delay: 0.6 }}>
-        <motion.h2 className="section-title" {...fadeInUp}>
+      <section>
+        <h2 className="section-title">
           Certifications
-        </motion.h2>
+        </h2>
         <div className="text-center py-8 text-red-500">
           Error loading certificates: {error}
         </div>
-      </motion.section>
+      </section>
     )
   }
 
   return (
-    <motion.section
-      {...fadeIn}
-      transition={{ delay: 0.6 }}
-    >
-      <motion.h2
-        className="section-title"
-        {...fadeInUp}
-      >
+    <section>
+      <h2 className="section-title">
         Certifications
-      </motion.h2>
+      </h2>
 
       {certificates.length === 0 ? (
         <div className="text-center py-8">
           No certificates available.
         </div>
       ) : (
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {certificates.map((certificate) => (
-            <motion.div
+            <div
               key={certificate.id}
-              className="bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md"
-              variants={fadeInUp}
+              className="certificate-card bg-white dark:bg-dark/50 rounded-lg shadow-md"
             >
               {certificate.image && (
                 <div className="relative aspect-video mb-4 cursor-pointer" onClick={() => setImagePreview(certificate.image!)}>
@@ -107,14 +105,18 @@ export default function Certificates() {
                 </div>
               )}
 
-              <h3 className="text-xl font-semibold mb-2">{certificate.name}</h3>
-              <p className="text-primary mb-2">{certificate.issuer}</p>
+              <h3 className="text-xl px-4 font-semibold mb-2">{certificate.name}</h3>
+              <p className="text-primary px-4 mb-2">{certificate.issuer}</p>
 
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between px-4 items-center mb-4">
                 <div>
-                  <p className="text-sm text-secondary">Issued: {certificate.issueDate}</p>
+                  <p className="text-sm text-secondary">
+                    Issued: {formatDate(certificate.issueDate)}
+                  </p>
                   {certificate.expiryDate && (
-                    <p className="text-sm text-secondary">Expires: {certificate.expiryDate}</p>
+                    <p className="text-sm text-secondary">
+                      Expires: {formatDate(certificate.expiryDate)}
+                    </p>
                   )}
                 </div>
 
@@ -129,9 +131,9 @@ export default function Certificates() {
                   </a>
                 )}
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       )}
 
       {/* Image Preview Modal */}
@@ -157,6 +159,6 @@ export default function Certificates() {
           </div>
         </div>
       )}
-    </motion.section>
+    </section>
   )
 }

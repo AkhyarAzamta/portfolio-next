@@ -1,12 +1,7 @@
-// scripts/seed-contact-info.ts
 import { PrismaClient } from '@prisma/client'
 
-import prisma from '@/lib/prisma'
-
-export async function seedContactInfo() {
+export async function seedContactInfo(prisma: PrismaClient) {
   console.log('🌱 Seeding contact info...')
-
-  // Hapus data existing (opsional)
   await prisma.contactInfo.deleteMany()
 
   const contactInfos = [
@@ -16,9 +11,7 @@ export async function seedContactInfo() {
   ]
 
   for (const info of contactInfos) {
-    await prisma.contactInfo.create({
-      data: info,
-    })
+    await prisma.contactInfo.create({ data: info })
   }
 
   console.log('✅ Contact info seeding finished.')

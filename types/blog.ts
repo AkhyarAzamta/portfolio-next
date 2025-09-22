@@ -10,6 +10,7 @@ export interface Blog {
   // relation
   viewCount: number
   image?: string | null
+  coverImage?: string | null
   tags?: string[] // optional
   author?: UserBasic // optionally populated
   slug: string
@@ -56,4 +57,15 @@ export interface BlogUpdateInput {
   slug?: string
   published?: boolean
   archived?: boolean
+}
+
+export interface BlogFormProps {
+  blog?: {
+    id: number
+    title: string
+    excerpt: string
+    content: string
+    published: boolean
+    archived: boolean
+  }
 }

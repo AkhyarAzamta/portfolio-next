@@ -1,12 +1,9 @@
-// components/Projects.tsx
 'use client'
 
+import React from 'react'
 import { useProjects } from '@/hooks/useProjects'
 import ProjectList from './components/ProjectList'
 import { Loading } from '@/components/ui/loading'
-import { Project } from '@/types'
-import { motion } from 'framer-motion'
-import { fadeIn } from '@/utils/animations'
 
 interface ProjectsProps {
   limit?: number
@@ -16,35 +13,29 @@ interface ProjectsProps {
   showViewAll?: boolean
 }
 
-export default function Projects({ 
-  limit, 
-  title, 
+export default function Projects({
+  limit,
+  title = 'Featured Projects',
+  description,
   layout = 'grid',
-  showViewAll = false 
+  showViewAll = false
 }: ProjectsProps) {
   const { projects, loading, error } = useProjects()
 
   if (loading) return <Loading size={150} blur="sm" />
   if (error) return <div>Error: {error}</div>
 
-  // Apply limit if provided
-  const displayedProjects: Project[] = limit 
-    ? projects.slice(0, limit) 
-    : projects
+  const displayedProjects = limit ? projects.slice(0, limit) : projects
 
   return (
-    <motion.section
-      className="py-20"
-      {...fadeIn}
-      transition={{ delay: 0.2 }}
-    >
-      <ProjectList 
-        projects={displayedProjects} 
-        title={title} 
-        description="Here are some of my recent projects. Click on the links to view the code or live demo."
+    <section className="py-20">
+      <ProjectList
+        projects={displayedProjects}
+        title={title}
+        description={description}
         layout={layout}
         showViewAll={showViewAll}
       />
-    </motion.section>
+    </section>
   )
 }

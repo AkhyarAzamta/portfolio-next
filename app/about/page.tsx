@@ -1,4 +1,3 @@
-import { SkillCategory, Experience, Education, AboutData } from '@/types'
 import AboutClient from '@/components/AboutClient'
 
 async function getAboutData() {

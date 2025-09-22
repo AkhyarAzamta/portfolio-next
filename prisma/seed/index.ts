@@ -1,24 +1,28 @@
-// scripts/seed.ts
 import { PrismaClient } from '@prisma/client'
-import { seedProjects } from './projects'
-import { seedBlogs } from './blogs'
-import { seedAbout, seedSkills, seedExperience, seedEducation } from './about'
-import { seedContactInfo } from './contact-info'
-import { seedUsers } from './users'
+import { seedUsers } from './users.ts'
+import { seedProjects } from './projects.ts'
+import { seedBlogs } from './blogs.ts'
+import { seedAbout } from './about.ts'
+import { seedSkills } from './skills.ts'
+import { seedExperience } from './experience.ts'
+import { seedEducation } from './education.ts'
+import { seedCertificate } from './certificate.ts'
+import { seedContactInfo } from './contactInfo.ts'
 
-import prisma from '@/lib/prisma'
+const prisma = new PrismaClient()
 
 async function main() {
   console.log('🌱 Start seeding...')
 
-  await seedUsers()
-  await seedBlogs()
-  await seedProjects()
-  await seedAbout()
-  await seedSkills()
-  await seedExperience()
-  await seedEducation()
-  await seedContactInfo()
+  await seedUsers(prisma)
+  await seedProjects(prisma)
+  await seedBlogs(prisma)
+  await seedAbout(prisma)
+  await seedSkills(prisma)
+  await seedExperience(prisma)
+  await seedEducation(prisma)
+  await seedCertificate(prisma)
+  await seedContactInfo(prisma)
 
   console.log('✅ Seeding finished.')
 }

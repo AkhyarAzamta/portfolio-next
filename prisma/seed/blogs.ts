@@ -1,7 +1,7 @@
 // prisma/seed/blogs.ts
-import prisma from '@/lib/prisma'
+import { PrismaClient } from '@prisma/client'
 
-export async function seedBlogs() {
+export async function seedBlogs(prisma: PrismaClient) {
   console.log('🌱 Seeding blogs...')
 
   // Get the first user to use as author

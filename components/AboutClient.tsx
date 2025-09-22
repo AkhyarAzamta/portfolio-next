@@ -27,6 +27,7 @@ export default function AboutClient({ about, skillCategories, experience, educat
   const skillsRef = useRef<HTMLDivElement>(null)
   const experienceRef = useRef<HTMLDivElement>(null)
   const educationRef = useRef<HTMLDivElement>(null)
+  const certificatesRef = useRef<HTMLDivElement>(null) // Tambahkan ref untuk certificates
 
   useEffect(() => {
     if (!sectionRef.current) return
@@ -175,6 +176,42 @@ export default function AboutClient({ about, skillCategories, experience, educat
         )
       })
 
+      // Animate certificates section
+      if (certificatesRef.current) {
+        gsap.fromTo(certificatesRef.current,
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            scrollTrigger: {
+              trigger: certificatesRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse'
+            }
+          }
+        )
+      }
+
+      // Animate certificate cards with stagger
+      const certificateCards = gsap.utils.toArray<HTMLElement>('.certificate-card')
+      certificateCards.forEach((card, i) => {
+        gsap.fromTo(card,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: i * 0.1,
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse'
+            }
+          }
+        )
+      })
+
     }, sectionRef)
 
     return () => ctx.revert()
@@ -263,7 +300,7 @@ export default function AboutClient({ about, skillCategories, experience, educat
         </h2>
         <div className="max-w-3xl mx-auto">
           {education.map((edu) => (
-            <div key={edu.id} className="education-item bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md opacity-0">
+            <div key={edu.id} className="education-item mb-6 bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md opacity-0">
               <h3 className="text-xl font-semibold mb-2">{edu.degree}</h3>
               <p className="text-primary mb-2">{edu.institution} • {edu.period}</p>
               {edu.description && (
@@ -275,7 +312,9 @@ export default function AboutClient({ about, skillCategories, experience, educat
       </section>
       
       {/* Certificates Section */}
-      <Certificates />
+      <section ref={certificatesRef} className="opacity-0">
+        <Certificates />
+      </section>
     </div>
   )
 }

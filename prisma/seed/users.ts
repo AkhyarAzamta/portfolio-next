@@ -1,17 +1,12 @@
-// scripts/seed-users.ts
 import { PrismaClient, UserRole } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
-import prisma from '@/lib/prisma'
-
-export async function seedUsers() {
+export async function seedUsers(prisma: PrismaClient) {
   console.log('🌱 Seeding users...')
 
-  // Hapus data existing (opsional)
   await prisma.blog.deleteMany()
   await prisma.user.deleteMany()
 
-  // Hash password untuk user
   const hashedPassword = await bcrypt.hash('password123', 12)
 
   const users = [
@@ -39,9 +34,7 @@ export async function seedUsers() {
   ]
 
   for (const user of users) {
-    await prisma.user.create({
-      data: user,
-    })
+    await prisma.user.create({ data: user })
   }
 
   console.log('✅ Users seeding finished.')

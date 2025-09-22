@@ -1,21 +1,12 @@
-import prisma from '@/lib/prisma'
+// prisma/seed/projects.ts
+import { PrismaClient } from '@prisma/client'
 
-export async function seedProjects() {
+export async function seedProjects(prisma: PrismaClient) {
   console.log('🌱 Seeding projects...')
 
   await prisma.project.deleteMany() // Clear existing data
 
-  const projects: {
-    title: string
-    description: string
-    technologies: string[]
-    sourceCode?: string
-    demoLink?: string
-    image: string
-    githubLink?: string
-    env?: string
-    password?: string
-  }[] = [
+  const projects = [
     {
       title: 'E-commerce Platform',
       description: 'A full-stack e-commerce platform built with Next.js, TypeScript, and Tailwind CSS.',

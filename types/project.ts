@@ -7,7 +7,7 @@ export interface Project {
   sourceCode: string | null;
   demoLink: string | null;
   image: string;
-  archived: boolean;
+  free: boolean;
   price: number | null;
   githubLink: string | null; // New field
   env: string | null; // New field

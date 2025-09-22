@@ -13,20 +13,20 @@ enum UserRole {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  name        String
-  email       String    @unique
-  password    String
-  role        UserRole  @default(USER)
-  avatar      String?
-  title       String?
-  bio         String?
-  githubUrl   String?
-  linkedinUrl String?
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  password     String
+  role         UserRole @default(USER)
+  avatar       String?
+  title        String?
+  bio          String?
+  githubUrl    String?
+  linkedinUrl  String?
   instagramUrl String?
-  blogs       Blog[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  blogs        Blog[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("users")
 }
@@ -57,11 +57,11 @@ model Project {
   sourceCode   String?
   demoLink     String?
   image        String
-  archived     Boolean  @default(false)
+  free         Boolean  @default(false)
   price        Float?
-  githubLink   String?  
-  env          String?  
-  password     String?  
+  githubLink   String?
+  env          String?
+  password     String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -102,13 +102,13 @@ model SkillCategory {
 }
 
 model Skill {
-  id          Int      @id @default(autoincrement())
-  name        String
-  logo        String
-  category    SkillCategory @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int           @id @default(autoincrement())
+  name       String
+  logo       String
+  category   SkillCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
 
   @@map("skills")
 }
@@ -149,27 +149,27 @@ model ContactInfo {
 }
 
 model Certificate {
-  id             Int      @id @default(autoincrement())
-  name           String
-  issuer         String
-  issueDate      String
-  expiryDate     String?
-  credentialURL  String?
-  image          String?  // New field for certificate image
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            Int       @id @default(autoincrement())
+  name          String
+  issuer        String
+  issueDate     DateTime
+  expiryDate    DateTime?
+  credentialURL String?
+  image         String? // New field for certificate image
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@map("certificates")
 }
 
 model LanguageSkill {
-  id          Int      @id @default(autoincrement())
-  name        String
-  level       Int      // 1-100 percentage
-  category    String?  // e.g., "Programming", "Spoken", "Written"
-  logo        String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  level     Int // 1-100 percentage
+  category  String? // e.g., "Programming", "Spoken", "Written"
+  logo      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("language_skills")
 }

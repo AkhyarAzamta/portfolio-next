@@ -188,7 +188,7 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
           <h1 ref={titleRef} className="text-4xl md:text-6xl font-bold mb-6 opacity-0">
             Hi, I&apos;m <span 
               ref={nameRef}
-              className="text-primary bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 opacity-0"
+              className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 opacity-0"
             >
               {adminUser?.name || "Akhyar Azamta"}
             </span>

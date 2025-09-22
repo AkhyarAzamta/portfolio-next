@@ -73,26 +73,29 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const blog = await prisma.blog.create({
-      data: {
-        title,
-        excerpt,
-        content,
-        slug,
-        published: published || false,
-        archived: archived || false,
-        authorId: decoded.userId // Use the authenticated user's ID
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
-        }
+const blog = await prisma.blog.create({
+  data: {
+    title,
+    excerpt,
+    content,
+    slug,
+    published: published || false,
+    archived: archived || false,
+    author: {
+      connect: { email: decoded.email } // connect ke user yang sudah ada
+    }
+  },
+  include: {
+    author: {
+      select: {
+        id: true,
+        name: true,
+        avatar: true
       }
-    })
+    }
+  }
+})
+
 
     return NextResponse.json(blog, { status: 201 })
   } catch (error) {
