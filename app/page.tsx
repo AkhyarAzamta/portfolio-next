@@ -8,7 +8,7 @@ import { User as AdminUser } from '@/types'
 async function getAdminUser(): Promise<AdminUser | null> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users?role=ADMIN`, {
-      next: { revalidate: 3600 } // ISR: regenerate setiap 1 jam
+      next: { revalidate: 120 }
     })
     
     if (!res.ok) {

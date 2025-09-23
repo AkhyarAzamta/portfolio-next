@@ -40,16 +40,15 @@ export async function seedSkills(prisma: PrismaClient) {
     { name: "RESTful API", logo: "/logos/restapi.png", categoryId: backendCategory.id },
     { name: "WebSocket", logo: "/logos/websocket.png", categoryId: backendCategory.id },
     { name: "Amazon EC2 (Deployment)", logo: "/logos/aws.png", categoryId: backendCategory.id },
-    { name: "CI/CD (Continuous Integration & Deployment)", logo: "/logos/cicd.png", categoryId: backendCategory.id },
   ]
-
+  
   const languagesSkills = [
     { name: "JavaScript", logo: "/logos/javascript.png", categoryId: languagesCategory.id },
     { name: "TypeScript", logo: "/logos/typescript.png", categoryId: languagesCategory.id },
     { name: "C++", logo: "/logos/cpp.png", categoryId: languagesCategory.id },
     { name: "PHP", logo: "/logos/php.png", categoryId: languagesCategory.id },
   ]
-
+  
   const toolsSkills = [
     { name: "Git / GitHub", logo: "/logos/github.png", categoryId: toolsCategory.id },
     { name: "Internet of Things (IoT)", logo: "/logos/iot.png", categoryId: toolsCategory.id },
@@ -57,6 +56,7 @@ export async function seedSkills(prisma: PrismaClient) {
     { name: "Postman", logo: "/logos/postman.png", categoryId: toolsCategory.id },
     { name: "Automation Testing (Unit, Integration, E2E)", logo: "/logos/testing.png", categoryId: toolsCategory.id },
     { name: "JavaScript Clean Code", logo: "/logos/cleancode.png", categoryId: toolsCategory.id },
+    { name: "CI/CD (Continuous Integration & Deployment)", logo: "/logos/cicd.png", categoryId: toolsCategory.id },
   ]
 
   await prisma.skill.createMany({

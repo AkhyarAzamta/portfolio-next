@@ -3,10 +3,10 @@ import AboutClient from '@/components/AboutClient'
 async function getAboutData() {
   try {
     const [aboutRes, skillsRes, experienceRes, educationRes] = await Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/about`, { next: { revalidate: 3600 } }),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/skills`, { next: { revalidate: 3600 } }),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/experience`, { next: { revalidate: 3600 } }),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/education`, { next: { revalidate: 3600 } })
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/about`, { next: { revalidate: 120 } }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/skills`, { next: { revalidate: 120 } }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/experience`, { next: { revalidate: 120 } }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/education`, { next: { revalidate: 120 } })
     ])
 
     if (!aboutRes.ok || !skillsRes.ok || !experienceRes.ok || !educationRes.ok) {

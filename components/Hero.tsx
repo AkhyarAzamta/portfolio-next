@@ -159,7 +159,7 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
-            className="hero-bg-element absolute rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+            className="hero-bg-element absolute rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-green-500/10 dark:to-green-700/10"
             style={{
               width: Math.random() * 100 + 50,
               height: Math.random() * 100 + 50,
@@ -173,7 +173,12 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
       <div className="container max-w-7xl mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
           <div ref={imageRef} className='flex justify-center items-center mb-4 opacity-0'>
-            <div className="rounded-full mb-4 w-48 h-48 overflow-hidden ring-4 ring-primary/20 shadow-xl">
+            <div className="rounded-full mb-4 w-48 h-48 overflow-hidden ring-4 ring-primary/20 shadow-xl dark:ring-0 dark:border-0"
+              style={{
+                boxShadow: '0 0 0 4px rgba(3, 138, 39, 0.3)',
+                border: '2px solid #038a27'
+              }}
+            >
               <Image 
                 src={adminUser?.avatar || "/profile.jpg"} 
                 alt="Profile" 
@@ -188,7 +193,7 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
           <h1 ref={titleRef} className="text-4xl md:text-6xl font-bold mb-6 opacity-0">
             Hi, I&apos;m <span 
               ref={nameRef}
-              className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 opacity-0"
+              className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 dark:from-green-600 dark:to-green-800 opacity-0"
             >
               {adminUser?.name || "Akhyar Azamta"}
             </span>
@@ -203,7 +208,7 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
               href={adminUser?.socialLinks?.github || "https://github.com/akhyarazamta"}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg opacity-0"
+              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-green-600 transition-colors p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg opacity-0 dark:border dark:border-green-600"
             >
               <FaGithub />
             </a>
@@ -211,7 +216,7 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
               href={adminUser?.socialLinks?.linkedin || "https://linkedin.com/in/akhyarazamta"}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg opacity-0"
+              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-green-600 transition-colors p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg opacity-0 dark:border dark:border-green-600"
             >
               <FaLinkedin />
             </a>
@@ -219,7 +224,7 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
               href={adminUser?.socialLinks?.instagram || "https://instagram.com/akhyarazamta"}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg opacity-0"
+              className="text-2xl text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-green-600 transition-colors p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg opacity-0 dark:border dark:border-green-600"
             >
               <FaInstagram />
             </a>
@@ -228,13 +233,19 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
           <div ref={buttonsRef} className="flex flex-col md:flex-row justify-center gap-4">
             <Link
               href="/projects"
-              className="bg-gradient-to-r from-blue-500 to-purple-500 inline-block w-full md:w-auto text-white px-8 py-3 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all shadow-lg hover:shadow-xl opacity-0"
+              className="bg-gradient-to-r from-blue-500 to-purple-500 dark:from-green-600 dark:to-green-800 inline-block w-full md:w-auto text-white px-8 py-3 rounded-lg hover:from-blue-600 hover:to-purple-600 dark:hover:from-green-700 dark:hover:to-green-900 transition-all shadow-lg hover:shadow-xl opacity-0 dark:border dark:border-green-600"
+              style={{ 
+                boxShadow: '0 4px 15px rgba(3, 138, 39, 0.3)'
+              }}
             >
               View Projects
             </Link>
             <Link
               href="/contact"
-              className="inline-block w-full bg-gray-100 dark:bg-gray-800 md:w-auto text-gray-800 dark:text-white px-8 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl opacity-0"
+              className="inline-block w-full bg-gray-300 dark:bg-gray-800 md:w-auto text-gray-800 dark:text-white px-8 py-3 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl opacity-0 dark:border dark:border-green-600"
+              style={{ 
+                boxShadow: '0 4px 15px rgba(3, 138, 39, 0.1)'
+              }}
             >
               Contact Me
             </Link>
