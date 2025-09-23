@@ -46,7 +46,7 @@ export async function POST(request: Request) {
 
     // Generate token
     const token = await generateToken({
-      userId: user.id,
+      id: user.id,
       email: user.email,
       role: user.role
     })
