@@ -41,13 +41,13 @@ export default function ProjectCard({ project, layout = 'grid' }: ProjectCardPro
               ))}
             </div>
             <div className="flex gap-4">
-              {project.free ? (
-                <Link href={project.githubLink || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
-                  <Github size={20} /> Source Code
-                </Link>
-              ) : project.sourceCode ? (
+              {project.price ? (
                 <Link href={project.sourceCode || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
                   <FaDownload size={20} /> Source Code
+                </Link>
+              ) : project.githubLink ? (
+                <Link href={project.githubLink || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                  <Github size={20} /> Source Code
                 </Link>
               ) : null}
 
@@ -71,14 +71,17 @@ export default function ProjectCard({ project, layout = 'grid' }: ProjectCardPro
         <h3 className="text-xl font-bold mb-2">{project.title}</h3>
         <p className="text-gray-600 dark:text-gray-300 mb-4">{project.description}</p>
         <div className="flex flex-wrap gap-2 mb-4">
-          {project.technologies.map((tech) => (
-            <span key={tech} className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">
+          {project.technologies.slice(0, 3).map((tech, index) => (
+            <span key={index} className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">
               {tech}
             </span>
           ))}
+          {project.technologies.length > 3 && (
+            <span className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">+{project.technologies.length - 3} more</span>
+          )}
         </div>
         <div className="flex gap-4">
-          {project.free ? (
+          {project.price ? (
             <Link href={project.githubLink || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
               <Github size={20} /> Source Code
             </Link>

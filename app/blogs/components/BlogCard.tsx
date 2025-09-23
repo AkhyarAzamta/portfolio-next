@@ -22,6 +22,12 @@ export default function BlogCard({ blog }: BlogCardProps) {
     return `${minutes} min read`
   }
 
+  const truncateExcerpt = (text: string, wordLimit: number) => {
+  const words = text.split(/\s+/)
+  if (words.length <= wordLimit) return text
+  return words.slice(0, wordLimit).join(" ") + "..."
+}
+
   const readTime = calculateReadTime(blog.content || null)
 
   return (
@@ -36,7 +42,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
         <h3 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">{blog.title}</h3>
 
         <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow">
-          {blog.excerpt}
+          {truncateExcerpt(blog.excerpt, 15)}
         </p>
       </Link>
 

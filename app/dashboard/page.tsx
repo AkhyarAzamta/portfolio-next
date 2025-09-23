@@ -5,13 +5,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Loading } from '@/components/ui/loading'
-
-interface User {
-  id: number
-  name: string
-  email: string
-  role: string
-}
+import { User } from '@/types'
 
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null)

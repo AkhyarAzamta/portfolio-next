@@ -9,14 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Pencil, Trash2, Plus, Loader2 } from 'lucide-react'
 import { ImageUpload } from '@/components/ImageUpload'
 import Image from 'next/image'
-
-interface LanguageSkill {
-  id: number;
-  name: string;
-  level: number;
-  category: string | null;
-  logo: string | null;
-}
+import { LanguageSkill } from '@/types'
 
 export default function LanguageSkillsManager() {
   const [languageSkills, setLanguageSkills] = useState<LanguageSkill[]>([])

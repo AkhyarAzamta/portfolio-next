@@ -13,23 +13,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Loading } from '@/components/ui/loading'
 import { FileUpload } from '@/components/FileUpload'
 import { parsePrice, formatPriceRealTime } from '@/utils/currency'
-
-interface Project {
-  id: string // Changed from number to string
-  title: string
-  description: string
-  technologies: string[]
-  sourceCode: string | null
-  demoLink: string | null
-  image: string
-  archived: boolean
-  price: number | null
-  githubLink: string | null // New field
-  env: string | null // New field
-  password: string | null // New field
-  createdAt: string
-  updatedAt: string
-}
+import { Project } from '@/types'
+import { toast } from 'sonner'
 
 export default function EditProjectPage() {
   const [formData, setFormData] = useState<Project>({
@@ -82,6 +67,7 @@ export default function EditProjectPage() {
         setPriceInput(formatPriceRealTime(project.price.toString()))
       }
     } catch (err) {
+      toast.error('Error fetching project data')
       setError(err instanceof Error ? err.message : 'An error occurred')
     }
   }, [id])
@@ -151,6 +137,7 @@ export default function EditProjectPage() {
 
       router.push('/dashboard/projects')
     } catch (err) {
+      toast.error('Error updating project')
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)

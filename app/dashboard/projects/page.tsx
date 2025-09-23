@@ -41,11 +41,8 @@ export default function ProjectsPage() {
   const [error, setError] = useState('')
   const router = useRouter()
 
-  useEffect(() => {
-    fetchProjects()
-  }, [router])
-
-  const fetchProjects = async () => {
+useEffect(() => {
+  const getProjects = async () => {
     try {
       const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
       const response = await fetch('/api/admin/projects', {
@@ -71,6 +68,10 @@ export default function ProjectsPage() {
     }
   }
 
+  getProjects()
+}, [router])
+
+
   const handleDelete = async (id: string) => { // Changed from number to string
     if (!confirm('Are you sure you want to delete this project?')) {
       return
@@ -89,7 +90,7 @@ export default function ProjectsPage() {
         throw new Error('Failed to delete project')
       }
 
-      fetchProjects()
+      setProjects(prev => prev.filter(project => project.id !== id) ) // Changed from number to string
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     }

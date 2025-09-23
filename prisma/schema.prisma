@@ -57,7 +57,7 @@ model Project {
   sourceCode   String?
   demoLink     String?
   image        String
-  free         Boolean  @default(false)
+  archived     Boolean  @default(false)
   price        Float?
   githubLink   String?
   env          String?

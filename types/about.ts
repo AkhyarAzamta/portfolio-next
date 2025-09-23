@@ -70,3 +70,17 @@ export interface Certificate {
   credentialURL: string | null;
   image: string | null;
 }
+export interface Education {
+  id: number;
+  degree: string;
+  institution: string;
+  period: string;
+  description?: string | null;
+}
+export interface LanguageSkill {
+  id: number;
+  name: string;
+  level: number;
+  category: string | null;
+  logo: string | null;
+}

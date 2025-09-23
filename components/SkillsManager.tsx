@@ -9,21 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Pencil, Trash2, Plus, Loader2 } from 'lucide-react'
 import { ImageUpload } from '@/components/ImageUpload'
 import Image from 'next/image'
-
-interface Skill {
-  id: number;
-  name: string;
-  logo: string;
-  categoryId: number;
-}
-
-interface SkillCategory {
-  id: number;
-  name: string;
-  icon: string;
-  description?: string;
-  skills: Skill[];
-}
+import { SkillCategory, Skill } from '@/types'
 
 export default function SkillsManager() {
   const [categories, setCategories] = useState<SkillCategory[]>([])
@@ -213,7 +199,7 @@ export default function SkillsManager() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {category.skills.map((skill) => (
+                {category.skills!.map((skill) => (
                   <TableRow key={skill.id}>
                     <TableCell className="font-medium">{skill.name}</TableCell>
                     <TableCell>

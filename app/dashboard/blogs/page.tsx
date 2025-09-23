@@ -28,21 +28,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { MoreHorizontal, Edit, Trash2, Plus, Eye, EyeOff, Archive, FileText } from 'lucide-react'
 import { Loading } from '@/components/ui/loading'
-
-interface Blog {
-  id: number
-  title: string
-  excerpt: string
-  slug: string
-  published: boolean
-  archived: boolean
-  createdAt: string
-  author: {
-    id: number
-    name: string
-    avatar: string | null
-  }
-}
+import { Blog } from '@/types'
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([])

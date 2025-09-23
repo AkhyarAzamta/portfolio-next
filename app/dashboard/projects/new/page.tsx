@@ -11,34 +11,25 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ImageUpload'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FileUpload } from '@/components/FileUpload'
+import { Project } from '@/types'
 
-type FormState = {
-  title: string
-  description: string
-  technologies: string[]
-  sourceCode: string | null
-  demoLink: string | null
-  image: string
-  priceInput: string
-  archived: boolean
-  githubLink: string | null
-  env: string | null
-  password: string | null
-}
+type NewProjectFormData = Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'price'> & {
+  priceInput: string; // Temporary field for price input
+};
 
 export default function NewProjectPage() {
-  const [formData, setFormData] = useState<FormState>({
+  const [formData, setFormData] = useState<NewProjectFormData>({
     title: '',
     description: '',
     technologies: [],
-    sourceCode: null,
-    demoLink: null,
+    sourceCode: '',
     image: '',
-    priceInput: '',
-    archived: false,
-    githubLink: null,
     env: null,
     password: null,
+    demoLink: null,
+    githubLink: null,
+    archived: false,
+    priceInput: '', // Initialize priceInput
   })
 
   const [techInput, setTechInput] = useState<string>('')
@@ -73,7 +64,7 @@ export default function NewProjectPage() {
         return
       }
 
-      let price: number | null = null
+      let price: number | null | undefined = undefined
       if (formData.priceInput.trim() !== '') {
         const parsed = Number(formData.priceInput)
         price = Number.isFinite(parsed) ? parsed : null
@@ -262,12 +253,12 @@ export default function NewProjectPage() {
                 id="price"
                 type="number"
                 step="0.01"
-                min="0"
+                min="0" // Ensure price is not negative
                 value={formData.priceInput}
                 onChange={(e) =>
-                  setFormData((p) => ({ ...p, priceInput: e.target.value }))
+                  setFormData((p) => ({ ...p, price: e.target.value }))
                 }
-                placeholder="Leave empty for free / not for sale"
+                placeholder="Leave empty for archived / not for sale"
               />
             </div>
 
@@ -282,7 +273,7 @@ export default function NewProjectPage() {
               />
             </div>
 
-            {/* Archived */}
+            {/* archived */}
             <div className="flex gap-4">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -292,7 +283,7 @@ export default function NewProjectPage() {
                     setFormData((p) => ({ ...p, archived: checked === true }))
                   }
                 />
-                <Label htmlFor="archived">Archived</Label>
+                <Label htmlFor="archived">archived</Label>
               </div>
             </div>
 

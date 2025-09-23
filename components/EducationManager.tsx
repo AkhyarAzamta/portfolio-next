@@ -8,14 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Pencil, Trash2, Plus } from 'lucide-react'
 import { Loading } from './ui/loading'
-
-interface Education {
-  id: number;
-  degree: string;
-  institution: string;
-  period: string;
-  description?: string;
-}
+import { Education } from '@/types'
 
 export default function EducationManager() {
   const [educations, setEducations] = useState<Education[]>([])
