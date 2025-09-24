@@ -1,22 +1,32 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { ContactRequestBody } from '@/types'
 
-interface ContactRequestBody {
-  name: string;
-  email: string;
-  message: string;
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const limit = searchParams.get('limit')
+    
+    const contacts = await prisma.contactMessage.findMany({
+      take: limit ? parseInt(limit) : undefined,
+      orderBy: { createdAt: 'desc' }
+    })
+    
+    return NextResponse.json(contacts)
+  } catch (error) {
+    console.error('Error fetching contact messages:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }
 
 export async function POST(request: Request) {
   try {
-    // Add a check to ensure prisma is initialized
     if (!prisma) {
       throw new Error('Prisma client not initialized')
     }
     
     const body = await request.json() as ContactRequestBody
     
-    // Validate input
     if (!body.name || !body.email || !body.message) {
       return NextResponse.json(
         { message: 'All fields are required' },
@@ -24,7 +34,6 @@ export async function POST(request: Request) {
       )
     }
 
-    // Store in database
     const contactMessage = await prisma.contactMessage.create({
       data: {
         name: body.name,

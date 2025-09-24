@@ -132,7 +132,7 @@ export default function ProjectList({
       <h2 ref={titleRef} className="text-3xl font-bold mb-4 text-center opacity-0">{title}</h2>
 
       {description && (
-        <p ref={descRef} className="text-lg text-secondary mb-12 text-center max-w-3xl mx-auto opacity-0">
+        <p ref={descRef} className="text-lg text-gray-600 dark:text-secondary mb-12 text-center max-w-3xl mx-auto opacity-0">
           {description}
         </p>
       )}

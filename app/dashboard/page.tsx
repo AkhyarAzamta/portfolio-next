@@ -5,10 +5,10 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Blog, Certificate, Project, User } from '@/types'
-import { 
-  DocumentTextIcon, 
-  CodeBracketIcon, 
-  EnvelopeIcon, 
+import {
+  DocumentTextIcon,
+  CodeBracketIcon,
+  EnvelopeIcon,
   UserCircleIcon,
   PlusIcon,
   EyeIcon,
@@ -21,7 +21,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -29,33 +29,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal } from 'lucide-react'
+import { ContactMessage as Contact } from '@/types'
+import { DashboardStats } from '@/types/dashboard'
 
 type RecentItem = Partial<Blog> | Partial<Project> | Partial<Contact> | Partial<Certificate>
-
-interface Contact {
-  id: number;
-  name: string;
-  email: string;
-  read: boolean;
-  date: string;
-}
-
-interface DashboardStats {
-  totalBlogs: number
-  totalProjects: number
-  totalContacts: number
-  unreadContacts: number
-  recentBlogs: { id: number; title: string; published: boolean; createdAt: string; slug?: string }[]
-  recentProjects: { id: number; title: string; status: string; createdAt: string; slug?: string }[]
-  recentContacts: { id: number; name: string; email: string; read: boolean; date: string }[]
-}
 
 // Color classes for fresh look
 const colorClasses = {
@@ -98,7 +82,7 @@ export default function Dashboard() {
         const response = await fetch('/api/auth/me', {
           credentials: 'include',
         })
-        
+
         if (response.status === 401) {
           router.push('/login')
           return
@@ -110,7 +94,7 @@ export default function Dashboard() {
 
         const userData = await response.json()
         setUser(userData)
-        
+
         await fetchDashboardStats()
       } catch (error) {
         console.error('Authentication error:', error)
@@ -126,7 +110,7 @@ export default function Dashboard() {
   const fetchDashboardStats = async () => {
     try {
       setStatsLoading(true)
-      
+
       const [blogsResponse, projectsResponse, contactsResponse] = await Promise.all([
         fetch('/api/blogs?limit=5'),
         fetch('/api/projects?limit=5'),
@@ -153,69 +137,69 @@ export default function Dashboard() {
     }
   }
 
-const StatCard = ({ 
-  title, 
-  value, 
-  description,
-  icon: Icon, 
-  trend,
-  href,
-  color = 'blue'
-}: { 
-  title: string
-  value: React.ReactNode
-  description?: string
-  icon: React.ElementType
-  trend?: { value: number; isPositive: boolean }
-  href?: string
-  color?: 'blue' | 'green' | 'purple'
-}) => {
-  const card = (
-    <Card className={`relative overflow-hidden transition-all hover:shadow-md ${colorClasses[color]}`}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div className="flex items-center gap-2">
-          <Icon className={`h-4 w-4 ${iconColorClasses[color]}`} />
-          <CardTitle className={`text-sm font-medium ${textColorClasses[color]}`}>
-            {title}
-          </CardTitle>
-        </div>
-<ArrowUpRightIcon className="h-3 w-3" />
-      </CardHeader>
-
-      <CardContent>
-        <div className={`text-2xl font-bold ${textColorClasses[color]}`}>
-          {value}
-        </div>
-        {description && (
-          <p className={`text-xs ${textColorClasses[color]} opacity-80`}>
-            {description}
-          </p>
-        )}
-        {trend && (
-          <div className={`text-xs ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-            {trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value)}% from last month
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  )
-
-  return href ? (
-    <Link href={href} className="block hover:scale-105 transition-transform" aria-label={title}>
-      {card}
-    </Link>
-  ) : (
-    card
-  )
-}
-
-  const QuickActionCard = ({ 
-    title, 
-    description, 
-    icon: Icon, 
+  const StatCard = ({
+    title,
+    value,
+    description,
+    icon: Icon,
+    trend,
     href,
     color = 'blue'
-  }: { 
+  }: {
+    title: string
+    value: React.ReactNode
+    description?: string
+    icon: React.ElementType
+    trend?: { value: number; isPositive: boolean }
+    href?: string
+    color?: 'blue' | 'green' | 'purple'
+  }) => {
+    const card = (
+      <Card className={`relative overflow-hidden transition-all hover:shadow-md ${colorClasses[color]}`}>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <div className="flex items-center gap-2">
+            <Icon className={`h-4 w-4 ${iconColorClasses[color]}`} />
+            <CardTitle className={`text-sm font-medium ${textColorClasses[color]}`}>
+              {title}
+            </CardTitle>
+          </div>
+          <ArrowUpRightIcon className="h-3 w-3" />
+        </CardHeader>
+
+        <CardContent>
+          <div className={`text-2xl font-bold ${textColorClasses[color]}`}>
+            {value}
+          </div>
+          {description && (
+            <p className={`text-xs ${textColorClasses[color]} opacity-80`}>
+              {description}
+            </p>
+          )}
+          {trend && (
+            <div className={`text-xs ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+              {trend.isPositive ? '↑' : '↓'} {Math.abs(trend.value)}% from last month
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    )
+
+    return href ? (
+      <Link href={href} className="block hover:scale-105 transition-transform" aria-label={title}>
+        {card}
+      </Link>
+    ) : (
+      card
+    )
+  }
+
+  const QuickActionCard = ({
+    title,
+    description,
+    icon: Icon,
+    href,
+    color = 'blue'
+  }: {
     title: string
     description: string
     icon: React.ElementType
@@ -242,9 +226,9 @@ const StatCard = ({
     </Card>
   )
 
-  const RecentTable = <T extends RecentItem>({ 
-    data, 
-    title, 
+  const RecentTable = <T extends RecentItem>({
+    data,
+    title,
     type,
     href,
     color = 'blue'
@@ -293,7 +277,7 @@ const StatCard = ({
       const date =
         (item as Blog).createdAt ||
         (item as Project).createdAt ||
-        (item as Contact).date ||
+        (item as Contact).createdAt ||
         new Date().toISOString()
 
       return new Date(date).toLocaleDateString('en-US', {
@@ -314,9 +298,9 @@ const StatCard = ({
               Recently updated {type}s
             </CardDescription>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             className={textColorClasses[color]}
             asChild
           >
@@ -538,7 +522,7 @@ const StatCard = ({
                   </Button>
                 </CardContent>
               </Card>
-              
+
               <Card className={`transition-all hover:shadow-md ${colorClasses.green}`}>
                 <CardHeader>
                   <CardTitle className={`text-lg ${textColorClasses.green}`}>Site Settings</CardTitle>
@@ -550,7 +534,7 @@ const StatCard = ({
                   </Button>
                 </CardContent>
               </Card>
-              
+
               <Card className={`transition-all hover:shadow-md ${colorClasses.purple}`}>
                 <CardHeader>
                   <CardTitle className={`text-lg ${textColorClasses.purple}`}>Analytics</CardTitle>
@@ -562,7 +546,7 @@ const StatCard = ({
                   </Button>
                 </CardContent>
               </Card>
-              
+
               <Card className={`transition-all hover:shadow-md ${colorClasses.blue}`}>
                 <CardHeader>
                   <CardTitle className={`text-lg ${textColorClasses.blue}`}>Backup</CardTitle>

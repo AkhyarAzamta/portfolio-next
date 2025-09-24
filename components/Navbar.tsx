@@ -76,7 +76,7 @@ export default function Navbar() {
             ))}
             
             {/* Login/Logout Button */}
-            {user ? (
+            {user && (
               <div className="flex items-center space-x-4">
                 <span className="text-sm text-gray-600 dark:text-gray-300">
                   Welcome, {user.name}
@@ -88,13 +88,6 @@ export default function Navbar() {
                   Logout
                 </button>
               </div>
-            ) : (
-              <Link
-                href="/login"
-                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors"
-              >
-                Login
-              </Link>
             )}
 
             {/* Theme Toggle */}

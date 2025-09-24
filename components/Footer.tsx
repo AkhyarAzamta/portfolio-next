@@ -10,7 +10,7 @@ export default function Footer() {
             <Link href="/" className="text-xl font-bold text-primary">
               Devfolio&trade;
             </Link>
-            <p className="text-sm text-secondary mt-2">
+            <p className="text-sm dark:text-secondary mt-2">
               © {new Date().getFullYear()} Devfolio. All rights reserved.
             </p>
           </div>
@@ -20,7 +20,7 @@ export default function Footer() {
               href="https://github.com/yourusername"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-secondary hover:text-primary transition-colors"
+              className="dark:text-secondary hover:text-primary transition-colors"
             >
               <FaGithub className="h-6 w-6" />
             </a>
@@ -28,7 +28,7 @@ export default function Footer() {
               href="https://twitter.com/yourusername"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-secondary hover:text-primary transition-colors"
+              className="dark:text-secondary hover:text-primary transition-colors"
             >
               <FaTwitter className="h-6 w-6" />
             </a>
@@ -36,7 +36,7 @@ export default function Footer() {
               href="https://linkedin.com/in/yourusername"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-secondary hover:text-primary transition-colors"
+              className="dark:text-secondary hover:text-primary transition-colors"
             >
               <FaLinkedin className="h-6 w-6" />
             </a>
