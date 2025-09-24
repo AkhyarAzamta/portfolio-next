@@ -1,14 +1,15 @@
-// app/api/admin/blogs/[id]/route.ts - VERSION SIMPLIFIED
+// app/api/admin/blogs/[id]/route.ts
 import { NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/jwt'
 import prisma from '@/lib/prisma'
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+interface RouteParams {
+  params: { id: string }
+}
+
+export async function GET(request: Request, { params }: RouteParams) {
   try {
-    const { id } = await params
+    const { id } = params
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -25,7 +26,7 @@ export async function GET(
     }
 
     const blog = await prisma.blog.findUnique({
-      where: { id },
+      where: { id: id },
       include: {
         author: {
           select: {
@@ -51,12 +52,9 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: Request, { params }: RouteParams) {
   try {
-    const { id } = await params
+    const { id } = params
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -82,7 +80,7 @@ export async function PUT(
     }
 
     const blog = await prisma.blog.update({
-      where: { id },
+      where: { id: id },
       data: {
         title,
         excerpt,
@@ -111,12 +109,9 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(request: Request, { params }: RouteParams) {
   try {
-    const { id } = await params
+    const { id } = params
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -133,7 +128,7 @@ export async function DELETE(
     }
 
     await prisma.blog.delete({
-      where: { id }
+      where: { id: id }
     })
 
     return NextResponse.json({ message: 'Blog deleted successfully' })
