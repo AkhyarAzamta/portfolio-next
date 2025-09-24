@@ -1,10 +1,12 @@
 // app/api/admin/blogs/[id]/route.ts
 import { NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/jwt'
-
 import prisma from '@/lib/prisma'
 
-type Context = { params: Promise<{ id: string }> }
+// PERBAIKAN: Definisikan Context dengan benar
+interface Context {
+  params: Promise<{ id: string }>
+}
 
 function parseId(idStr: unknown): string | null {
   if (typeof idStr === 'string' && idStr.trim() !== '') {
@@ -13,11 +15,11 @@ function parseId(idStr: unknown): string | null {
   return null
 }
 
-export async function GET(request: Request, { params }: Context) {
+export async function GET(request: Request, context: Context) {
   try {
-    // Await the params promise
-    const { id } = await params
-    const parsedId = parseId(id)
+    // PERBAIKAN: Gunakan context.params dan await
+    const params = await context.params
+    const parsedId = parseId(params.id)
     
     if (!parsedId) {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -33,8 +35,9 @@ export async function GET(request: Request, { params }: Context) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
+    // PERBAIKAN: Pastikan parsedId adalah string yang valid
     const blog = await prisma.blog.findUnique({
-      where: { id: parsedId },
+      where: { id: parsedId }, // Sekarang seharusnya tidak ada error type
       include: {
         author: {
           select: {
@@ -60,11 +63,11 @@ export async function GET(request: Request, { params }: Context) {
   }
 }
 
-export async function PUT(request: Request, { params }: Context) {
+export async function PUT(request: Request, context: Context) {
   try {
-    // Await the params promise
-    const { id } = await params
-    const parsedId = parseId(id)
+    // PERBAIKAN: Gunakan context.params dan await
+    const params = await context.params
+    const parsedId = parseId(params.id)
     
     if (!parsedId) {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -119,11 +122,11 @@ export async function PUT(request: Request, { params }: Context) {
   }
 }
 
-export async function DELETE(request: Request, { params }: Context) {
+export async function DELETE(request: Request, context: Context) {
   try {
-    // Await the params promise
-    const { id } = await params
-    const parsedId = parseId(id)
+    // PERBAIKAN: Gunakan context.params dan await
+    const params = await context.params
+    const parsedId = parseId(params.id)
     
     if (!parsedId) {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
