@@ -11,6 +11,7 @@ export interface Project {
   price: number | null;
   githubLink: string | null; // New field
   env: string | null; // New field
+  slug?: string; // New field
   password: string | null; // New field
   createdAt: string;
   updatedAt: string;

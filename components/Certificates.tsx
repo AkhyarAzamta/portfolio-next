@@ -110,11 +110,11 @@ export default function Certificates() {
 
               <div className="flex justify-between px-4 items-center mb-4">
                 <div>
-                  <p className="text-sm text-secondary">
+                  <p className="text-sm dark:text-secondary">
                     Issued: {formatDate(certificate.issueDate)}
                   </p>
                   {certificate.expiryDate && (
-                    <p className="text-sm text-secondary">
+                    <p className="text-sm dark:text-secondary">
                       Expires: {formatDate(certificate.expiryDate)}
                     </p>
                   )}

@@ -1,3 +1,4 @@
+// app/page.tsx
 import Blogs from "@/app/blogs/components/Blogs";
 import Hero from "@/components/Hero";
 import Newsletter from "@/components/Newsletter";

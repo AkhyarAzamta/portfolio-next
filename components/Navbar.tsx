@@ -1,25 +1,59 @@
+// components/Navbar.tsx (Update)
 'use client'
 import Link from 'next/link'
 import { SunIcon, MoonIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useTheme } from '@/app/context/ThemeContext'
+import { useAuth } from '@/app/context/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 
 export default function Navbar() {
-  const { theme, toggleTheme } = useTheme();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme()
+  const { user, isLoading, logout } = useAuth()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
 
-  const menuItems = [
+  const handleLogout = () => {
+    logout()
+    setIsMobileMenuOpen(false)
+  }
+
+  // Menu items for non-logged in users
+  const publicMenuItems = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/projects', label: 'Projects' },
     { href: '/blogs', label: 'Blogs' },
     { href: '/contact', label: 'Contact' },
-  ];
+  ]
+
+  // Menu items for logged in users (Admin)
+  const adminMenuItems = [
+    { href: '/dashboard', label: 'Dashboard' },
+    { href: '/dashboard/projects', label: 'Manage Projects' },
+    { href: '/dashboard/blogs', label: 'Manage Blogs' },
+    { href: '/dashboard/contacts', label: 'Manage Contacts' },
+    { href: '/dashboard/about', label: 'Manage About' },
+  ]
+
+  // Determine which menu items to show
+  const menuItems = user ? adminMenuItems : publicMenuItems
+
+  if (isLoading) {
+    return (
+      <nav className="fixed w-full bg-white/80 dark:bg-dark/80 backdrop-blur-sm z-50">
+        <div className="container max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <div className="text-xl font-bold text-primary">Devfolio&trade;</div>
+            <div className="animate-pulse bg-gray-300 dark:bg-gray-600 h-6 w-20 rounded"></div>
+          </div>
+        </div>
+      </nav>
+    )
+  }
 
   return (
     <nav className="fixed w-full bg-white/80 dark:bg-dark/80 backdrop-blur-sm z-50">
@@ -40,6 +74,30 @@ export default function Navbar() {
                 {item.label}
               </Link>
             ))}
+            
+            {/* Login/Logout Button */}
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  Welcome, {user.name}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Login
+              </Link>
+            )}
+
+            {/* Theme Toggle */}
             <motion.button
               onClick={toggleTheme}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -55,18 +113,25 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <motion.button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            onClick={toggleMobileMenu}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            {isMobileMenuOpen ? (
-              <XMarkIcon className="h-6 w-6" />
-            ) : (
-              <Bars3Icon className="h-6 w-6" />
+          <div className="md:hidden flex items-center space-x-2">
+            {user && (
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Hi, {user.name}
+              </span>
             )}
-          </motion.button>
+            <motion.button
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              onClick={toggleMobileMenu}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {isMobileMenuOpen ? (
+                <XMarkIcon className="h-6 w-6" />
+              ) : (
+                <Bars3Icon className="h-6 w-6" />
+              )}
+            </motion.button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -96,15 +161,42 @@ export default function Navbar() {
                     </Link>
                   </motion.div>
                 ))}
+                
+                {/* Mobile Auth Section */}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: menuItems.length * 0.1 }}
+                  className="pt-4 border-t border-gray-200 dark:border-gray-700"
+                >
+                  {user ? (
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left py-2 text-red-500 hover:text-red-600 transition-colors"
+                    >
+                      Logout
+                    </button>
+                  ) : (
+                    <Link
+                      href="/login"
+                      className="block py-2 hover:text-primary transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                  )}
+                </motion.div>
+
+                {/* Mobile Theme Toggle */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: (menuItems.length + 1) * 0.1 }}
                 >
                   <button
                     onClick={() => {
-                      toggleTheme();
-                      setIsMobileMenuOpen(false);
+                      toggleTheme()
+                      setIsMobileMenuOpen(false)
                     }}
                     className="flex items-center py-2 hover:text-primary transition-colors"
                   >
@@ -128,4 +220,4 @@ export default function Navbar() {
       </div>
     </nav>
   )
-} 
+}
