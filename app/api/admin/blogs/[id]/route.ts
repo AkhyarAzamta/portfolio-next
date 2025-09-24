@@ -1,15 +1,16 @@
-// app/api/admin/blogs/[id]/route.ts
+// app/api/admin/blogs/[id]/route.ts.
 import { NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/jwt'
 import prisma from '@/lib/prisma'
 
-interface RouteParams {
-  params: { id: string }
-}
-
-export async function GET(request: Request, { params }: RouteParams) {
+// Untuk Next.js 15, params adalah Promise yang harus di-await
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params
+    // Await the params promise
+    const { id } = await params
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -52,9 +53,13 @@ export async function GET(request: Request, { params }: RouteParams) {
   }
 }
 
-export async function PUT(request: Request, { params }: RouteParams) {
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params
+    // Await the params promise
+    const { id } = await params
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -109,9 +114,13 @@ export async function PUT(request: Request, { params }: RouteParams) {
   }
 }
 
-export async function DELETE(request: Request, { params }: RouteParams) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params
+    // Await the params promise
+    const { id } = await params
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
