@@ -1,27 +1,16 @@
-// app/api/admin/blogs/[id]/route.ts
+// app/api/admin/blogs/[id]/route.ts - VERSION SIMPLIFIED
 import { NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/jwt'
 import prisma from '@/lib/prisma'
 
-// PERBAIKAN: Definisikan Context dengan benar
-interface Context {
-  params: Promise<{ id: string }>
-}
-
-function parseId(idStr: unknown): string | null {
-  if (typeof idStr === 'string' && idStr.trim() !== '') {
-    return idStr
-  }
-  return null
-}
-
-export async function GET(request: Request, context: Context) {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    // PERBAIKAN: Gunakan context.params dan await
-    const params = await context.params
-    const parsedId = parseId(params.id)
+    const { id } = await params
     
-    if (!parsedId) {
+    if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
     }
 
@@ -35,9 +24,8 @@ export async function GET(request: Request, context: Context) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // PERBAIKAN: Pastikan parsedId adalah string yang valid
     const blog = await prisma.blog.findUnique({
-      where: { id: parsedId }, // Sekarang seharusnya tidak ada error type
+      where: { id },
       include: {
         author: {
           select: {
@@ -63,13 +51,14 @@ export async function GET(request: Request, context: Context) {
   }
 }
 
-export async function PUT(request: Request, context: Context) {
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    // PERBAIKAN: Gunakan context.params dan await
-    const params = await context.params
-    const parsedId = parseId(params.id)
+    const { id } = await params
     
-    if (!parsedId) {
+    if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
     }
 
@@ -93,7 +82,7 @@ export async function PUT(request: Request, context: Context) {
     }
 
     const blog = await prisma.blog.update({
-      where: { id: parsedId },
+      where: { id },
       data: {
         title,
         excerpt,
@@ -122,13 +111,14 @@ export async function PUT(request: Request, context: Context) {
   }
 }
 
-export async function DELETE(request: Request, context: Context) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    // PERBAIKAN: Gunakan context.params dan await
-    const params = await context.params
-    const parsedId = parseId(params.id)
+    const { id } = await params
     
-    if (!parsedId) {
+    if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
     }
 
@@ -143,7 +133,7 @@ export async function DELETE(request: Request, context: Context) {
     }
 
     await prisma.blog.delete({
-      where: { id: parsedId }
+      where: { id }
     })
 
     return NextResponse.json({ message: 'Blog deleted successfully' })
