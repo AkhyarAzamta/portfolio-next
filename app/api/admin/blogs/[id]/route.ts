@@ -1,16 +1,16 @@
-// app/api/admin/blogs/[id]/route.ts.
-import { NextResponse } from 'next/server'
+// app/api/admin/blogs/[id]/route.ts
+import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/jwt'
 import prisma from '@/lib/prisma'
 
-// Untuk Next.js 15, params adalah Promise yang harus di-await
+// Handler untuk GET request
 export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Await the params promise
-    const { id } = await params
+    const params = await context.params
+    const { id } = params
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -27,7 +27,7 @@ export async function GET(
     }
 
     const blog = await prisma.blog.findUnique({
-      where: { id: id },
+      where: { id },
       include: {
         author: {
           select: {
@@ -53,13 +53,14 @@ export async function GET(
   }
 }
 
+// Handler untuk PUT request
 export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Await the params promise
-    const { id } = await params
+    const params = await context.params
+    const { id } = params
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -85,7 +86,7 @@ export async function PUT(
     }
 
     const blog = await prisma.blog.update({
-      where: { id: id },
+      where: { id },
       data: {
         title,
         excerpt,
@@ -114,13 +115,14 @@ export async function PUT(
   }
 }
 
+// Handler untuk DELETE request
 export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Await the params promise
-    const { id } = await params
+    const params = await context.params
+    const { id } = params
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -137,7 +139,7 @@ export async function DELETE(
     }
 
     await prisma.blog.delete({
-      where: { id: id }
+      where: { id }
     })
 
     return NextResponse.json({ message: 'Blog deleted successfully' })
