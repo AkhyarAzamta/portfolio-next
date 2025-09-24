@@ -5,15 +5,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import BlogForm from '@/app/blogs/components/BlogForm'
 import { Loading } from '@/components/ui/loading'
-
-interface Blog {
-  id: number
-  title: string
-  excerpt: string
-  content: string
-  published: boolean
-  archived: boolean
-}
+import { Blog } from '@/types'
 
 export default function EditBlogPage() {
   const [blog, setBlog] = useState<Blog | null>(null)
@@ -75,5 +67,5 @@ export default function EditBlogPage() {
     )
   }
 
-  return <BlogForm blog={blog} />
+  return <BlogForm blog={{ ...blog, content: blog.content ?? '' }} />
 }

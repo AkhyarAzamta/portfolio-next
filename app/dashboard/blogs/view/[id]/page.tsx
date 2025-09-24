@@ -8,22 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { FaCalendarAlt, FaClock, FaUser, FaArrowLeft, FaEye, FaEyeSlash, FaEdit } from 'react-icons/fa'
 import { Loading } from '@/components/ui/loading'
 import Image from 'next/image'
-
-interface Blog {
-  id: number
-  title: string
-  excerpt: string
-  content: string
-  slug: string
-  published: boolean
-  archived: boolean
-  createdAt: string
-  updatedAt: string
-  author: {
-    name: string
-    avatar: string | null
-  }
-}
+import { Blog } from '@/types'
 
 export default function AdminBlogViewPage() {
   const [blog, setBlog] = useState<Blog | null>(null)
@@ -125,7 +110,7 @@ export default function AdminBlogViewPage() {
     return `${minutes} min read`
   }
 
-  const readTime = calculateReadTime(blog.content)
+  const readTime = calculateReadTime(blog.content || '')
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -174,18 +159,18 @@ export default function AdminBlogViewPage() {
           
           <div className="flex flex-wrap items-center text-sm text-gray-500 gap-4 mt-4">
             <div className="flex items-center">
-              {blog.author.avatar && (
+              {blog.author!.avatar && (
                 <div className="relative w-6 h-6 mr-2">
                   <Image
-                    src={blog.author.avatar}
-                    alt={blog.author.name}
+                    src={blog.author!.avatar}
+                    alt={blog.author!.name}
                     fill
                     className="rounded-full object-cover"
                   />
                 </div>
               )}
               <FaUser className="mr-1" />
-              {blog.author.name}
+              {blog.author!.name}
             </div>
             <div className="flex items-center">
               <FaCalendarAlt className="mr-1" />
@@ -217,7 +202,7 @@ export default function AdminBlogViewPage() {
         <CardContent>
           <div 
             className="prose prose-lg max-w-none"
-            dangerouslySetInnerHTML={{ __html: blog.content }}
+            dangerouslySetInnerHTML={{ __html: blog.content ?? '' }}
           />
         </CardContent>
       </Card>

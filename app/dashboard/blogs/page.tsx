@@ -67,7 +67,7 @@ export default function BlogsPage() {
     }
   }
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this blog?')) {
       return
     }
@@ -91,7 +91,7 @@ export default function BlogsPage() {
     }
   }
 
-  const togglePublish = async (id: number, currentStatus: boolean) => {
+  const togglePublish = async (id: string, currentStatus: boolean) => {
     try {
       const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
       const response = await fetch(`/api/admin/blogs/${id}`, {
@@ -115,7 +115,7 @@ export default function BlogsPage() {
     }
   }
 
-  const toggleArchive = async (id: number, currentStatus: boolean) => {
+  const toggleArchive = async (id: string, currentStatus: boolean) => {
     try {
       const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
       const response = await fetch(`/api/admin/blogs/${id}`, {

@@ -2,7 +2,7 @@
 import { SignJWT, jwtVerify } from 'jose'
 
 export interface JWTPayload {
-  id: number
+  id: string
   email: string
   role: string
 }
@@ -12,7 +12,7 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET ?? 'your-secret-k
 export async function generateToken(payload: JWTPayload): Promise<string> {
   return await new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256' })
-    .setExpirationTime('7d')
+    .setExpirationTime('3d')
     .sign(secret)
 }
 

@@ -2,7 +2,7 @@ import { UserBasic } from "./user"
 
 /* --------------------- Blog --------------------- */
 export interface Blog {
-  id: number
+  id: string
   title: string
   excerpt: string
   content?: string | null
@@ -22,7 +22,7 @@ export interface Blog {
 
 // Blog create/update DTO
 export interface BlogBasic {
-  id: number
+  id: string
   title: string
   excerpt: string
   slug: string
@@ -34,7 +34,7 @@ export interface BlogBasic {
 }
 
 export interface BlogPost {
-  id: number
+  id: string
   title: string
   excerpt: string
   content: string
@@ -61,7 +61,7 @@ export interface BlogUpdateInput {
 
 export interface BlogFormProps {
   blog?: {
-    id: number
+    id: string
     title: string
     excerpt: string
     content: string

@@ -41,7 +41,7 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
           setAdminUser(admin)
         } else {
           setAdminUser({
-            id: 1,
+            id: '1',
             name: 'Akhyar Azamta',
             email: 'akhyar.azamta@gmail.com',
             avatar: '/profile.jpg',
@@ -51,13 +51,15 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
               github: 'https://github.com/akhyarazamta',
               linkedin: 'https://linkedin.com/in/akhyarazamta',
               instagram: 'https://instagram.com/akhyarazamta'
-            }
+            },
+            createdAt: new Date().toISOString(), // Add default createdAt
+            updatedAt: new Date().toISOString(), // Add default updatedAt
           })
         }
       } catch (error) {
         console.error('Error fetching admin user:', error)
         setAdminUser({
-          id: 1,
+          id: '1',
           name: 'Akhyar Azamta',
           email: 'akhyar.azamta@gmail.com',
           avatar: '/profile.jpg',
@@ -67,7 +69,9 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
             github: 'https://github.com/akhyarazamta',
             linkedin: 'https://linkedin.com/in/akhyarazamta',
             instagram: 'https://instagram.com/akhyarazamta'
-          }
+          },
+          createdAt: new Date().toISOString(), // Add default createdAt
+          updatedAt: new Date().toISOString(), // Add default updatedAt
         })
       } finally {
         setLoading(false)

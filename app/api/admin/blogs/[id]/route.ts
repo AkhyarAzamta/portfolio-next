@@ -4,12 +4,13 @@ import { verifyToken } from '@/lib/jwt'
 
 import prisma from '@/lib/prisma'
 
-// Next.js 15: params is a Promise<{ id: string }>
 type Context = { params: Promise<{ id: string }> }
 
-function parseId(idStr: unknown): number | null {
-  const n = Number(idStr)
-  return Number.isInteger(n) && n > 0 ? n : null
+function parseId(idStr: unknown): string | null {
+  if (typeof idStr === 'string' && idStr.trim() !== '') {
+    return idStr
+  }
+  return null
 }
 
 export async function GET(request: Request, { params }: Context) {
