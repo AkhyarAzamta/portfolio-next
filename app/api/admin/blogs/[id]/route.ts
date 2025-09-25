@@ -128,7 +128,6 @@ export async function DELETE( request: NextRequest, context: Context ) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // PERBAIKAN: Gunakan type casting
     await prisma.blog.delete({
       where: { id }
     })
