@@ -14,7 +14,7 @@ import ViewCountTracker from './components/ViewCountTracker'
 import ShareButtons from './components/ShareButtons'
 import RecentPostsSidebar from './components/RecentPostsSidebar'
 import RelatedPosts from './components/RelatedPosts'
-import { Blog, BlogPost } from '@/types'
+import { BlogPost } from '@/types'
 
 import prisma from '@/lib/prisma'
 
@@ -97,7 +97,7 @@ async function getRelatedPosts(currentSlug: string, tags: string[]): Promise<Blo
     if (tags.length === 0) return []
 
     const blogs = await prisma.blog.findMany({
-      where: { 
+      where: {
         slug: { not: currentSlug },
         published: true,
         tags: {
@@ -116,10 +116,10 @@ async function getRelatedPosts(currentSlug: string, tags: string[]): Promise<Blo
       }
     })
     
-    return blogs.map((blog: Blog) => ({
+    return blogs.map(blog => ({
       ...blog,
-      createdAt: blog.createdAt.toString(),
-      updatedAt: blog.updatedAt.toString(),
+      createdAt: blog.createdAt.toISOString(),
+      updatedAt: blog.updatedAt.toISOString(),
       content: blog.content || '',
       tags: blog.tags || [],
       viewCount: blog.viewCount || 0
@@ -150,10 +150,10 @@ async function getRecentPosts(excludeSlug: string): Promise<BlogPost[]> {
       }
     })
     
-    return blogs.map((blog: Blog) => ({
+    return blogs.map(blog => ({
       ...blog,
-      createdAt: blog.createdAt.toString(),
-      updatedAt: blog.updatedAt.toString(),
+      createdAt: blog.createdAt.toISOString(),
+      updatedAt: blog.updatedAt.toISOString(),
       content: blog.content || '',
       tags: blog.tags || [],
       viewCount: blog.viewCount || 0

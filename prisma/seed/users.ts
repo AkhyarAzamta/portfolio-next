@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, UserRole } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 export async function seedUsers(prisma: PrismaClient) {
@@ -14,7 +14,7 @@ export async function seedUsers(prisma: PrismaClient) {
       name: 'Akhyar Azamta',
       email: 'akhyar.azamta@gmail.com',
       password: hashedPassword,
-      role: 'ADMIN',
+      role: UserRole.ADMIN,
       avatar: '/profile.jpg',
       title: 'Frontend Developer | Backend Developer | IoT Engineer',
       bio: 'Passionate developer with expertise in building modern web applications',
@@ -26,7 +26,7 @@ export async function seedUsers(prisma: PrismaClient) {
       name: 'Regular User',
       email: 'user@example.com',
       password: hashedPassword,
-      role: 'USER',
+      role: UserRole.USER,
       avatar: '/avatars/user.jpg',
       title: 'Junior Developer',
       bio: 'Passionate about learning new technologies'
