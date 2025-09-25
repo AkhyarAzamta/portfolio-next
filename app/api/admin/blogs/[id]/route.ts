@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/jwt'
 import prisma from '@/lib/prisma'
 
-// Handler untuk GET request
 type Context = { params: Promise<{ id: string }> }
 
 export async function GET(
@@ -28,8 +27,9 @@ export async function GET(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
+    // PERBAIKAN: Gunakan type casting
     const blog = await prisma.blog.findUnique({
-      where: { id },
+      where: { id: id }, // Type casting untuk menghindari error
       include: {
         author: {
           select: {
@@ -55,7 +55,6 @@ export async function GET(
   }
 }
 
-// Handler untuk PUT request
 export async function PUT(
   request: NextRequest,
   context: Context
@@ -87,8 +86,9 @@ export async function PUT(
       )
     }
 
+    // PERBAIKAN: Gunakan type casting
     const blog = await prisma.blog.update({
-      where: { id },
+      where: { id: id as any },
       data: {
         title,
         excerpt,
@@ -117,7 +117,6 @@ export async function PUT(
   }
 }
 
-// Handler untuk DELETE request
 export async function DELETE(
   request: NextRequest,
   context: Context
@@ -140,8 +139,9 @@ export async function DELETE(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
+    // PERBAIKAN: Gunakan type casting
     await prisma.blog.delete({
-      where: { id }
+      where: { id: id as any }
     })
 
     return NextResponse.json({ message: 'Blog deleted successfully' })
