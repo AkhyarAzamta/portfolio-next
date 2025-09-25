@@ -3,14 +3,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/jwt'
 import prisma from '@/lib/prisma'
 
-type Context = { params: Promise<{ id: string }> }
+type Context = { params: { id: string } }
 
-export async function GET( request: NextRequest, context: Context ) {
+export async function GET(request: NextRequest, context: Context) {
   try {
-    const params = await context.params
-    const id = params.id
+    const { id } = context.params
     
-    if (!id || typeof id !== 'string') {
+    if (!id) {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
     }
 
@@ -25,14 +24,10 @@ export async function GET( request: NextRequest, context: Context ) {
     }
 
     const blog = await prisma.blog.findUnique({
-      where: { id },
+      where: { id }, // ✅ sudah sesuai schema (String)
       include: {
         author: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
+          select: { id: true, name: true, avatar: true }
         }
       }
     })
@@ -44,10 +39,7 @@ export async function GET( request: NextRequest, context: Context ) {
     return NextResponse.json(blog)
   } catch (error) {
     console.error('Error fetching blog:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch blog' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch blog' }, { status: 500 })
   }
 }
 
