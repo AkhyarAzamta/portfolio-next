@@ -32,7 +32,7 @@ model User {
 }
 
 model Blog {
-  id        String   @id @default(cuid())
+  id        String   @id @unique @default(cuid())
   title     String
   excerpt   String
   content   String?
