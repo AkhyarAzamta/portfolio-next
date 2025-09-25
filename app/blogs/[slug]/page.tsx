@@ -14,7 +14,7 @@ import ViewCountTracker from './components/ViewCountTracker'
 import ShareButtons from './components/ShareButtons'
 import RecentPostsSidebar from './components/RecentPostsSidebar'
 import RelatedPosts from './components/RelatedPosts'
-import { BlogPost } from '@/types'
+import { Blog, BlogPost } from '@/types'
 
 import prisma from '@/lib/prisma'
 
@@ -116,10 +116,10 @@ async function getRelatedPosts(currentSlug: string, tags: string[]): Promise<Blo
       }
     })
     
-    return blogs.map(blog => ({
+    return blogs.map((blog: Blog) => ({
       ...blog,
-      createdAt: blog.createdAt.toISOString(),
-      updatedAt: blog.updatedAt.toISOString(),
+      createdAt: blog.createdAt.toString(),
+      updatedAt: blog.updatedAt.toString(),
       content: blog.content || '',
       tags: blog.tags || [],
       viewCount: blog.viewCount || 0
@@ -150,10 +150,10 @@ async function getRecentPosts(excludeSlug: string): Promise<BlogPost[]> {
       }
     })
     
-    return blogs.map(blog => ({
+    return blogs.map((blog: Blog) => ({
       ...blog,
-      createdAt: blog.createdAt.toISOString(),
-      updatedAt: blog.updatedAt.toISOString(),
+      createdAt: blog.createdAt.toString(),
+      updatedAt: blog.updatedAt.toString(),
       content: blog.content || '',
       tags: blog.tags || [],
       viewCount: blog.viewCount || 0
