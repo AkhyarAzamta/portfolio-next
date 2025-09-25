@@ -25,7 +25,7 @@ export async function GET( request: NextRequest, context: Context ) {
     }
 
     const blog = await prisma.blog.findUnique({
-      where: { id }, 
+      where: { id: id as string },
       include: {
         author: {
           select: {
