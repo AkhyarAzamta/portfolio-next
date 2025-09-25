@@ -1,14 +1,13 @@
-// app/api/admin/blogs/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/jwt'
 import prisma from '@/lib/prisma'
 
 type Context = { params: { id: string } }
 
-export async function GET(request: NextRequest, context: Context) {
+export async function GET(request: NextRequest, { params }: Context) {
   try {
-    const { id } = context.params
-    
+    const { id } = params
+
     if (!id) {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
     }
@@ -24,10 +23,14 @@ export async function GET(request: NextRequest, context: Context) {
     }
 
     const blog = await prisma.blog.findUnique({
-      where: { id }, // ✅ sudah sesuai schema (String)
+      where: { id },
       include: {
         author: {
-          select: { id: true, name: true, avatar: true }
+          select: {
+            id: true,
+            name: true,
+            avatar: true
+          }
         }
       }
     })
@@ -43,12 +46,11 @@ export async function GET(request: NextRequest, context: Context) {
   }
 }
 
-export async function PUT( request: NextRequest, context: Context ) {
+export async function PUT(request: NextRequest, { params }: Context) {
   try {
-    const params = await context.params
-    const id = params.id
-    
-    if (!id || typeof id !== 'string') {
+    const { id } = params
+
+    if (!id) {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
     }
 
@@ -63,7 +65,7 @@ export async function PUT( request: NextRequest, context: Context ) {
     }
 
     const { title, excerpt, content, published, archived } = await request.json()
-    
+
     if (!title || !excerpt) {
       return NextResponse.json(
         { error: 'Title and excerpt are required' },
@@ -73,13 +75,7 @@ export async function PUT( request: NextRequest, context: Context ) {
 
     const blog = await prisma.blog.update({
       where: { id },
-      data: {
-        title,
-        excerpt,
-        content,
-        published,
-        archived
-      },
+      data: { title, excerpt, content, published, archived },
       include: {
         author: {
           select: {
@@ -94,19 +90,15 @@ export async function PUT( request: NextRequest, context: Context ) {
     return NextResponse.json(blog)
   } catch (error) {
     console.error('Error updating blog:', error)
-    return NextResponse.json(
-      { error: 'Failed to update blog' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update blog' }, { status: 500 })
   }
 }
 
-export async function DELETE( request: NextRequest, context: Context ) {
+export async function DELETE(request: NextRequest, { params }: Context) {
   try {
-    const params = await context.params
-    const id = params.id
-    
-    if (!id || typeof id !== 'string') {
+    const { id } = params
+
+    if (!id) {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
     }
 
@@ -120,16 +112,11 @@ export async function DELETE( request: NextRequest, context: Context ) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    await prisma.blog.delete({
-      where: { id }
-    })
+    await prisma.blog.delete({ where: { id } })
 
     return NextResponse.json({ message: 'Blog deleted successfully' })
   } catch (error) {
     console.error('Error deleting blog:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete blog' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to delete blog' }, { status: 500 })
   }
 }
