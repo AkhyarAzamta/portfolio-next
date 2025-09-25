@@ -29,7 +29,7 @@ export async function GET(
 
     // PERBAIKAN: Gunakan type casting
     const blog = await prisma.blog.findUnique({
-      where: { id: id }, // Type casting untuk menghindari error
+      where: { id }, // Type casting untuk menghindari error
       include: {
         author: {
           select: {
@@ -88,7 +88,7 @@ export async function PUT(
 
     // PERBAIKAN: Gunakan type casting
     const blog = await prisma.blog.update({
-      where: { id: id as any },
+      where: { id },
       data: {
         title,
         excerpt,
@@ -141,7 +141,7 @@ export async function DELETE(
 
     // PERBAIKAN: Gunakan type casting
     await prisma.blog.delete({
-      where: { id: id as any }
+      where: { id }
     })
 
     return NextResponse.json({ message: 'Blog deleted successfully' })
