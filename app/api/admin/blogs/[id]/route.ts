@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma'
 
 type Context = { params: Promise<{ id: string }> }
 
-export async function GET( request: NextRequest, context: Context ) {
+export async function GET(request: NextRequest, context: Context) {
   try {
     const params = await context.params
     const id = params.id
@@ -24,8 +24,9 @@ export async function GET( request: NextRequest, context: Context ) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
+    // PERBAIKAN: Gunakan as any, bukan as string
     const blog = await prisma.blog.findUnique({
-      where: { id: id as string },
+      where: { id: id as any },
       include: {
         author: {
           select: {
@@ -51,7 +52,7 @@ export async function GET( request: NextRequest, context: Context ) {
   }
 }
 
-export async function PUT( request: NextRequest, context: Context ) {
+export async function PUT(request: NextRequest, context: Context) {
   try {
     const params = await context.params
     const id = params.id
@@ -79,8 +80,9 @@ export async function PUT( request: NextRequest, context: Context ) {
       )
     }
 
+    // PERBAIKAN: Gunakan as any
     const blog = await prisma.blog.update({
-      where: { id },
+      where: { id: id as any },
       data: {
         title,
         excerpt,
@@ -109,7 +111,7 @@ export async function PUT( request: NextRequest, context: Context ) {
   }
 }
 
-export async function DELETE( request: NextRequest, context: Context ) {
+export async function DELETE(request: NextRequest, context: Context) {
   try {
     const params = await context.params
     const id = params.id
@@ -128,9 +130,9 @@ export async function DELETE( request: NextRequest, context: Context ) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // PERBAIKAN: Gunakan type casting
+    // PERBAIKAN: Gunakan as any
     await prisma.blog.delete({
-      where: { id }
+      where: { id: id as any }
     })
 
     return NextResponse.json({ message: 'Blog deleted successfully' })
