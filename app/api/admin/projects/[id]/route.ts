@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { verifyToken } from '@/lib/jwt'
 
-// Next.js 15: params berupa Promise<{ id: string }>
 type Context = { params: Promise<{ id: string }> }
 
 export async function GET(request: Request, ctx: Context) {

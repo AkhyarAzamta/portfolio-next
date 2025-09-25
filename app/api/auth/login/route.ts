@@ -51,7 +51,6 @@ export async function POST(request: Request) {
       role: user.role
     })
 
-    // Hapus password dari response
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userWithoutPassword } = user
 

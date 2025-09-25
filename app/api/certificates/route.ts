@@ -12,8 +12,8 @@ export async function GET() {
     // Convert Date objects to ISO strings for proper serialization
     const serializedCertificates = certificates.map(certificate => ({
       ...certificate,
-      issueDate: certificate.issueDate.toISOString(),
-      expiryDate: certificate.expiryDate ? certificate.expiryDate.toISOString() : null
+      issueDate: certificate.issueDate.toString(),
+      expiryDate: certificate.expiryDate ? certificate.expiryDate.toString() : null
     }))
 
     return NextResponse.json(serializedCertificates)

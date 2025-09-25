@@ -36,7 +36,7 @@ export async function GET() {
     const blogsWithVirtualFields = blogs.map(blog => ({
       ...blog,
       date: blog.createdAt,
-      readTime: calculateReadTime(blog.content),
+      readTime: calculateReadTime(blog.content ?? null),
       viewCount: blog.viewCount || 0,
       tags: blog.tags || []
     }))

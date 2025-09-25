@@ -28,8 +28,8 @@ export async function GET(request: Request) {
       githubLink: p.githubLink ?? null,
       env: p.env ?? null,
       password: p.password ?? null,
-      createdAt: p.createdAt.toISOString(),
-      updatedAt: p.updatedAt.toISOString()
+      createdAt: p.createdAt.toString(),
+      updatedAt: p.updatedAt.toString()
     }))
 
     return NextResponse.json(projects)
