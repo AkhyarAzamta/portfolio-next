@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma'
 
 type Context = { params: Promise<{ id: string }> }
 
-export async function GET(request: NextRequest, context: Context) {
+export async function GET( request: NextRequest, context: Context ) {
   try {
     const params = await context.params
     const id = params.id
@@ -24,9 +24,8 @@ export async function GET(request: NextRequest, context: Context) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // PERBAIKAN: Gunakan as any, bukan as string
     const blog = await prisma.blog.findUnique({
-      where: { id: id as any },
+      where: { id },
       include: {
         author: {
           select: {
@@ -52,7 +51,7 @@ export async function GET(request: NextRequest, context: Context) {
   }
 }
 
-export async function PUT(request: NextRequest, context: Context) {
+export async function PUT( request: NextRequest, context: Context ) {
   try {
     const params = await context.params
     const id = params.id
@@ -80,9 +79,8 @@ export async function PUT(request: NextRequest, context: Context) {
       )
     }
 
-    // PERBAIKAN: Gunakan as any
     const blog = await prisma.blog.update({
-      where: { id: id as any },
+      where: { id },
       data: {
         title,
         excerpt,
@@ -111,7 +109,7 @@ export async function PUT(request: NextRequest, context: Context) {
   }
 }
 
-export async function DELETE(request: NextRequest, context: Context) {
+export async function DELETE( request: NextRequest, context: Context ) {
   try {
     const params = await context.params
     const id = params.id
@@ -130,9 +128,9 @@ export async function DELETE(request: NextRequest, context: Context) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // PERBAIKAN: Gunakan as any
+    // PERBAIKAN: Gunakan type casting
     await prisma.blog.delete({
-      where: { id: id as any }
+      where: { id }
     })
 
     return NextResponse.json({ message: 'Blog deleted successfully' })

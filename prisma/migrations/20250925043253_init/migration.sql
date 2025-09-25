@@ -1,57 +1,37 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "public"."UserRole" AS ENUM ('ADMIN', 'USER');
 
-  - You are about to drop the `About` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Blog` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `ContactInfo` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `ContactMessage` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Education` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Experience` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Project` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Skill` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `SkillCategory` table. If the table is not empty, all the data it contains will be lost.
+-- CreateTable
+CREATE TABLE "public"."users" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" "public"."UserRole" NOT NULL DEFAULT 'USER',
+    "avatar" TEXT,
+    "title" TEXT,
+    "bio" TEXT,
+    "githubUrl" TEXT,
+    "linkedinUrl" TEXT,
+    "instagramUrl" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-*/
--- DropForeignKey
-ALTER TABLE "public"."Skill" DROP CONSTRAINT "Skill_categoryId_fkey";
-
--- DropTable
-DROP TABLE "public"."About";
-
--- DropTable
-DROP TABLE "public"."Blog";
-
--- DropTable
-DROP TABLE "public"."ContactInfo";
-
--- DropTable
-DROP TABLE "public"."ContactMessage";
-
--- DropTable
-DROP TABLE "public"."Education";
-
--- DropTable
-DROP TABLE "public"."Experience";
-
--- DropTable
-DROP TABLE "public"."Project";
-
--- DropTable
-DROP TABLE "public"."Skill";
-
--- DropTable
-DROP TABLE "public"."SkillCategory";
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "public"."blogs" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "excerpt" TEXT NOT NULL,
     "content" TEXT,
-    "authorId" INTEGER NOT NULL,
+    "authorId" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "published" BOOLEAN NOT NULL DEFAULT false,
     "archived" BOOLEAN NOT NULL DEFAULT false,
+    "viewCount" INTEGER NOT NULL DEFAULT 0,
+    "tags" TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -60,15 +40,18 @@ CREATE TABLE "public"."blogs" (
 
 -- CreateTable
 CREATE TABLE "public"."projects" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "technologies" TEXT[],
-    "githubLink" TEXT,
+    "sourceCode" TEXT,
     "demoLink" TEXT,
     "image" TEXT NOT NULL,
-    "freeToUse" BOOLEAN NOT NULL DEFAULT false,
-    "featured" BOOLEAN NOT NULL DEFAULT false,
+    "archived" BOOLEAN NOT NULL DEFAULT false,
+    "price" DOUBLE PRECISION,
+    "githubLink" TEXT,
+    "env" TEXT,
+    "password" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -77,7 +60,7 @@ CREATE TABLE "public"."projects" (
 
 -- CreateTable
 CREATE TABLE "public"."contact_messages" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "message" TEXT NOT NULL,
@@ -159,6 +142,37 @@ CREATE TABLE "public"."contact_info" (
 
     CONSTRAINT "contact_info_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateTable
+CREATE TABLE "public"."certificates" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "issuer" TEXT NOT NULL,
+    "issueDate" TIMESTAMP(3) NOT NULL,
+    "expiryDate" TIMESTAMP(3),
+    "credentialURL" TEXT,
+    "image" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "certificates_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."language_skills" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "level" INTEGER NOT NULL,
+    "category" TEXT,
+    "logo" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "language_skills_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "public"."users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "blogs_slug_key" ON "public"."blogs"("slug");
