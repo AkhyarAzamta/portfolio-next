@@ -4,9 +4,11 @@ import { verifyToken } from '@/lib/jwt'
 import prisma from '@/lib/prisma'
 
 // Handler untuk GET request
+type Context = { params: Promise<{ id: string }> }
+
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: Context
 ) {
   try {
     const params = await context.params
@@ -56,7 +58,7 @@ export async function GET(
 // Handler untuk PUT request
 export async function PUT(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: Context
 ) {
   try {
     const params = await context.params
@@ -118,7 +120,7 @@ export async function PUT(
 // Handler untuk DELETE request
 export async function DELETE(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: Context
 ) {
   try {
     const params = await context.params
