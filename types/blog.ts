@@ -7,7 +7,6 @@ export interface Blog {
   excerpt: string
   content?: string | null
   authorId: number
-  // relation
   viewCount: number
   image?: string | null
   coverImage?: string | null

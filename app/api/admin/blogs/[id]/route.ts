@@ -5,13 +5,10 @@ import prisma from '@/lib/prisma'
 
 type Context = { params: Promise<{ id: string }> }
 
-export async function GET(
-  request: NextRequest,
-  context: Context
-) {
+export async function GET( request: NextRequest, context: Context ) {
   try {
     const params = await context.params
-    const { id } = params
+    const id = params.id
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -27,9 +24,8 @@ export async function GET(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // PERBAIKAN: Gunakan type casting
     const blog = await prisma.blog.findUnique({
-      where: { id }, // Type casting untuk menghindari error
+      where: { id }, 
       include: {
         author: {
           select: {
@@ -55,13 +51,10 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  context: Context
-) {
+export async function PUT( request: NextRequest, context: Context ) {
   try {
     const params = await context.params
-    const { id } = params
+    const id = params.id
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
@@ -86,7 +79,6 @@ export async function PUT(
       )
     }
 
-    // PERBAIKAN: Gunakan type casting
     const blog = await prisma.blog.update({
       where: { id },
       data: {
@@ -117,13 +109,10 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  context: Context
-) {
+export async function DELETE( request: NextRequest, context: Context ) {
   try {
     const params = await context.params
-    const { id } = params
+    const id = params.id
     
     if (!id || typeof id !== 'string') {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
