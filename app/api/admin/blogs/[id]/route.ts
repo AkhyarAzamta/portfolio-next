@@ -1,121 +1,57 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { verifyToken } from '@/lib/jwt'
+// app/api/admin/blogs/[id]/route.ts
+import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { withAdminAuth } from '@/lib/withAdminAuth'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const { id } = params
+export const GET = withAdminAuth(async (request, ctx) => {
+  // handle both ctx.params or Promise<params>
+  const params = await Promise.resolve(ctx?.params)
+  const id = params?.id ? String(params.id) : null
 
-    if (!id) {
-      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
-    }
-
-    const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const decoded = await verifyToken(token)
-    if (decoded?.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-    }
-
-    const blog = await prisma.blog.findUnique({
-      where: { id },
-      include: {
-        author: {
-          select: { id: true, name: true, avatar: true }
-        }
-      }
-    })
-
-    if (!blog) {
-      return NextResponse.json({ error: 'Blog not found' }, { status: 404 })
-    }
-
-    return NextResponse.json(blog)
-  } catch (error) {
-    console.error('Error fetching blog:', error)
-    return NextResponse.json({ error: 'Failed to fetch blog' }, { status: 500 })
+  if (!id) {
+    return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
   }
-}
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const { id } = params
-
-    if (!id) {
-      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+  const blog = await prisma.blog.findUnique({
+    where: { id },
+    include: {
+      author: { select: { id: true, name: true, avatar: true } }
     }
+  })
 
-    const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const decoded = await verifyToken(token)
-    if (decoded?.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-    }
-
-    const { title, excerpt, content, published, archived } = await request.json()
-
-    if (!title || !excerpt) {
-      return NextResponse.json(
-        { error: 'Title and excerpt are required' },
-        { status: 400 }
-      )
-    }
-
-    const blog = await prisma.blog.update({
-      where: { id },
-      data: { title, excerpt, content, published, archived },
-      include: {
-        author: {
-          select: { id: true, name: true, avatar: true }
-        }
-      }
-    })
-
-    return NextResponse.json(blog)
-  } catch (error) {
-    console.error('Error updating blog:', error)
-    return NextResponse.json({ error: 'Failed to update blog' }, { status: 500 })
+  if (!blog) {
+    return NextResponse.json({ error: 'Blog not found' }, { status: 404 })
   }
-}
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const { id } = params
+  return NextResponse.json(blog)
+})
 
-    if (!id) {
-      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
-    }
+export const PUT = withAdminAuth(async (request, ctx) => {
+  const params = await Promise.resolve(ctx?.params)
+  const id = params?.id ? String(params.id) : null
+  if (!id) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
 
-    const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+  const body = await request.json()
+  const { title, excerpt, content, published, archived } = body ?? {}
 
-    const decoded = await verifyToken(token)
-    if (decoded?.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-    }
-
-    await prisma.blog.delete({ where: { id } })
-
-    return NextResponse.json({ message: 'Blog deleted successfully' })
-  } catch (error) {
-    console.error('Error deleting blog:', error)
-    return NextResponse.json({ error: 'Failed to delete blog' }, { status: 500 })
+  if (!title || !excerpt) {
+    return NextResponse.json({ error: 'Title and excerpt are required' }, { status: 400 })
   }
-}
+
+  const updated = await prisma.blog.update({
+    where: { id },
+    data: { title, excerpt, content, published, archived },
+    include: { author: { select: { id: true, name: true, avatar: true } } }
+  })
+
+  return NextResponse.json(updated)
+})
+
+export const DELETE = withAdminAuth(async (request, ctx) => {
+  const params = await Promise.resolve(ctx?.params)
+  const id = params?.id ? String(params.id) : null
+  if (!id) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+
+  await prisma.blog.delete({ where: { id } })
+  return NextResponse.json({ message: 'Blog deleted successfully' })
+})
