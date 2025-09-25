@@ -14,7 +14,7 @@ import ViewCountTracker from './components/ViewCountTracker'
 import ShareButtons from './components/ShareButtons'
 import RecentPostsSidebar from './components/RecentPostsSidebar'
 import RelatedPosts from './components/RelatedPosts'
-import { Blog, BlogPost } from '@/types'
+import { BlogPost } from '@/types'
 
 import prisma from '@/lib/prisma'
 

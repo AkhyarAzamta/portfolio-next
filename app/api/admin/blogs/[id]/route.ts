@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/jwt'
 import prisma from '@/lib/prisma'
 
-type Context = { params: { id: string } }
-
-export async function GET(request: NextRequest, { params }: Context) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const { id } = params
 
@@ -26,11 +27,7 @@ export async function GET(request: NextRequest, { params }: Context) {
       where: { id },
       include: {
         author: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
+          select: { id: true, name: true, avatar: true }
         }
       }
     })
@@ -46,7 +43,10 @@ export async function GET(request: NextRequest, { params }: Context) {
   }
 }
 
-export async function PUT(request: NextRequest, { params }: Context) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const { id } = params
 
@@ -78,11 +78,7 @@ export async function PUT(request: NextRequest, { params }: Context) {
       data: { title, excerpt, content, published, archived },
       include: {
         author: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true
-          }
+          select: { id: true, name: true, avatar: true }
         }
       }
     })
@@ -94,7 +90,10 @@ export async function PUT(request: NextRequest, { params }: Context) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: Context) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const { id } = params
 
