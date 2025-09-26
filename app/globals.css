@@ -1,3 +1,4 @@
+/* app/globals.css */
 @import "tailwindcss";
 
 @theme {
@@ -8,50 +9,107 @@
   --color-text: #000000;
   --color-bg: #ffffff;
 
-  --font-sans: 'Inter', sans-serif;
+  /* Setting Category Colors - Light Mode */
+  --color-general-bg: #dbeafe;
+  --color-general-border: #bfdbfe;
+  --color-general-text: #1e40af;
+  --color-general-icon: #2563eb;
 
+  --color-appearance-bg: #ede9fe;
+  --color-appearance-border: #ddd6fe;
+  --color-appearance-text: #5b21b6;
+  --color-appearance-icon: #7c3aed;
+
+  --color-seo-bg: #d1fae5;
+  --color-seo-border: #a7f3d0;
+  --color-seo-text: #065f46;
+  --color-seo-icon: #059669;
+
+  --color-social-bg: #fce7f3;
+  --color-social-border: #fbcfe8;
+  --color-social-text: #9d174d;
+  --color-social-icon: #db2777;
+
+  --color-contact-bg: #ffedd5;
+  --color-contact-border: #fed7aa;
+  --color-contact-text: #9a3412;
+  --color-contact-icon: #ea580c;
+
+  --color-email-bg: #cffafe;
+  --color-email-border: #a5f3fc;
+  --color-email-text: #155e75;
+  --color-email-icon: #06b6d4;
+
+  --font-sans: 'Inter', sans-serif;
   --animation-fade-in: fadeIn 0.5s ease-in-out;
   --animation-slide-up: slideUp 0.5s ease-in-out;
 }
 
 :root {
-  /* Blue */
-  --color-blue-bg: #dbeafe;   /* blue-100 */
-  --color-blue-border: #bfdbfe; /* blue-200 */
-  --color-blue-text: #1e40af;   /* blue-800 */
-  --color-blue-icon: #2563eb;   /* blue-600 */
+  /* Existing colors */
+  --color-blue-bg: #dbeafe;
+  --color-blue-border: #bfdbfe;
+  --color-blue-text: #1e40af;
+  --color-blue-icon: #2563eb;
 
-  /* Green */
-  --color-green-bg: #d1fae5;   /* green-100 */
-  --color-green-border: #a7f3d0; /* green-200 */
-  --color-green-text: #065f46;   /* green-800 */
-  --color-green-icon: #059669;   /* green-600 */
+  --color-green-bg: #d1fae5;
+  --color-green-border: #a7f3d0;
+  --color-green-text: #065f46;
+  --color-green-icon: #059669;
 
-  /* Purple */
-  --color-purple-bg: #ede9fe;   /* purple-100 */
-  --color-purple-border: #ddd6fe; /* purple-200 */
-  --color-purple-text: #5b21b6;   /* purple-800 */
-  --color-purple-icon: #7c3aed;   /* purple-600 */
+  --color-purple-bg: #ede9fe;
+  --color-purple-border: #ddd6fe;
+  --color-purple-text: #5b21b6;
+  --color-purple-icon: #7c3aed;
 }
 
 .dark {
-  /* Blue */
-  --color-blue-bg: rgb(30 58 138 / 0.2); /* blue-900/20 */
+  /* Existing dark mode colors */
+  --color-blue-bg: rgb(30 58 138 / 0.2);
   --color-blue-border: #1e3a8a;
   --color-blue-text: #bfdbfe;
   --color-blue-icon: #60a5fa;
 
-  /* Green */
-  --color-green-bg: rgb(6 78 59 / 0.2); /* green-900/20 */
+  --color-green-bg: rgb(6 78 59 / 0.2);
   --color-green-border: #065f46;
   --color-green-text: #bbf7d0;
   --color-green-icon: #34d399;
 
-  /* Purple */
-  --color-purple-bg: rgb(76 29 149 / 0.2); /* purple-900/20 */
+  --color-purple-bg: rgb(76 29 149 / 0.2);
   --color-purple-border: #6d28d9;
   --color-purple-text: #ddd6fe;
   --color-purple-icon: #a78bfa;
+
+  /* Setting Category Colors - Dark Mode */
+  --color-general-bg: rgb(30 58 138 / 0.2);
+  --color-general-border: #1e3a8a;
+  --color-general-text: #bfdbfe;
+  --color-general-icon: #60a5fa;
+
+  --color-appearance-bg: rgb(76 29 149 / 0.2);
+  --color-appearance-border: #6d28d9;
+  --color-appearance-text: #ddd6fe;
+  --color-appearance-icon: #a78bfa;
+
+  --color-seo-bg: rgb(6 78 59 / 0.2);
+  --color-seo-border: #065f46;
+  --color-seo-text: #bbf7d0;
+  --color-seo-icon: #34d399;
+
+  --color-social-bg: rgb(157 23 77 / 0.2);
+  --color-social-border: #9d174d;
+  --color-social-text: #fbcfe8;
+  --color-social-icon: #f472b6;
+
+  --color-contact-bg: rgb(154 52 18 / 0.2);
+  --color-contact-border: #9a3412;
+  --color-contact-text: #fed7aa;
+  --color-contact-icon: #fdba74;
+
+  --color-email-bg: rgb(21 94 117 / 0.2);
+  --color-email-border: #155e75;
+  --color-email-text: #a5f3fc;
+  --color-email-icon: #22d3ee;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -80,15 +138,36 @@ a {
   .section-title {
     @apply text-3xl font-bold mb-8 text-center;
   }
-} 
+
+  /* Setting Category Utility Classes */
+  .setting-general {
+    @apply bg-[var(--color-general-bg)] border-[var(--color-general-border)] text-[var(--color-general-text)];
+  }
+  
+  .setting-appearance {
+    @apply bg-[var(--color-appearance-bg)] border-[var(--color-appearance-border)] text-[var(--color-appearance-text)];
+  }
+  
+  .setting-seo {
+    @apply bg-[var(--color-seo-bg)] border-[var(--color-seo-border)] text-[var(--color-seo-text)];
+  }
+  
+  .setting-social {
+    @apply bg-[var(--color-social-bg)] border-[var(--color-social-border)] text-[var(--color-social-text)];
+  }
+  
+  .setting-contact {
+    @apply bg-[var(--color-contact-bg)] border-[var(--color-contact-border)] text-[var(--color-contact-text)];
+  }
+  
+  .setting-email {
+    @apply bg-[var(--color-email-bg)] border-[var(--color-email-border)] text-[var(--color-email-text)];
+  }
+}
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideUp {
@@ -102,7 +181,7 @@ a {
   }
 }
 
-/* styles/globals.css */
+/* ProseMirror and other existing styles remain the same */
 .ProseMirror {
   outline: none;
   min-height: 300px;

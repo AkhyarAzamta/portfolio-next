@@ -13,3 +13,4 @@ export interface ContactRequestBody {
   email: string
   message: string
 }
+  

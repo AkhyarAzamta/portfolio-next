@@ -1,3 +1,4 @@
+// app/contact/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -16,8 +17,8 @@ interface FormData {
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
 interface ContactInfo {
-  id: number;
-  type: string;
+  id: string;
+  type: 'email' | 'phone' | 'location';
   value: string;
 }
 
@@ -33,21 +34,27 @@ export default function Contact() {
   const router = useRouter()
 
   useEffect(() => {
-    const fetchContactInfo = async () => {
-      try {
-        const response = await fetch('/api/contact-info')
-        if (!response.ok) throw new Error('Failed to fetch contact info')
-        const data = await response.json()
-        setContactInfos(data)
-      } catch (error) {
-        console.error('Error fetching contact info:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchContactInfo()
   }, [])
+
+  const fetchContactInfo = async () => {
+    try {
+      const response = await fetch('/api/contact-info')
+      if (!response.ok) throw new Error('Failed to fetch contact info')
+      const data = await response.json()
+      setContactInfos(data)
+    } catch (error) {
+      console.error('Error fetching contact info:', error)
+      // Fallback data jika API error
+      setContactInfos([
+        { id: '1', type: 'email', value: 'hello@devfolio.com' },
+        { id: '2', type: 'phone', value: '+1 (555) 123-4567' },
+        { id: '3', type: 'location', value: 'Jakarta, Indonesia' }
+      ])
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -62,16 +69,16 @@ export default function Contact() {
         body: JSON.stringify(formData),
       })
 
-      const data = await response.json()
-      
-      if (!response.ok) throw new Error(data.message || 'Failed to send message')
-      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Failed to send message')
+      }
+
       setStatus('success')
       setFormData({ name: '', email: '', message: '' })
       
-      // Optional: redirect or show success message
       setTimeout(() => {
-        router.refresh() // Refresh the page if needed
+        router.refresh()
       }, 2000)
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -86,7 +93,6 @@ export default function Contact() {
     }))
   }
 
-  // Fungsi untuk mendapatkan icon berdasarkan type
   const getIcon = (type: string) => {
     switch (type) {
       case 'email': return <FaEnvelope className="h-6 w-6 text-primary" />
@@ -96,7 +102,6 @@ export default function Contact() {
     }
   }
 
-  // Fungsi untuk mendapatkan link berdasarkan type dan value
   const getLink = (type: string, value: string) => {
     switch (type) {
       case 'email': return `mailto:${value}`
@@ -106,13 +111,11 @@ export default function Contact() {
   }
 
   if (loading) {
-    return (
-      <Loading size={150} blur="sm" />
-    )
+    return <Loading size={150} blur="sm" />
   }
 
   return (
-    <div className="container max-w-7xl mx-auto py-12">
+    <div className="container max-w-7xl mx-auto py-12 px-4">
       <motion.h1 
         className="text-4xl font-bold mb-8 text-center"
         {...fadeInUp}
@@ -128,7 +131,7 @@ export default function Contact() {
         >
           <motion.div {...fadeInUp}>
             <h2 className="text-2xl font-semibold mb-4">Get in Touch</h2>
-            <p className="text-secondary">
+            <p className="text-gray-600 dark:text-gray-300">
               I&apos;m always open to discussing new projects, creative ideas, or
               opportunities to be part of your visions.
             </p>
@@ -143,7 +146,7 @@ export default function Contact() {
             {contactInfos.map((info) => (
               <motion.div 
                 key={info.id}
-                className="flex items-center gap-4"
+                className="flex items-center gap-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
                 variants={fadeInUp}
                 whileHover={{ x: 10 }}
                 transition={{ type: "spring", stiffness: 300 }}
@@ -152,11 +155,14 @@ export default function Contact() {
                 <div>
                   <h3 className="font-semibold capitalize">{info.type}</h3>
                   {info.type === 'email' || info.type === 'phone' ? (
-                    <a href={getLink(info.type, info.value)} className="text-secondary hover:text-primary">
+                    <a 
+                      href={getLink(info.type, info.value)} 
+                      className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
+                    >
                       {info.value}
                     </a>
                   ) : (
-                    <p className="text-secondary">{info.value}</p>
+                    <p className="text-gray-600 dark:text-gray-300">{info.value}</p>
                   )}
                 </div>
               </motion.div>
@@ -166,7 +172,7 @@ export default function Contact() {
         
         {/* Contact Form */}
         <motion.div 
-          className="bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md"
+          className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
           {...slideInRight}
         >
           <motion.form 
@@ -187,7 +193,8 @@ export default function Contact() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                placeholder="Your name"
               />
             </motion.div>
             
@@ -202,7 +209,8 @@ export default function Contact() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                placeholder="your.email@example.com"
               />
             </motion.div>
             
@@ -217,14 +225,15 @@ export default function Contact() {
                 onChange={handleChange}
                 required
                 rows={4}
-                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                placeholder="Your message..."
               />
             </motion.div>
             
             <motion.button
               type="submit"
               disabled={status === 'loading'}
-              className="w-full btn btn-primary"
+              className="w-full bg-primary text-white py-3 rounded-md font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -233,7 +242,7 @@ export default function Contact() {
             
             {status === 'success' && (
               <motion.p 
-                className="text-green-500 text-center"
+                className="text-green-500 text-center font-medium"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
@@ -243,7 +252,7 @@ export default function Contact() {
             
             {status === 'error' && (
               <motion.p 
-                className="text-red-500 text-center"
+                className="text-red-500 text-center font-medium"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >

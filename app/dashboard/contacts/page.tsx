@@ -43,7 +43,12 @@ export default function ContactsPage() {
 
   const fetchContacts = async () => {
     try {
-      const response = await fetch('/api/admin/contacts')
+      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
+      const response = await fetch('/api/admin/contacts', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
       if (!response.ok) {
         throw new Error('Failed to fetch contacts')
       }

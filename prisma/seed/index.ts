@@ -8,6 +8,7 @@ import { seedExperience } from './experience.ts'
 import { seedEducation } from './education.ts'
 import { seedCertificate } from './certificate.ts'
 import { seedContactInfo } from './contactInfo.ts'
+import { seedSettings } from './settings.ts'
 
 const prisma = new PrismaClient()
 
@@ -23,6 +24,7 @@ async function main() {
   await seedEducation(prisma)
   await seedCertificate(prisma)
   await seedContactInfo(prisma)
+  await seedSettings(prisma)
 
   console.log('✅ Seeding finished.')
 }
