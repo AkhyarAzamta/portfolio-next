@@ -31,7 +31,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
   const readTime = calculateReadTime(blog.content || null)
 
   return (
-    <article className="blog-card opacity-0 bg-white dark:bg-dark/50 rounded-lg shadow-md p-6 h-full flex flex-col transform transition-transform hover:-translate-y-1 hover:shadow-lg">
+    <article className="blog-card opacity-0 bg-background rounded-lg shadow-md p-6 h-full flex flex-col transform transition-transform hover:-translate-y-1 hover:shadow-lg">
       <Link href={`/blogs/${blog.slug}`} className="flex flex-col flex-grow">
         {blog.coverImage && (
           <div className="w-full h-40 mb-4 rounded overflow-hidden relative">

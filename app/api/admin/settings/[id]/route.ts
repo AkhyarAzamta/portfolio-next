@@ -1,84 +1,69 @@
 // app/api/admin/settings/[id]/route.ts
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { withAdminAuth } from '@/lib/withAdminAuth'
+import { withAdminAuthParams } from '@/lib/withAdminAuth'
 
-export const GET = withAdminAuth(async (request, ctx) => {
-  // handle both ctx.params or Promise<params>
-  const params = await Promise.resolve(ctx?.params)
-  const id = params?.id ? String(params.id) : null
+/**
+ * PATCH /api/admin/settings/[id] - Update individual setting
+ */
+export const PATCH = withAdminAuthParams<{ id: string }>(async (
+  request: Request,
+  { params }: { params: { id: string } }
+) => {
+  try {
+    const { id } = params
+    const body = await request.json()
 
-  if (!id) {
-    return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    const updatedSetting = await prisma.siteSettings.update({
+      where: { id },
+      data: {
+        ...(body.key && { key: body.key }),
+        ...(body.value !== undefined && { value: String(body.value) }),
+        ...(body.type && { type: body.type }),
+        ...(body.category && { category: body.category }),
+        ...(body.label && { label: body.label }),
+        ...(body.description !== undefined && { description: body.description }),
+        ...(body.options !== undefined && { 
+          options: body.options ? JSON.stringify(body.options) : null 
+        }),
+        ...(body.order !== undefined && { order: body.order }),
+        updatedAt: new Date(),
+      }
+    })
+
+    return NextResponse.json(updatedSetting)
+  } catch (error) {
+    console.error('Error updating setting:', error)
+    return NextResponse.json(
+      { error: 'Failed to update setting' },
+      { status: 500 }
+    )
   }
-
-  const siteSettings = await prisma.siteSettings.findUnique({
-    where: { id }
-  })
-
-  if (!siteSettings) {
-    return NextResponse.json({ error: 'Blog not found' }, { status: 404 })
-  }
-
-  return NextResponse.json(siteSettings)
 })
 
-export const PUT = withAdminAuth(async (request, ctx) => {
-  const params = await Promise.resolve(ctx?.params)
-  const id = params?.id ? String(params.id) : null
-  if (!id) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+/**
+ * DELETE /api/admin/settings/[id] - Hapus setting
+ */
+export const DELETE = withAdminAuthParams<{ id: string }>(async (
+  request: Request,
+  { params }: { params: { id: string } }
+) => {
+  try {
+    const { id } = params
 
-  const body = await request.json()
-  const { key, value, type, category, label, description, options, order } = body ?? {}
+    await prisma.siteSettings.delete({
+      where: { id }
+    })
 
-  // Validate required fields and coerce types
-  const validatedKey = typeof key === 'string' ? key.trim() : undefined
-  const validatedValue = value !== undefined && value !== null ? String(value) : undefined
-  const validatedType = typeof type === 'string' ? type.trim() : undefined
-  const validatedCategory = typeof category === 'string' ? category.trim() : undefined
-  const validatedLabel = typeof label === 'string' ? label.trim() : undefined
-  const validatedDescription = typeof description === 'string' ? description.trim() : null
-  const validatedOptions = Array.isArray(options)
-    ? options.filter((opt) => typeof opt === 'string').map((opt) => opt.trim())
-    : typeof options === 'string'
-      ? options.split(',').map((opt) => opt.trim())
-      : undefined
-  const validatedOrder = typeof order === 'number' && !isNaN(order) ? order : undefined
-
-  if (!validatedKey || validatedValue === undefined || !validatedType || !validatedCategory || !validatedLabel || validatedOrder === undefined) {
-    return NextResponse.json({ error: 'Missing required fields or value is undefined' }, { status: 400 })
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Setting deleted successfully' 
+    })
+  } catch (error) {
+    console.error('Error deleting setting:', error)
+    return NextResponse.json(
+      { error: 'Failed to delete setting' },
+      { status: 500 }
+    )
   }
-
-  const updated = await prisma.siteSettings.update({
-    where: { id },
-    data: {
-      key: validatedKey,
-      value: validatedValue,
-      type: validatedType,
-      category: validatedCategory,
-      label: validatedLabel,
-      description: validatedDescription,
-      options: validatedOptions ? JSON.stringify(validatedOptions) : null,
-      order: validatedOrder,
-    },
-  })
-
-  const formattedSetting = {
-    ...updated,
-    createdAt: updated.createdAt.toISOString(),
-    updatedAt: updated.updatedAt.toISOString(),
-    description: updated.description ?? undefined,
-    options: updated.options ? JSON.parse(updated.options) : undefined,
-  }
-
-  return NextResponse.json(formattedSetting)
-})
-
-export const DELETE = withAdminAuth(async (request, ctx) => {
-  const params = await Promise.resolve(ctx?.params)
-  const id = params?.id ? String(params.id) : null
-  if (!id) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
-
-  await prisma.siteSettings.delete({ where: { id } })
-  return NextResponse.json({ message: 'Setting deleted successfully' })
 })

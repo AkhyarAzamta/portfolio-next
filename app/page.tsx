@@ -28,7 +28,7 @@ export default async function Home() {
   const adminUser = await getAdminUser()
   
   return (
-    <main>
+    <>
       <Hero initialAdminUser={adminUser} />
       <About />
       <Projects 
@@ -39,6 +39,6 @@ export default async function Home() {
       />
       <Blogs limit={3} title="Latest Blog Posts" showViewAll={true} />
       <Newsletter />
-    </main>
+    </>
   );
 }

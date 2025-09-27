@@ -52,15 +52,6 @@ export interface Education {
   updatedAt: string
 }
 
-/* --------------------- ContactInfo --------------------- */
-export interface ContactInfo {
-  id: number
-  type: string
-  value: string
-  createdAt: string
-  updatedAt: string
-}
-
 export interface Certificate {
   id: number;
   name: string;

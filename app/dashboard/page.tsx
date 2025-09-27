@@ -40,8 +40,6 @@ import { ContactMessage as Contact } from '@/types'
 import { DashboardStats } from '@/types/dashboard'
 
 type RecentItem = Partial<Blog> | Partial<Project> | Partial<Contact> | Partial<Certificate>
-
-// Color classes for fresh look
 const colorClasses = {
   blue: 'bg-[var(--color-blue-bg)] border-[var(--color-blue-border)]',
   green: 'bg-[var(--color-green-bg)] border-[var(--color-green-border)]',
@@ -59,7 +57,6 @@ const iconColorClasses = {
   green: 'text-[var(--color-green-icon)]',
   purple: 'text-[var(--color-purple-icon)]'
 }
-
 
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null)
@@ -396,7 +393,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen ">
       {/* Header */}
       <header className="border-b bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

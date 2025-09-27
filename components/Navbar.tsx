@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 
 export default function Navbar() {
-  const { theme, toggleTheme } = useTheme()
+  const { theme, setTheme } = useTheme();
   const { user, isLoading, logout } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -27,7 +27,7 @@ export default function Navbar() {
     { href: '/about', label: 'About' },
     { href: '/projects', label: 'Projects' },
     { href: '/blogs', label: 'Blogs' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/contacts', label: 'Contact' },
   ]
 
   // Menu items for logged in users (Admin)
@@ -44,7 +44,7 @@ export default function Navbar() {
 
   if (isLoading) {
     return (
-      <nav className="fixed w-full bg-white/80 dark:bg-dark/80 backdrop-blur-sm z-50">
+      <nav className="fixed w-full backdrop-blur-sm z-50">
         <div className="container max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="text-xl font-bold text-primary">Devfolio&trade;</div>
@@ -56,7 +56,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="fixed w-full bg-white/80 dark:bg-dark/80 backdrop-blur-sm z-50">
+    <nav className="fixed w-full text-text backdrop-blur-sm z-50">
       <div className="container max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="text-xl font-bold text-primary">
@@ -92,7 +92,7 @@ export default function Navbar() {
 
             {/* Theme Toggle */}
             <motion.button
-              onClick={toggleTheme}
+              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -188,7 +188,7 @@ export default function Navbar() {
                 >
                   <button
                     onClick={() => {
-                      toggleTheme()
+                      setTheme(theme === 'light' ? 'dark' : 'light')
                       setIsMobileMenuOpen(false)
                     }}
                     className="flex items-center py-2 hover:text-primary transition-colors"

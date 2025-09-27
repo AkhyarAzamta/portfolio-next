@@ -2,12 +2,23 @@
 @import "tailwindcss";
 
 @theme {
+  /* Dynamic variables - will be overridden by inline styles */
   --color-primary: #007AFF;
   --color-secondary: #F1F1F1;
+  --color-accent: #FF6B35;
+  --color-background: #E7F2EF;
   --color-dark: #1F2937;
   --color-light: #F9FAFB;
   --color-text: #000000;
-  --color-bg: #ffffff;
+  --color-border: #e5e7eb;
+
+  /* Dark mode fallbacks */
+  --color-primary-dark: #60a5fa;
+  --color-secondary-dark: #374151;
+  --color-accent-dark: #fdba74;
+  --color-background-dark: #131F3F;
+  --color-text-dark: #ffffff;
+  --color-border-dark: #374151;
 
   /* Setting Category Colors - Light Mode */
   --color-general-bg: #dbeafe;
@@ -110,6 +121,93 @@
   --color-email-border: #155e75;
   --color-email-text: #a5f3fc;
   --color-email-icon: #22d3ee;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Apply dynamic colors to utility classes */
+.bg-primary { background-color: var(--color-primary); }
+.text-primary { color: var(--color-primary); }
+.border-primary { border-color: var(--color-primary); }
+
+.bg-secondary { background-color: var(--color-secondary); }
+.text-secondary { color: var(--color-secondary); }
+.border-secondary { border-color: var(--color-secondary); }
+
+.bg-accent { background-color: var(--color-accent); }
+.text-accent { color: var(--color-accent); }
+.border-accent { border-color: var(--color-accent); }
+
+.bg-background { background-color: var(--color-background); }
+.text-text { color: var(--color-text); }
+.border-border { border-color: var(--color-border); }
+
+/* Dark mode variants */
+.dark .bg-primary { background-color: var(--color-primary-dark, var(--color-primary)); }
+.dark .text-primary { color: var(--color-primary-dark, var(--color-primary)); }
+.dark .border-primary { border-color: var(--color-primary-dark, var(--color-primary)); }
+
+.dark .bg-secondary { background-color: var(--color-secondary-dark, var(--color-secondary)); }
+.dark .text-secondary { color: var(--color-secondary-dark, var(--color-secondary)); }
+.dark .border-secondary { border-color: var(--color-secondary-dark, var(--color-secondary)); }
+
+.dark .bg-accent { background-color: var(--color-accent-dark, var(--color-accent)); }
+.dark .text-accent { color: var(--color-accent-dark, var(--color-accent)); }
+.dark .border-accent { border-color: var(--color-accent-dark, var(--color-accent)); }
+
+.dark .bg-background { background-color: var(--color-background-dark, var(--color-background)); }
+.dark .text-text { color: var(--color-text-dark, var(--color-text)); }
+.dark .border-border { border-color: var(--color-border-dark, var(--color-border)); }
+
+a {
+  transition: all 0.2s ease;
+}
+
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary/90;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-white hover:bg-secondary/90;
+  }
+  
+  .section-title {
+    @apply text-3xl font-bold mb-8 text-center;
+  }
+
+  /* Setting Category Utility Classes */
+  .setting-general {
+    @apply bg-[var(--color-general-bg)] border-[var(--color-general-border)] text-[var(--color-general-text)];
+  }
+  
+  .setting-appearance {
+    @apply bg-[var(--color-appearance-bg)] border-[var(--color-appearance-border)] text-[var(--color-appearance-text)];
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

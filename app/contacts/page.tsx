@@ -115,7 +115,7 @@ export default function Contact() {
   }
 
   return (
-    <div className="container max-w-7xl mx-auto py-12 px-4">
+    <div className="container max-w-7xl mx-auto py-12 px-4 text-text">
       <motion.h1 
         className="text-4xl font-bold mb-8 text-center"
         {...fadeInUp}
@@ -131,7 +131,7 @@ export default function Contact() {
         >
           <motion.div {...fadeInUp}>
             <h2 className="text-2xl font-semibold mb-4">Get in Touch</h2>
-            <p className="text-gray-600 dark:text-gray-300">
+            <p>
               I&apos;m always open to discussing new projects, creative ideas, or
               opportunities to be part of your visions.
             </p>
@@ -146,7 +146,7 @@ export default function Contact() {
             {contactInfos.map((info) => (
               <motion.div 
                 key={info.id}
-                className="flex items-center gap-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
+                className="flex items-center gap-4 p-4 rounded-lg"
                 variants={fadeInUp}
                 whileHover={{ x: 10 }}
                 transition={{ type: "spring", stiffness: 300 }}
@@ -157,12 +157,12 @@ export default function Contact() {
                   {info.type === 'email' || info.type === 'phone' ? (
                     <a 
                       href={getLink(info.type, info.value)} 
-                      className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
+                      className="hover:text-primary transition-colors"
                     >
                       {info.value}
                     </a>
                   ) : (
-                    <p className="text-gray-600 dark:text-gray-300">{info.value}</p>
+                    <p className="text-text">{info.value}</p>
                   )}
                 </div>
               </motion.div>
@@ -172,7 +172,7 @@ export default function Contact() {
         
         {/* Contact Form */}
         <motion.div 
-          className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-gray-500 p-6 rounded-lg shadow-lg border border-border dark:border-gray-700"
           {...slideInRight}
         >
           <motion.form 

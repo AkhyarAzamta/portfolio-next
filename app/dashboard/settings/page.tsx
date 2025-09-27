@@ -26,6 +26,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
+import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 import { 
@@ -114,6 +115,7 @@ const SettingCard = React.memo(({
   onCreateSetting: (category: SettingCategory) => void
 }) => {
   const categorySettings = Object.entries(settings)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .filter(([_, setting]) => setting.category === category)
     .sort(([,a], [,b]) => a.order - b.order)
 
@@ -626,7 +628,8 @@ export default function SettingsPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingSetting, setEditingSetting] = useState<Setting | null>(null)
   const [createDialogCategory, setCreateDialogCategory] = useState<SettingCategory>('general')
-
+  const [openConfirm, setOpenConfirm] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter()
 
   useEffect(() => {
@@ -681,9 +684,7 @@ export default function SettingsPage() {
     }
   }
 
-  const handleReset = async (): Promise<void> => {
-    if (!confirm('Are you sure you want to reset all settings to default?')) return
-
+  const handleReset = async (): Promise<void> => { 
     try {
       const response = await fetch('/api/admin/settings/seed', {
         method: 'POST',
@@ -805,6 +806,15 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950 p-4 sm:p-6 lg:p-8">
+        <ConfirmDialog
+        open={openConfirm}
+        onOpenChange={setOpenConfirm}
+        title="Reset Settings"
+        description="Are you sure you want to reset all settings to default? This action cannot be undone."
+        confirmText="Yes, Reset"
+        cancelText="Cancel"
+        onConfirm={handleReset}
+      />
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
@@ -826,7 +836,7 @@ export default function SettingsPage() {
           <div className="flex flex-wrap gap-2">
             <Button 
               variant="outline" 
-              onClick={handleReset}
+              onClick={() => setOpenConfirm(true)}
               className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400"
             >
               Reset to Default

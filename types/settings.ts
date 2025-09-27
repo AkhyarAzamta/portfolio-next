@@ -48,3 +48,19 @@ export interface FooterData {
   copyright: string;
   socialLinks: SocialLink[];
 }
+
+export interface AppearanceSettings {
+  primaryColor?: { value: string };
+  secondaryColor?: { value: string };
+  accentColor?: { value: string };
+  backgroundColor?: { value: string };
+  textColor?: { value: string };
+  borderColor?: { value: string };
+  primaryColorDark?: { value: string };
+  secondaryColorDark?: { value: string };
+  accentColorDark?: { value: string };
+  backgroundColorDark?: { value: string };
+  textColorDark?: { value: string };
+  borderColorDark?: { value: string };
+  theme?: { value: string };
+}

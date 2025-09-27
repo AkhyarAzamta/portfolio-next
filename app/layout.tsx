@@ -1,5 +1,3 @@
-// app/layout.tsx (Update)
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -17,25 +15,73 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Devfolio | Portfolio Website using Next.js, Tailwind CSS, and Framer Motion",
-  description: "Devfolio is a portfolio website for developers to showcase their projects and skills.",
-};
+async function fetchSettings() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/settings`, { 
+      // Tambahkan timeout untuk prevent hanging
+      next: { revalidate: 60 } // Revalidate every 60 seconds
+    });
+    
+    if (!res.ok) {
+      console.warn('Failed to fetch settings, using defaults');
+      return {};
+    }
+    
+    return await res.json();
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    return {};
+  }
+}
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export async function generateMetadata() {
+  const settings = await fetchSettings();
+
+  return {
+    title: settings.siteTitle?.value || "Devfolio | Portfolio Website",
+    description: settings.siteDescription?.value || "A modern portfolio website for developers",
+    keywords: settings.metaKeywords?.value || "portfolio, developer, nextjs, tailwind",
+  };
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await fetchSettings();
+
+  // PERBAIKAN: Extract values dengan safe access
+  const getSettingValue = (key: string, defaultValue: string = '') => {
+    return settings[key]?.value || defaultValue;
+  };
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="bg-gray-200 transition-colors dark:bg-[#041208] dark:text-white">
-        <ThemeProvider>
+      <head>
+        <style>{`
+          :root {
+            --color-primary: ${getSettingValue('primaryColor', '#007AFF')};
+            --color-secondary: ${getSettingValue('secondaryColor', '#F1F1F1')};
+            --color-accent: ${getSettingValue('accentColor', '#FF6B35')};
+            --color-background: ${getSettingValue('backgroundColor', '#E7F2EF')};
+            --color-text: ${getSettingValue('textColor', '#000000')};
+            --color-border: ${getSettingValue('borderColor', '#e5e7eb')};
+          }
+
+          .dark {
+            --color-primary: ${getSettingValue('primaryColorDark', '#60a5fa')};
+            --color-secondary: ${getSettingValue('secondaryColorDark', '#374151')};
+            --color-accent: ${getSettingValue('accentColorDark', '#fdba74')};
+            --color-background: ${getSettingValue('backgroundColorDark', '#131F3F')};
+            --color-text: ${getSettingValue('textColorDark', '#ffffff')};
+            --color-border: ${getSettingValue('borderColorDark', '#374151')};
+          }
+        `}</style>
+      </head>
+      <body>
+        {/* PERBAIKAN: Kirim hanya settings yang diperlukan */}
+        <ThemeProvider initialAppearance={settings}>
           <AuthProvider>
             <Navbar />
-            <main className="min-h-screen pt-16">
-              {children}
-            </main>
+            <main className="min-h-screen pt-16 bg-background">{children}</main>
             <Footer />
           </AuthProvider>
         </ThemeProvider>
