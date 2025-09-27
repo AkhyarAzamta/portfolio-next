@@ -11,11 +11,11 @@ import { defaultSettingsSeed } from '@/data/seedSettings'
 export const POST = withAdminAuth(async () => {
   try {
     // Hapus semua settings yang ada
-    await prisma.siteSettings.deleteMany({})
+    await prisma.siteSetting.deleteMany({})
 
     // Insert default settings
     for (const setting of defaultSettingsSeed) {
-      await prisma.siteSettings.create({
+      await prisma.siteSetting.create({
         data: {
           key: setting.key,
           value: setting.value,

@@ -4,12 +4,12 @@ import { Setting, SettingCategory, SettingType } from "@/types";
 
 export async function GET() {
   try {
-    const siteSettings = await prisma.siteSettings.findMany({
+    const siteSetting = await prisma.siteSetting.findMany({
       orderBy: { order: "asc" },
     });
 
     // Format settings untuk frontend - pastikan konsisten
-    const settings = siteSettings.reduce<Record<string, Setting>>((acc, setting) => {
+    const settings = siteSetting.reduce<Record<string, Setting>>((acc, setting) => {
       // PERBAIKAN: Pastikan value selalu string untuk CSS variables
       let value = setting.value;
       

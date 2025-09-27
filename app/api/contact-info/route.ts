@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma'
 export async function GET() {
   try {
     // Ambil contact info dari site settings dengan category 'contact'
-    const contactSettings = await prisma.siteSettings.findMany({
+    const contactSettings = await prisma.siteSetting.findMany({
       where: {
         category: 'contact'
       },

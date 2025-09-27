@@ -10,12 +10,12 @@ import { Setting, SettingCategory, SettingType } from '@/types'
  */
 export const GET = withAdminAuth(async () => {
   try {
-    const siteSettings = await prisma.siteSettings.findMany({
+    const siteSetting = await prisma.siteSetting.findMany({
       orderBy: { order: 'asc' }
     })
 
     // Format settings untuk frontend
-    const settings = siteSettings.reduce<Record<string, Setting>>((acc, setting) => {
+    const settings = siteSetting.reduce<Record<string, Setting>>((acc, setting) => {
       acc[setting.key] = {
         id: setting.id,
         key: setting.key,
@@ -61,7 +61,7 @@ export const POST = withAdminAuth(async (request: Request) => {
 
     // Update each setting
     for (const [key, value] of Object.entries(updates)) {
-      await prisma.siteSettings.updateMany({
+      await prisma.siteSetting.updateMany({
         where: { key },
         data: { 
           value: String(value),
@@ -97,7 +97,7 @@ export const PUT = withAdminAuth(async (request: Request) => {
     }
 
     // Check if key already exists
-    const existingSetting = await prisma.siteSettings.findUnique({
+    const existingSetting = await prisma.siteSetting.findUnique({
       where: { key: body.key }
     })
 
@@ -109,7 +109,7 @@ export const PUT = withAdminAuth(async (request: Request) => {
     }
 
     // Create new setting
-    const newSetting = await prisma.siteSettings.create({
+    const newSetting = await prisma.siteSetting.create({
       data: {
         key: body.key,
         value: String(body.value || ''),

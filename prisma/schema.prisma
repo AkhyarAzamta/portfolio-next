@@ -174,7 +174,7 @@ model LanguageSkill {
   @@map("language_skills")
 }
 
-model SiteSettings {
+model SiteSetting {
   id        String   @id @default(cuid())
   key       String   @unique
   value     String

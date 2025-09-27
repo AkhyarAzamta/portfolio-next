@@ -14,7 +14,7 @@ export const PATCH = withAdminAuthParams<{ id: string }>(async (
     const { id } = params
     const body = await request.json()
 
-    const updatedSetting = await prisma.siteSettings.update({
+    const updatedSetting = await prisma.siteSetting.update({
       where: { id },
       data: {
         ...(body.key && { key: body.key }),
@@ -51,7 +51,7 @@ export const DELETE = withAdminAuthParams<{ id: string }>(async (
   try {
     const { id } = params
 
-    await prisma.siteSettings.delete({
+    await prisma.siteSetting.delete({
       where: { id }
     })
 

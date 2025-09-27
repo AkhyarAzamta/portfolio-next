@@ -300,11 +300,11 @@ export async function seedSettings(prisma: PrismaClient) {
   console.log('🌱 Seeding settings...')
 
   // Delete existing settings
-  await prisma.siteSettings.deleteMany()
+  await prisma.siteSetting.deleteMany()
 
   // Create default settings
   for (const setting of defaultSettings) {
-    await prisma.siteSettings.create({
+    await prisma.siteSetting.create({
       data: setting
     })
   }
