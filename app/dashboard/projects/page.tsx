@@ -30,6 +30,8 @@ import { MoreHorizontal, Edit, Trash2, Plus, Github, FileText, Key } from 'lucid
 import Image from 'next/image'
 import { Loading } from '@/components/ui/loading'
 import type { Project as ProjectType } from '@/types'
+import { ConfirmDialog } from '@/components/ConfirmDialog'
+import { toast } from 'sonner'
 
 interface Project extends ProjectType {
   id: string // Changed from number to string
@@ -39,69 +41,83 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+
   const router = useRouter()
 
-useEffect(() => {
-  const getProjects = async () => {
-    try {
-      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
-      const response = await fetch('/api/admin/projects', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+  useEffect(() => {
+    const getProjects = async () => {
+      try {
+        const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
+        const response = await fetch('/api/admin/projects', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
 
-      if (!response.ok) {
-        if (response.status === 401 || response.status === 403) {
-          router.push('/login')
-          return
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            router.push('/login')
+            return
+          }
+          throw new Error('Failed to fetch projects')
         }
-        throw new Error('Failed to fetch projects')
+
+        const data = await response.json()
+        setProjects(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      } finally {
+        setLoading(false)
       }
-
-      const data = await response.json()
-      setProjects(data)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  getProjects()
-}, [router])
-
-
-  const handleDelete = async (id: string) => { // Changed from number to string
-    if (!confirm('Are you sure you want to delete this project?')) {
-      return
     }
 
+    getProjects()
+  }, [router])
+
+  const confirmDelete = async () => {
+    if (!selectedId) return
     try {
-      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
-      const response = await fetch(`/api/admin/projects/${id}`, {
+      const token = document.cookie.split('; ')
+        .find(row => row.startsWith('token='))?.split('=')[1]
+
+      const response = await fetch(`/api/admin/projects/${selectedId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          'Authorization': `Bearer ${token}`,
+        },
       })
 
       if (!response.ok) {
+        toast.error('Failed to delete project')
         throw new Error('Failed to delete project')
       }
 
-      setProjects(prev => prev.filter(project => project.id !== id) ) // Changed from number to string
+      setProjects(prev => prev.filter(project => project.id !== selectedId))
+      setSelectedId(null)
+      toast.success('Project deleted successfully')
     } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'An error occurred')
       setError(err instanceof Error ? err.message : 'An error occurred')
+    } finally {
+      setConfirmOpen(false)
     }
   }
+
+
+  const handleDeleteClick = (id: string) => {
+    setSelectedId(id)
+    setConfirmOpen(true)
+  }
+
 
   const copyToClipboard = async (text: string | null, type: string) => {
     if (!text) {
       alert(`No ${type} available to copy`)
       return
     }
-    
+
     try {
       await navigator.clipboard.writeText(text)
       alert(`${type} copied to clipboard!`)
@@ -124,7 +140,17 @@ useEffect(() => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-text">
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Delete Project"
+        description="Are you sure you want to delete this project? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDelete}
+      />
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Manage Projects</h1>
         <Button onClick={() => router.push('/dashboard/projects/new')}>
@@ -184,7 +210,7 @@ useEffect(() => {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {project.technologies.slice(0, 3).map((tech, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
+                          <Badge key={index} variant="secondary" className="text-xs bg-background">
                             {tech}
                           </Badge>
                         ))}
@@ -257,7 +283,7 @@ useEffect(() => {
                             </DropdownMenuItem>
                           )}
                           <DropdownMenuItem
-                            onClick={() => handleDelete(project.id)}
+                            onClick={() => handleDeleteClick(project.id)}
                             className="text-red-600"
                           >
                             <Trash2 className="h-4 w-4 mr-2" />

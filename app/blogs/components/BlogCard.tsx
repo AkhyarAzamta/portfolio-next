@@ -31,7 +31,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
   const readTime = calculateReadTime(blog.content || null)
 
   return (
-    <article className="blog-card opacity-0 bg-background rounded-lg shadow-md p-6 h-full flex flex-col transform transition-transform hover:-translate-y-1 hover:shadow-lg">
+    <article className="blog-card opacity-0 bg-card rounded-lg shadow-md p-6 h-full flex flex-col transform transition-transform hover:-translate-y-1 hover:shadow-lg">
       <Link href={`/blogs/${blog.slug}`} className="flex flex-col flex-grow">
         {blog.coverImage && (
           <div className="w-full h-40 mb-4 rounded overflow-hidden relative">
@@ -39,7 +39,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
           </div>
         )}
 
-        <h3 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">{blog.title}</h3>
+        <h3 className="text-xl font-semibold mb-2 text-text hover:text-primary transition-colors">{blog.title}</h3>
 
         <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow">
           {truncateExcerpt(blog.excerpt, 15)}
@@ -65,7 +65,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
               <Image src={blog.author.avatar} alt={blog.author.name} fill className="object-cover" />
             </div>
           )}
-          <span className="text-sm text-gray-500">{blog.author?.name}</span>
+          <span className="text-sm text-gray-500 dark:text-gray-300">{blog.author?.name}</span>
         </div>
 
         <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 space-x-4">

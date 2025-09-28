@@ -102,7 +102,7 @@ export default function EducationManager() {
   return (
     <div className="space-y-6">
       {/* Add New Education Form */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-card p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Add New Education</h2>
         <form onSubmit={handleCreateEducation} className="space-y-4">
           <div>

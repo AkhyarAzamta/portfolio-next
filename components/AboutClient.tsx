@@ -228,14 +228,14 @@ export default function AboutClient({ about, skillCategories, experience, educat
   }
 
   return (
-    <div ref={sectionRef} className="container max-w-7xl mx-auto py-12">
+    <div ref={sectionRef} className="container text-text max-w-7xl mx-auto py-12">
       <h1 ref={titleRef} className="text-4xl font-bold mb-8 text-center opacity-0">
         About Me
       </h1>
 
       {/* Bio Section */}
       <section className="mb-16">
-        <p ref={bioRef} className="text-lg dark:text-secondary max-w-3xl mx-auto text-center opacity-0">
+        <p ref={bioRef} className="text-lg text-text max-w-3xl mx-auto text-center opacity-0">
           {about?.bio || "I'm a passionate developer with expertise in modern web technologies."}
         </p>
       </section>
@@ -247,13 +247,13 @@ export default function AboutClient({ about, skillCategories, experience, educat
         </h2>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           {skillCategories.map((category) => (
-            <div key={category.id} className="skill-card bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md opacity-0">
+            <div key={category.id} className="skill-card bg-card p-6 rounded-lg shadow-md opacity-0">
               <h3 className="text-xl flex font-semibold mb-2">
                 {getIconComponent(category.icon)} 
                 <span className="ml-2">{category.name}</span>
               </h3>
               {category.skills && (
-                <ul className="dark:text-secondary space-y-2"> 
+                <ul className="text-text space-y-2"> 
                   {category.skills.map((skill) => (
                     <li key={skill.id} className="flex items-center gap-2">
                       <Image
@@ -280,7 +280,7 @@ export default function AboutClient({ about, skillCategories, experience, educat
         </h2>
         <div className="max-w-3xl mx-auto space-y-8">
           {experience.map((exp) => (
-            <div key={exp.id} className="experience-item bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md opacity-0">
+            <div key={exp.id} className="experience-item bg-card p-6 rounded-lg shadow-md opacity-0">
               <h3 className="text-xl font-semibold mb-2">{exp.title}</h3>
               <p className="text-primary mb-2">{exp.company} • {exp.period}</p>
               <ul className="dark:text-secondary list-disc list-inside space-y-2">
@@ -300,7 +300,7 @@ export default function AboutClient({ about, skillCategories, experience, educat
         </h2>
         <div className="max-w-3xl mx-auto">
           {education.map((edu) => (
-            <div key={edu.id} className="education-item mb-6 bg-white dark:bg-dark/50 p-6 rounded-lg shadow-md opacity-0">
+            <div key={edu.id} className="education-item mb-6 bg-card p-6 rounded-lg shadow-md opacity-0">
               <h3 className="text-xl font-semibold mb-2">{edu.degree}</h3>
               <p className="text-primary mb-2">{edu.institution} • {edu.period}</p>
               {edu.description && (

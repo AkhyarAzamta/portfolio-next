@@ -116,7 +116,7 @@ export default function LanguageSkillsManager() {
   return (
     <div className="space-y-6">
       {/* Add New Language Skill Form */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-card p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Add New Language Skill</h2>
         <form onSubmit={handleCreateSkill} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

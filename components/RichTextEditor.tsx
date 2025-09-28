@@ -65,8 +65,8 @@ export default function RichTextEditor({ content, onChange, placeholder = 'Write
   // Don't render editor until component is mounted
   if (!isMounted || !editor) {
     return (
-      <div className="border rounded-lg overflow-hidden">
-        <div className="flex flex-wrap items-center gap-1 p-2 border-b bg-gray-50">
+      <div className="border rounded-lg overflow-hidden text-text">
+        <div className="flex flex-wrap items-center gap-1 p-2 border-b ">
           {/* Placeholder toolbar */}
           <Button variant="outline" size="sm" disabled>
             <Bold className="h-4 w-4" />
@@ -99,7 +99,7 @@ export default function RichTextEditor({ content, onChange, placeholder = 'Write
             <Redo className="h-4 w-4" />
           </Button>
         </div>
-        <div className="p-4 min-h-[300px] bg-gray-50 animate-pulse rounded-b-lg">
+        <div className="p-4 min-h-[300px]  animate-pulse rounded-b-lg">
           {/* Loading placeholder */}
         </div>
       </div>
@@ -125,7 +125,7 @@ export default function RichTextEditor({ content, onChange, placeholder = 'Write
   return (
     <div className="border rounded-lg overflow-hidden">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 p-2 border-b bg-gray-50">
+      <div className="flex flex-wrap items-center gap-1 p-2 border-b">
         <Button
           type="button"
           variant={editor.isActive('bold') ? 'default' : 'outline'}
@@ -219,7 +219,7 @@ export default function RichTextEditor({ content, onChange, placeholder = 'Write
 
       {/* Link Input */}
       {showLinkInput && (
-        <div className="p-2 border-b bg-gray-50 flex gap-2">
+        <div className="p-2 border-b  flex gap-2">
           <input
             type="text"
             value={linkUrl}
@@ -246,7 +246,7 @@ export default function RichTextEditor({ content, onChange, placeholder = 'Write
 
       {/* Image Input */}
       {showImageInput && (
-        <div className="p-2 border-b bg-gray-50 flex gap-2">
+        <div className="p-2 border-b  flex gap-2">
           <input
             type="text"
             value={imageUrl}

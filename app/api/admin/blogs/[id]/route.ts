@@ -34,18 +34,27 @@ export const PUT = withAdminAuth(async (request, ctx) => {
   const body = await request.json()
   const { title, excerpt, content, published, archived } = body ?? {}
 
-  if (!title || !excerpt) {
-    return NextResponse.json({ error: 'Title and excerpt are required' }, { status: 400 })
+  // Validasi hanya kalau memang update konten
+  if ((title !== undefined && title.trim() === '') ||
+      (excerpt !== undefined && excerpt.trim() === '')) {
+    return NextResponse.json({ error: 'Title and excerpt cannot be empty' }, { status: 400 })
   }
 
   const updated = await prisma.blog.update({
     where: { id },
-    data: { title, excerpt, content, published, archived },
+    data: {
+      ...(title !== undefined && { title }),
+      ...(excerpt !== undefined && { excerpt }),
+      ...(content !== undefined && { content }),
+      ...(published !== undefined && { published }),
+      ...(archived !== undefined && { archived }),
+    },
     include: { author: { select: { id: true, name: true, avatar: true } } }
   })
 
   return NextResponse.json(updated)
 })
+
 
 export const DELETE = withAdminAuth(async (request, ctx) => {
   const params = await Promise.resolve(ctx?.params)

@@ -1,4 +1,3 @@
-// app/api/contact-info/route.ts
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
@@ -16,12 +15,13 @@ export async function GET() {
 
     // Format data untuk frontend
     const contactInfos = contactSettings.map(setting => {
+      const key = setting.key.toLowerCase() // biar gak masalah kapital
+
       let type: 'email' | 'phone' | 'location' = 'email'
-      
-      // Determine type based on key
-      if (setting.key.includes('Email')) type = 'email'
-      else if (setting.key.includes('Phone')) type = 'phone'
-      else if (setting.key.includes('Location')) type = 'location'
+
+      if (key.includes('email')) type = 'email'
+      else if (key.includes('phone')) type = 'phone'
+      else if (key.includes('location') || key.includes('address')) type = 'location'
 
       return {
         id: setting.id,
@@ -29,12 +29,11 @@ export async function GET() {
         value: setting.value
       }
     })
-
     return NextResponse.json(contactInfos)
   } catch (error) {
     console.error('Error fetching contact info:', error)
     return NextResponse.json(
-      { error: 'Internal server error' }, 
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }

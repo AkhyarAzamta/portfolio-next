@@ -43,3 +43,7 @@ next-env.d.ts
 /lib/generated/prisma
 
 /lib/generated/prisma
+
+# Upload files (jangan commit file upload user)
+/public/uploads/
+!/public/uploads/.gitkeep

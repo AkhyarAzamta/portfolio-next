@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -40,9 +40,8 @@ model Blog {
   authorId  String
   slug      String   @unique
   published Boolean  @default(false)
-  archived  Boolean  @default(false)
-  viewCount Int      @default(0) // Added for view tracking
-  tags      String[] // Added for tags
+  viewCount Int      @default(0)
+  tags      Json     // ✅ ubah dari String[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -50,10 +49,10 @@ model Blog {
 }
 
 model Project {
-  id           String   @id @default(cuid()) // Using cuid() instead of autoincrement()
+  id           String   @id @default(cuid())
   title        String
   description  String
-  technologies String[]
+  technologies Json     // ✅ ubah dari String[]
   sourceCode   String?
   demoLink     String?
   image        String
@@ -118,7 +117,7 @@ model Experience {
   title       String
   company     String
   period      String
-  description String[]
+  description Json     // ✅ ubah dari String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -155,7 +154,7 @@ model Certificate {
   issueDate     DateTime
   expiryDate    DateTime?
   credentialURL String?
-  image         String? // New field for certificate image
+  image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -165,8 +164,8 @@ model Certificate {
 model LanguageSkill {
   id        Int      @id @default(autoincrement())
   name      String
-  level     Int // 1-100 percentage
-  category  String? // e.g., "Programming", "Spoken", "Written"
+  level     Int
+  category  String?
   logo      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -175,17 +174,17 @@ model LanguageSkill {
 }
 
 model SiteSetting {
-  id        String   @id @default(cuid())
-  key       String   @unique
-  value     String
-  type      String   // 'string', 'number', 'boolean', 'json', 'text'
-  category  String   // 'general', 'appearance', 'seo', 'social', 'contact', 'email'
-  label     String
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  type        String
+  category    String
+  label       String
   description String?
-  options   String?  // JSON string for select options
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  options     String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("site_settings")
 }

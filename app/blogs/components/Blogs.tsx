@@ -21,7 +21,7 @@ export default function Blogs({ limit, title, showViewAll = false }: BlogsProps)
   const displayedBlogs = (limit ? blogs.slice(0, limit) : blogs).filter((blog: { published: boolean }) => blog.published)
 
   return (
-    <section className="py-20">
+    <section className="py-20 text-text">
       <BlogList blogs={displayedBlogs} title={title} showViewAll={showViewAll} />
     </section>
   )

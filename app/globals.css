@@ -7,6 +7,7 @@
   --color-secondary: #F1F1F1;
   --color-accent: #FF6B35;
   --color-background: #E7F2EF;
+  --color-card: #FFFFFF;
   --color-dark: #1F2937;
   --color-light: #F9FAFB;
   --color-text: #000000;
@@ -17,6 +18,7 @@
   --color-secondary-dark: #374151;
   --color-accent-dark: #fdba74;
   --color-background-dark: #131F3F;
+  --color-card-dark: #393E46;
   --color-text-dark: #ffffff;
   --color-border-dark: #374151;
 
@@ -139,6 +141,7 @@
 .border-accent { border-color: var(--color-accent); }
 
 .bg-background { background-color: var(--color-background); }
+.bg-card { background-color: var(--color-card); }
 .text-text { color: var(--color-text); }
 .border-border { border-color: var(--color-border); }
 
@@ -156,6 +159,7 @@
 .dark .border-accent { border-color: var(--color-accent-dark, var(--color-accent)); }
 
 .dark .bg-background { background-color: var(--color-background-dark, var(--color-background)); }
+.dark .bg-card { background-color: var(--color-card-dark, var(--color-card)); }
 .dark .text-text { color: var(--color-text-dark, var(--color-text)); }
 .dark .border-border { border-color: var(--color-border-dark, var(--color-border)); }
 

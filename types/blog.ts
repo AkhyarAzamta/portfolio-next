@@ -14,7 +14,6 @@ export interface Blog {
   author?: UserBasic // optionally populated
   slug: string
   published: boolean
-  archived: boolean
   createdAt: string
   updatedAt: string
 }
@@ -26,7 +25,6 @@ export interface BlogBasic {
   excerpt: string
   slug: string
   published: boolean
-  archived: boolean
   createdAt: string
   updatedAt: string
   authorId: number
@@ -55,7 +53,6 @@ export interface BlogUpdateInput {
   content?: string | null
   slug?: string
   published?: boolean
-  archived?: boolean
 }
 
 export interface BlogFormProps {
@@ -65,6 +62,5 @@ export interface BlogFormProps {
     excerpt: string
     content: string
     published: boolean
-    archived: boolean
   }
 }

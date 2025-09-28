@@ -63,7 +63,7 @@ export default function AboutForm() {
   if (loading) return <Loading />
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-card p-6 rounded-lg shadow-md">
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="bio" className="block text-sm font-medium mb-2">

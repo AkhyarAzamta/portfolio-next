@@ -66,7 +66,6 @@ export default function AdminBlogViewPage() {
           title: blog.title,
           excerpt: blog.excerpt,
           content: blog.content,
-          archived: blog.archived
         })
       })
 
@@ -113,10 +112,9 @@ export default function AdminBlogViewPage() {
   const readTime = calculateReadTime(blog.content || '')
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-text">
       <div className="flex items-center justify-between mb-6">
         <Button
-          variant="outline"
           onClick={() => router.push('/dashboard/blogs')}
           className="mr-4"
         >
@@ -126,7 +124,6 @@ export default function AdminBlogViewPage() {
         
         <div className="flex gap-2">
           <Button
-            variant="outline"
             onClick={() => router.push(`/dashboard/blogs/edit/${blog.id}`)}
           >
             <FaEdit className="mr-2" />
@@ -135,7 +132,7 @@ export default function AdminBlogViewPage() {
           
           <Button
             onClick={togglePublish}
-            variant={blog.published ? "outline" : "default"}
+            variant={blog.published ? "secondary" : "default"}
           >
             {blog.published ? (
               <>
@@ -157,7 +154,7 @@ export default function AdminBlogViewPage() {
           <CardTitle className="text-3xl">{blog.title}</CardTitle>
           <CardDescription className="text-lg">{blog.excerpt}</CardDescription>
           
-          <div className="flex flex-wrap items-center text-sm text-gray-500 gap-4 mt-4">
+          <div className="flex flex-wrap items-center text-sm dark:text-gray-400 text-gray-500 gap-4 mt-4">
             <div className="flex items-center">
               {blog.author!.avatar && (
                 <div className="relative w-6 h-6 mr-2">
@@ -189,13 +186,6 @@ export default function AdminBlogViewPage() {
                 {blog.published ? 'Published' : 'Draft'}
               </span>
             </div>
-            {blog.archived && (
-              <div className="flex items-center">
-                <span className="px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs">
-                  Archived
-                </span>
-              </div>
-            )}
           </div>
         </CardHeader>
         

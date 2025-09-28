@@ -82,7 +82,7 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
       createdAt: blog.createdAt.toISOString(),
       updatedAt: blog.updatedAt.toISOString(),
       content: blog.content || '',
-      tags: blog.tags || [],
+      tags: Array.isArray(blog.tags) ? blog.tags.filter(tag => typeof tag === 'string') : [],
       viewCount: blog.viewCount || 0
     }
   } catch (error) {
@@ -100,8 +100,8 @@ async function getRelatedPosts(currentSlug: string, tags: string[]): Promise<Blo
       where: {
         slug: { not: currentSlug },
         published: true,
-        tags: {
-          hasSome: tags
+        tags: { 
+          array_contains: tags
         }
       },
       orderBy: { createdAt: 'desc' },
@@ -121,7 +121,7 @@ async function getRelatedPosts(currentSlug: string, tags: string[]): Promise<Blo
       createdAt: blog.createdAt.toString(),
       updatedAt: blog.updatedAt.toString(),
       content: blog.content || '',
-      tags: blog.tags || [],
+      tags: Array.isArray(blog.tags) ? blog.tags.filter(tag => typeof tag === 'string') : [],
       viewCount: blog.viewCount || 0
     }))
   } catch (error) {
@@ -155,7 +155,7 @@ async function getRecentPosts(excludeSlug: string): Promise<BlogPost[]> {
       createdAt: blog.createdAt.toString(),
       updatedAt: blog.updatedAt.toString(),
       content: blog.content || '',
-      tags: blog.tags || [],
+      tags: Array.isArray(blog.tags) ? blog.tags.filter(tag => typeof tag === 'string') : [],
       viewCount: blog.viewCount || 0
     }))
   } catch (error) {
@@ -179,7 +179,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const siteUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
 
   return (
-    <div className="max-w-7xl mx-auto py-8">
+    <div className="max-w-7xl mx-auto py-8 text-text">
       {/* Back button with proper padding */}
       <div className="px-4 lg:px-8">
         <Link 

@@ -11,7 +11,7 @@ import LanguageSkillsManager from '@/components/LanguageManager'
 
 export default function AboutDashboard() {
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto py-8 text-text">
       <h1 className="text-3xl font-bold mb-8">Manage About Section</h1>
       
       <Tabs defaultValue="about" className="w-full">

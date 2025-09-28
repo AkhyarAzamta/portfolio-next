@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { withAdminAuth } from '@/lib/withAdminAuth'
-import { defaultSettingsSeed } from '@/data/seedSettings'
+import { defaultSettings } from '@/data/defaultSettings'
 
 /**
  * POST /api/admin/settings/seed
@@ -14,7 +14,7 @@ export const POST = withAdminAuth(async () => {
     await prisma.siteSetting.deleteMany({})
 
     // Insert default settings
-    for (const setting of defaultSettingsSeed) {
+    for (const setting of defaultSettings) {
       await prisma.siteSetting.create({
         data: {
           key: setting.key,
@@ -32,7 +32,7 @@ export const POST = withAdminAuth(async () => {
     return NextResponse.json({ 
       success: true, 
       message: 'Settings reset to default successfully',
-      count: defaultSettingsSeed.length
+      count: defaultSettings.length
     })
   } catch (error) {
     console.error('Error resetting settings:', error)

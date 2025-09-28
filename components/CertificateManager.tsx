@@ -15,13 +15,13 @@ export default function CertificateManager() {
   const [certificates, setCertificates] = useState<Certificate[]>([])
   const [loading, setLoading] = useState(true)
   const [editingCertificate, setEditingCertificate] = useState<Certificate | null>(null)
-  const [newCertificate, setNewCertificate] = useState({ 
-    name: '', 
-    issuer: '', 
-    issueDate: '', 
-    expiryDate: '', 
+  const [newCertificate, setNewCertificate] = useState({
+    name: '',
+    issuer: '',
+    issueDate: '',
+    expiryDate: '',
     credentialURL: '',
-    image: '' 
+    image: ''
   })
   const [saving, setSaving] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -45,7 +45,7 @@ export default function CertificateManager() {
   const handleCreateCertificate = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    
+
     try {
       const response = await fetch('/api/admin/certificates', {
         method: 'POST',
@@ -59,15 +59,15 @@ export default function CertificateManager() {
           image: newCertificate.image || null
         }),
       })
-      
+
       if (response.ok) {
-        setNewCertificate({ 
-          name: '', 
-          issuer: '', 
-          issueDate: '', 
-          expiryDate: '', 
+        setNewCertificate({
+          name: '',
+          issuer: '',
+          issueDate: '',
+          expiryDate: '',
           credentialURL: '',
-          image: '' 
+          image: ''
         })
         fetchCertificates()
       }
@@ -81,9 +81,9 @@ export default function CertificateManager() {
   const handleUpdateCertificate = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    
+
     if (!editingCertificate) return
-    
+
     try {
       const response = await fetch(`/api/admin/certificates/${editingCertificate.id}`, {
         method: 'PUT',
@@ -97,7 +97,7 @@ export default function CertificateManager() {
           image: editingCertificate.image || null
         }),
       })
-      
+
       if (response.ok) {
         setEditingCertificate(null)
         setImagePreview(null)
@@ -112,12 +112,12 @@ export default function CertificateManager() {
 
   const handleDeleteCertificate = async (id: number) => {
     if (!confirm('Are you sure you want to delete this certificate?')) return
-    
+
     try {
       const response = await fetch(`/api/admin/certificates/${id}`, {
         method: 'DELETE',
       })
-      
+
       if (response.ok) {
         fetchCertificates()
       }
@@ -135,7 +135,7 @@ export default function CertificateManager() {
   return (
     <div className="space-y-6">
       {/* Add New Certificate Form */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-card p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Add New Certificate</h2>
         <form onSubmit={handleCreateCertificate} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -151,7 +151,7 @@ export default function CertificateManager() {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="issuer" className="block text-sm font-medium mb-2">
                 Issuing Organization
@@ -165,7 +165,7 @@ export default function CertificateManager() {
               />
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="issueDate" className="block text-sm font-medium mb-2">
@@ -173,26 +173,28 @@ export default function CertificateManager() {
               </label>
               <Input
                 id="issueDate"
+                type="date"
                 value={newCertificate.issueDate}
                 onChange={(e) => setNewCertificate({ ...newCertificate, issueDate: e.target.value })}
                 placeholder="e.g., January 2023"
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="expiryDate" className="block text-sm font-medium mb-2">
                 Expiration Date (Month Year) - Optional
               </label>
               <Input
                 id="expiryDate"
+                type="date"
                 value={newCertificate.expiryDate}
                 onChange={(e) => setNewCertificate({ ...newCertificate, expiryDate: e.target.value })}
                 placeholder="e.g., January 2025"
               />
             </div>
           </div>
-          
+
           <div>
             <label htmlFor="credentialURL" className="block text-sm font-medium mb-2">
               Credential URL - Optional
@@ -216,7 +218,7 @@ export default function CertificateManager() {
               disabled={saving}
             />
           </div>
-          
+
           <Button type="submit" disabled={saving}>
             {saving ? (
               <>
@@ -236,7 +238,7 @@ export default function CertificateManager() {
       {/* Certificates List */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Certificates</h2>
-        
+
         <Table>
           <TableHeader>
             <TableRow>
@@ -267,8 +269,12 @@ export default function CertificateManager() {
                 </TableCell>
                 <TableCell className="font-medium">{certificate.name}</TableCell>
                 <TableCell>{certificate.issuer}</TableCell>
-                <TableCell>{certificate.issueDate}</TableCell>
-                <TableCell>{certificate.expiryDate || 'No expiry'}</TableCell>
+                <TableCell>
+                  {certificate.issueDate ? new Date(certificate.issueDate).toLocaleDateString() : '-'}
+                </TableCell>
+                <TableCell>
+                  {certificate.expiryDate ? new Date(certificate.expiryDate).toLocaleDateString() : 'No expiry'}
+                </TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
                     {certificate.image && (
@@ -318,7 +324,7 @@ export default function CertificateManager() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
             <h2 className="text-xl font-semibold mb-4">Edit Certificate</h2>
-            
+
             <form onSubmit={handleUpdateCertificate}>
               <div className="space-y-4">
                 <div>
@@ -332,7 +338,7 @@ export default function CertificateManager() {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="edit-issuer" className="block text-sm font-medium mb-2">
                     Issuing Organization
@@ -344,31 +350,33 @@ export default function CertificateManager() {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="edit-issueDate" className="block text-sm font-medium mb-2">
                     Issue Date (Month Year)
                   </label>
                   <Input
                     id="edit-issueDate"
+                    type="date"
                     value={editingCertificate.issueDate}
                     onChange={(e) => setEditingCertificate({ ...editingCertificate, issueDate: e.target.value })}
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="edit-expiryDate" className="block text-sm font-medium mb-2">
                     Expiration Date (Month Year) - Optional
                   </label>
                   <Input
                     id="edit-expiryDate"
+                    type="date"
                     value={editingCertificate.expiryDate || ''}
                     onChange={(e) => setEditingCertificate({ ...editingCertificate, expiryDate: e.target.value })}
                     placeholder="e.g., January 2025"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="edit-credentialURL" className="block text-sm font-medium mb-2">
                     Credential URL - Optional
@@ -391,7 +399,7 @@ export default function CertificateManager() {
                     disabled={saving}
                   />
                 </div>
-                
+
                 <div className="flex justify-end space-x-2">
                   <Button
                     type="button"
@@ -424,7 +432,7 @@ export default function CertificateManager() {
       {imagePreview && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50" onClick={() => setImagePreview(null)}>
           <div className="relative max-w-4xl max-h-full">
-            <button 
+            <button
               className="absolute top-4 right-4 bg-white rounded-full p-2 z-10"
               onClick={() => setImagePreview(null)}
             >

@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { verifyToken } from '@/lib/jwt'
+import { deleteUploadedFileServer } from '@/lib/uploadUtils'
 
 type Context = { params: Promise<{ id: string }> }
 
@@ -98,6 +99,25 @@ export async function PUT(request: Request, ctx: Context) {
 
     const archived = typeof body.archived === 'boolean' ? body.archived : undefined
 
+    // Dalam PUT handler, sebelum update project
+    const existingProject = await prisma.project.findUnique({
+      where: { id }
+    })
+
+    // Jika image berubah, hapus image lama
+    if (existingProject?.image && image && existingProject.image !== image) {
+      if (existingProject.image.startsWith('/uploads/')) {
+        await deleteUploadedFileServer(existingProject.image)
+      }
+    }
+
+    // Jika sourceCode berubah, hapus file lama
+    if (existingProject?.sourceCode && sourceCode && existingProject.sourceCode !== sourceCode) {
+      if (existingProject.sourceCode.startsWith('/uploads/')) {
+        await deleteUploadedFileServer(existingProject.sourceCode)
+      }
+    }
+
     const updatedPrismaProject = await prisma.project.update({
       where: { id },
       data: {
@@ -150,7 +170,27 @@ export async function DELETE(request: Request, ctx: Context) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
+    // Ambil data project sebelum dihapus untuk mendapatkan URL file
+    const project = await prisma.project.findUnique({
+      where: { id }
+    })
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+    }
+
+    // Hapus file image dan source code dari storage
+    if (project.image && project.image.startsWith('/uploads/')) {
+      await deleteUploadedFileServer(project.image)
+    }
+
+    if (project.sourceCode && project.sourceCode.startsWith('/uploads/')) {
+      await deleteUploadedFileServer(project.sourceCode)
+    }
+
+    // Hapus project dari database
     await prisma.project.delete({ where: { id } })
+
     return NextResponse.json({ message: 'Project deleted successfully' })
   } catch (error) {
     console.error('Error deleting project:', error)

@@ -26,14 +26,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
-import { MoreHorizontal, Edit, Trash2, Plus, Eye, EyeOff, Archive, FileText } from 'lucide-react'
+import { MoreHorizontal, Edit, Trash2, Plus, Eye, EyeOff, FileText } from 'lucide-react'
 import { Loading } from '@/components/ui/loading'
 import { Blog } from '@/types'
+import { toast } from 'sonner'
+import { ConfirmDialog } from '@/components/ConfirmDialog'
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -67,14 +71,12 @@ export default function BlogsPage() {
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this blog?')) {
-      return
-    }
+  const confirmDelete = async () => {
+    if (!selectedId) return
 
     try {
       const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
-      const response = await fetch(`/api/admin/blogs/${id}`, {
+      const response = await fetch(`/api/admin/blogs/${selectedId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -85,8 +87,12 @@ export default function BlogsPage() {
         throw new Error('Failed to delete blog')
       }
 
-      fetchBlogs()
+      setBlogs(blogs.filter(blog => blog.id !== selectedId))
+      setSelectedId(null)
+      setConfirmOpen(false)
+      toast.success('Blog deleted successfully')
     } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'An error occurred')
       setError(err instanceof Error ? err.message : 'An error occurred')
     }
   }
@@ -106,39 +112,21 @@ export default function BlogsPage() {
       })
 
       if (!response.ok) {
+        toast.error('Failed to update blog')
         throw new Error('Failed to update blog')
       }
-
+      toast.success(`Blog ${!currentStatus ? 'published' : 'unpublished'} successfully`)
       fetchBlogs()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
+      toast.error(err instanceof Error ? err.message : 'An error occurred')
     }
   }
 
-  const toggleArchive = async (id: string, currentStatus: boolean) => {
-    try {
-      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
-      const response = await fetch(`/api/admin/blogs/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          archived: !currentStatus
-        })
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to update blog')
-      }
-
-      fetchBlogs()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-    }
+  const handleDeleteClick = (id: string) => {
+    setSelectedId(id)
+    setConfirmOpen(true)
   }
-
   if (loading) {
     return <Loading size={150} blur="sm" />
   }
@@ -152,7 +140,16 @@ export default function BlogsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-text">
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Delete Blog"
+        description="Are you sure you want to delete this blog? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDelete}
+      />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Manage Blogs</h1>
         <Button onClick={() => router.push('/dashboard/blogs/new')}>
@@ -198,11 +195,7 @@ export default function BlogsPage() {
                     <TableCell className="max-w-xs truncate">{blog.excerpt}</TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        {blog.archived ? (
-                          <Badge variant="secondary" className="text-xs">
-                            Archived
-                          </Badge>
-                        ) : blog.published ? (
+                        {blog.published ? (
                           <Badge variant="default" className="text-xs">
                             Published
                           </Badge>
@@ -253,22 +246,7 @@ export default function BlogsPage() {
                             )}
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => toggleArchive(blog.id, blog.archived)}
-                          >
-                            {blog.archived ? (
-                              <>
-                                <FileText className="h-4 w-4 mr-2" />
-                                Unarchive
-                              </>
-                            ) : (
-                              <>
-                                <Archive className="h-4 w-4 mr-2" />
-                                Archive
-                              </>
-                            )}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(blog.id)}
+                            onClick={() => handleDeleteClick(blog.id)}
                             className="text-red-600"
                           >
                             <Trash2 className="h-4 w-4 mr-2" />

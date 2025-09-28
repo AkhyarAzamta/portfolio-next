@@ -4,30 +4,30 @@ const defaultSettings = [
   // General Settings
   {
     key: 'siteTitle',
-    value: 'My Portfolio',
+    value: 'Devfolio - My Portfolio Website',
     type: 'string',
     category: 'general',
     label: 'Site Title',
     description: 'The title of your website',
-    order: 1
+    order: 1,
   },
   {
-    key: 'siteDescription',
-    value: 'A modern portfolio website',
+    key: 'siteDescription', 
+    value: 'A modern portfolio website built with Next.js and Tailwind CSS',
     type: 'text',
     category: 'general',
     label: 'Site Description',
     description: 'A brief description of your website',
-    order: 2
+    order: 2,
   },
   {
     key: 'siteUrl',
-    value: 'http://localhost:3000',
+    value: 'https://yourportfolio.com',
     type: 'string',
     category: 'general',
     label: 'Site URL',
-    description: 'The base URL of your website',
-    order: 3
+    description: 'The full URL of your website',
+    order: 3,
   },
   {
     key: 'adminEmail',
@@ -36,57 +36,137 @@ const defaultSettings = [
     category: 'general',
     label: 'Admin Email',
     description: 'Email address for admin notifications',
-    order: 4
+    order: 4,
   },
   {
     key: 'timezone',
     value: 'UTC',
-    type: 'string',
+    type: 'select',
     category: 'general',
     label: 'Timezone',
     description: 'Default timezone for the website',
     options: JSON.stringify(['UTC', 'America/New_York', 'Europe/London', 'Asia/Tokyo']),
-    order: 5
+    order: 5,
   },
-
   // Appearance Settings
   {
     key: 'theme',
-    value: 'light',
-    type: 'string',
+    value: 'dark',
+    type: 'select',
     category: 'appearance',
     label: 'Theme',
-    description: 'Default theme for the website',
+    description: 'Default theme for your website',
     options: JSON.stringify(['light', 'dark', 'system']),
-    order: 1
+    order: 1,
   },
   {
     key: 'primaryColor',
-    value: '#3b82f6',
+    value: '#007AFF',
     type: 'string',
     category: 'appearance',
     label: 'Primary Color',
-    description: 'Primary brand color',
-    order: 2
+    description: 'Main brand color for your website',
+    order: 2,
   },
   {
     key: 'secondaryColor',
-    value: '#6366f1',
+    value: '#F1F1F1',
     type: 'string',
     category: 'appearance',
     label: 'Secondary Color',
-    description: 'Secondary brand color',
-    order: 3
+    description: 'Secondary color for your website',
+    order: 3,
   },
   {
-    key: 'fontFamily',
-    value: 'Inter',
+    key: 'accentColor',
+    value: '#FF6B35',
     type: 'string',
     category: 'appearance',
-    label: 'Font Family',
-    description: 'Default font family',
-    options: JSON.stringify(['Inter', 'Roboto', 'Open Sans', 'Poppins', 'Montserrat']),
-    order: 4
+    label: 'Accent Color',
+    description: 'Accent color for highlights',
+    order: 4,
+  },
+  {
+    key: 'backgroundColor',
+    value: '#E7F2EF',
+    type: 'string',
+    category: 'appearance',
+    label: 'Background Color',
+    description: 'Main background color',
+    order: 5,
+  },
+  {
+    key: 'textColor',
+    value: '#000000',
+    type: 'string',
+    category: 'appearance',
+    label: 'Text Color',
+    description: 'Main text color',
+    order: 6,
+  },
+  {
+    key: 'borderColor',
+    value: '#e5e7eb',
+    type: 'string',
+    category: 'appearance',
+    label: 'Border Color',
+    description: 'Border color for elements',
+    order: 7,
+  },
+  // Dark mode colors
+  {
+    key: 'primaryColorDark',
+    value: '#60a5fa',
+    type: 'string',
+    category: 'appearance',
+    label: 'Primary Color (Dark)',
+    description: 'Primary color for dark mode',
+    order: 8,
+  },
+  {
+    key: 'secondaryColorDark',
+    value: '#374151',
+    type: 'string',
+    category: 'appearance',
+    label: 'Secondary Color (Dark)',
+    description: 'Secondary color for dark mode',
+    order: 9,
+  },
+  {
+    key: 'accentColorDark',
+    value: '#fdba74',
+    type: 'string',
+    category: 'appearance',
+    label: 'Accent Color (Dark)',
+    description: 'Accent color for dark mode',
+    order: 10,
+  },
+  {
+    key: 'backgroundColorDark',
+    value: '#131F3F',
+    type: 'string',
+    category: 'appearance',
+    label: 'Background Color (Dark)',
+    description: 'Background color for dark mode',
+    order: 11,
+  },
+  {
+    key: 'textColorDark',
+    value: '#ffffff',
+    type: 'string',
+    category: 'appearance',
+    label: 'Text Color (Dark)',
+    description: 'Text color for dark mode',
+    order: 12,
+  },
+  {
+    key: 'borderColorDark',
+    value: '#374151',
+    type: 'string',
+    category: 'appearance',
+    label: 'Border Color (Dark)',
+    description: 'Border color for dark mode',
+    order: 13,
   },
   {
     key: 'enableAnimations',
@@ -95,9 +175,8 @@ const defaultSettings = [
     category: 'appearance',
     label: 'Enable Animations',
     description: 'Enable CSS animations and transitions',
-    order: 5
+    order: 14,
   },
-
   // SEO Settings
   {
     key: 'metaTitle',
@@ -106,7 +185,7 @@ const defaultSettings = [
     category: 'seo',
     label: 'Meta Title',
     description: 'Default meta title for SEO',
-    order: 1
+    order: 1,
   },
   {
     key: 'metaDescription',
@@ -115,7 +194,7 @@ const defaultSettings = [
     category: 'seo',
     label: 'Meta Description',
     description: 'Default meta description for SEO',
-    order: 2
+    order: 2,
   },
   {
     key: 'metaKeywords',
@@ -124,7 +203,7 @@ const defaultSettings = [
     category: 'seo',
     label: 'Meta Keywords',
     description: 'Comma-separated keywords for SEO',
-    order: 3
+    order: 3,
   },
   {
     key: 'googleAnalytics',
@@ -133,7 +212,7 @@ const defaultSettings = [
     category: 'seo',
     label: 'Google Analytics ID',
     description: 'Google Analytics tracking ID',
-    order: 4
+    order: 4,
   },
   {
     key: 'googleSiteVerification',
@@ -142,9 +221,8 @@ const defaultSettings = [
     category: 'seo',
     label: 'Google Site Verification',
     description: 'Google Search Console verification code',
-    order: 5
+    order: 5,
   },
-
   // Social Media
   {
     key: 'socialFacebook',
@@ -153,7 +231,7 @@ const defaultSettings = [
     category: 'social',
     label: 'Facebook URL',
     description: 'Your Facebook profile URL',
-    order: 1
+    order: 1,
   },
   {
     key: 'socialTwitter',
@@ -162,7 +240,7 @@ const defaultSettings = [
     category: 'social',
     label: 'Twitter URL',
     description: 'Your Twitter profile URL',
-    order: 2
+    order: 2,
   },
   {
     key: 'socialInstagram',
@@ -171,7 +249,7 @@ const defaultSettings = [
     category: 'social',
     label: 'Instagram URL',
     description: 'Your Instagram profile URL',
-    order: 3
+    order: 3,
   },
   {
     key: 'socialLinkedIn',
@@ -180,16 +258,16 @@ const defaultSettings = [
     category: 'social',
     label: 'LinkedIn URL',
     description: 'Your LinkedIn profile URL',
-    order: 4
+    order: 4,
   },
   {
     key: 'socialGithub',
-    value: '',
+    value: 'https://github.com/yourusername',
     type: 'string',
     category: 'social',
     label: 'GitHub URL',
     description: 'Your GitHub profile URL',
-    order: 5
+    order: 5,
   },
   {
     key: 'socialYoutube',
@@ -198,36 +276,35 @@ const defaultSettings = [
     category: 'social',
     label: 'YouTube URL',
     description: 'Your YouTube channel URL',
-    order: 6
+    order: 6,
   },
-
   // Contact Information
   {
     key: 'contactEmail',
-    value: 'hello@example.com',
+    value: 'hello@devfolio.com',
     type: 'string',
     category: 'contact',
     label: 'Contact Email',
     description: 'Email address for contact form',
-    order: 1
+    order: 1,
   },
   {
     key: 'contactPhone',
-    value: '',
+    value: '+1 (555) 123-4567',
     type: 'string',
     category: 'contact',
     label: 'Contact Phone',
     description: 'Phone number for contact',
-    order: 2
+    order: 2,
   },
   {
     key: 'contactAddress',
-    value: '',
+    value: 'Jakarta, Indonesia',
     type: 'text',
     category: 'contact',
     label: 'Contact Address',
     description: 'Physical address for contact',
-    order: 3
+    order: 3,
   },
   {
     key: 'contactFormEnabled',
@@ -236,18 +313,17 @@ const defaultSettings = [
     category: 'contact',
     label: 'Contact Form Enabled',
     description: 'Enable or disable the contact form',
-    order: 4
+    order: 4,
   },
-
   // Email Settings
   {
     key: 'smtpHost',
-    value: '',
+    value: 'smtp.example.com',
     type: 'string',
     category: 'email',
     label: 'SMTP Host',
     description: 'SMTP server host',
-    order: 1
+    order: 1,
   },
   {
     key: 'smtpPort',
@@ -256,7 +332,7 @@ const defaultSettings = [
     category: 'email',
     label: 'SMTP Port',
     description: 'SMTP server port',
-    order: 2
+    order: 2,
   },
   {
     key: 'smtpUser',
@@ -265,7 +341,7 @@ const defaultSettings = [
     category: 'email',
     label: 'SMTP Username',
     description: 'SMTP authentication username',
-    order: 3
+    order: 3,
   },
   {
     key: 'smtpPassword',
@@ -274,7 +350,7 @@ const defaultSettings = [
     category: 'email',
     label: 'SMTP Password',
     description: 'SMTP authentication password',
-    order: 4
+    order: 4,
   },
   {
     key: 'smtpFrom',
@@ -283,7 +359,7 @@ const defaultSettings = [
     category: 'email',
     label: 'From Email',
     description: 'Email address shown as sender',
-    order: 5
+    order: 5,
   },
   {
     key: 'emailNotifications',
@@ -292,7 +368,7 @@ const defaultSettings = [
     category: 'email',
     label: 'Email Notifications',
     description: 'Enable email notifications for new contacts',
-    order: 6
+    order: 6,
   }
 ]
 

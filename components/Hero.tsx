@@ -157,7 +157,7 @@ export default function Hero({ initialAdminUser = null }: HeroProps) {
   }, [loading])
 
   return (
-    <section className="py-10 relative overflow-hidden" ref={heroRef}>
+    <section className="py-10 relative overflow-hidden text-text" ref={heroRef}>
       {/* Animated background elements */}
       <div className="absolute inset-0 z-0">
         {[...Array(5)].map((_, i) => (

@@ -17,7 +17,6 @@ export async function GET() {
     const blogs = await prisma.blog.findMany({
       where: {
         published: true,
-        archived: false
       },
       orderBy: {
         createdAt: 'desc'

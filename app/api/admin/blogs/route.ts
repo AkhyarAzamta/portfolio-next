@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    const { title, excerpt, content, published, archived } = await request.json()
+    const { title, excerpt, content, published } = await request.json()
     
     if (!title || !excerpt) {
       return NextResponse.json(
@@ -80,9 +80,9 @@ const blog = await prisma.blog.create({
     content,
     slug,
     published: published || false,
-    archived: archived || false,
+    tags: [],
     author: {
-      connect: { email: decoded.email } // connect ke user yang sudah ada
+      connect: { email: decoded.email }
     }
   },
   include: {

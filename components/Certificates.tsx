@@ -76,7 +76,7 @@ export default function Certificates() {
 
   return (
     <section>
-      <h2 className="section-title">
+      <h2 className="section-title text-text">
         Certifications
       </h2>
 
@@ -105,7 +105,7 @@ export default function Certificates() {
                 </div>
               )}
 
-              <h3 className="text-xl px-4 font-semibold mb-2">{certificate.name}</h3>
+              <h3 className="text-xl px-4 font-semibold text-text mb-2">{certificate.name}</h3>
               <p className="text-primary px-4 mb-2">{certificate.issuer}</p>
 
               <div className="flex justify-between px-4 items-center mb-4">

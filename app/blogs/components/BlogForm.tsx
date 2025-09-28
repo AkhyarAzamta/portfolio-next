@@ -19,7 +19,6 @@ export default function BlogForm({ blog }: BlogFormProps) {
     excerpt: blog?.excerpt || '',
     content: blog?.content || '',
     published: blog?.published || false,
-    archived: blog?.archived || false
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -32,7 +31,6 @@ export default function BlogForm({ blog }: BlogFormProps) {
         excerpt: blog.excerpt,
         content: blog.content,
         published: blog.published,
-        archived: blog.archived
       })
     }
   }, [blog])
@@ -90,10 +88,10 @@ const handleSubmit = async (e: React.FormEvent) => {
 }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-text">
       <div className="flex items-center mb-6">
         <Button
-          variant="outline"
+          // variant="outline"
           onClick={() => router.push('/dashboard/blogs')}
           className="mr-4"
         >
@@ -150,7 +148,6 @@ const handleSubmit = async (e: React.FormEvent) => {
             </div>
 
             {/* Status Options */}
-            <div className="flex gap-6">
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="published"
@@ -161,18 +158,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                 />
                 <Label htmlFor="published">Published</Label>
               </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="archived"
-                  checked={formData.archived}
-                  onCheckedChange={(checked) => 
-                    setFormData({ ...formData, archived: checked === true })
-                  }
-                />
-                <Label htmlFor="archived">Archived</Label>
-              </div>
-            </div>
 
             {/* Error */}
             {error && <div className="text-red-500 text-sm">{error}</div>}

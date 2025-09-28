@@ -139,12 +139,12 @@ export default function ContactsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="min-h-screen bg-background p-8 text-text">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon" asChild>
+            <Button size="icon" asChild>
               <Link href="/dashboard">
                 <ArrowLeftIcon className="h-4 w-4" />
               </Link>

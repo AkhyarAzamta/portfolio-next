@@ -31,7 +31,7 @@ export default function ProjectCard({ project, layout = 'grid' }: ProjectCardPro
             />
           </div>
           <div className="md:w-2/3">
-            <h3 className="text-xl font-bold mb-2">{project.title}</h3>
+            <h3 className="text-xl text-text font-bold mb-2">{project.title}</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">{project.description}</p>
             <div className="flex flex-wrap gap-2 mb-4">
               {project.technologies.map((tech) => (
@@ -68,7 +68,7 @@ export default function ProjectCard({ project, layout = 'grid' }: ProjectCardPro
     <article className={rootClass}>
       <Image src={project.image} alt={project.title} width={400} height={250} className="w-full h-48 object-cover" />
       <div className="p-6">
-        <h3 className="text-xl font-bold mb-2">{project.title}</h3>
+        <h3 className="text-xl text-text font-bold mb-2">{project.title}</h3>
         <p className="text-gray-600 dark:text-gray-300 mb-4">{project.description}</p>
         <div className="flex flex-wrap gap-2 mb-4">
           {project.technologies.slice(0, 3).map((tech, index) => (

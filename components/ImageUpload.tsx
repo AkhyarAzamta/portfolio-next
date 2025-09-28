@@ -5,11 +5,13 @@ import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ImagePlus, X } from 'lucide-react'
 import Image from 'next/image'
+import { deleteUploadedFile } from '@/lib/uploadUtils'
 
-interface ImageUploadProps {
+export interface ImageUploadProps {
   value: string
   onChange: (value: string) => void
   disabled?: boolean
+  onError?: (error: string) => void
 }
 
 export const ImageUpload: React.FC<ImageUploadProps> = ({
@@ -28,22 +30,23 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('upload_preset', 'portfolio_uploads')
 
     try {
-      const response = await fetch(`https://api.cloudinary.com/v1_1/df1soy4on/upload`, {
+      const response = await fetch('/api/admin/upload/image', {
         method: 'POST',
         body: formData,
       })
 
       if (!response.ok) {
-        throw new Error('Upload failed')
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Upload failed')
       }
 
       const data = await response.json()
-      onChange(data.secure_url)
+      onChange(data.url) // URL path ke gambar yang diupload
     } catch (error) {
       console.error('Upload error:', error)
+      alert(error instanceof Error ? error.message : 'Failed to upload image')
     } finally {
       setIsUploading(false)
       // Reset input file
@@ -51,6 +54,19 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         fileInputRef.current.value = ''
       }
     }
+  }
+
+  const handleRemoveImage = async () => {
+    if (value && value.startsWith('/uploads/')) {
+      try {
+        await deleteUploadedFile(value)
+        console.log('Image deleted successfully:', value)
+      } catch (error) {
+        console.error('Error deleting image:', error)
+        // Tetap lanjutkan menghapus dari state meski gagal hapus file
+      }
+    }
+    onChange('') // Selalu reset value meski file tidak terhapus
   }
 
   return (
@@ -69,10 +85,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           />
           <Button
             type="button"
-            variant="destructive"
+            variant="ghost"
             size="icon"
-            className="absolute top-2 right-2"
-            onClick={() => onChange('')}
+            className="absolute top-2 right-2 h-8 w-8"
+            onClick={handleRemoveImage}
+            disabled={disabled}
           >
             <X className="h-4 w-4" />
           </Button>
@@ -95,6 +112,9 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         <ImagePlus className="h-4 w-4 mr-2" />
         {isUploading ? 'Uploading...' : 'Upload an Image'}
       </Button>
+      <p className="text-sm">
+        Supported formats: JPEG, PNG, GIF, WEBP. Max size: 5MB
+      </p>
     </div>
   )
 }

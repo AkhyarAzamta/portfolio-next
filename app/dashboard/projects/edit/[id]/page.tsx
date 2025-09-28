@@ -153,7 +153,7 @@ export default function EditProjectPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-text">
       <Card className="max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle>Edit Project</CardTitle>
