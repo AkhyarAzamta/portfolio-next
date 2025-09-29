@@ -6,7 +6,7 @@ export async function seedAbout(prisma: PrismaClient) {
 
   await prisma.about.create({
     data: {
-      bio: "Fresh graduate in Informatics Engineering with strong skills in Frontend and Backend Development (React, Next.js, Laravel, MySQL). Passionate about solving coding problems and experienced in using Linux as a daily operating system. Eager to contribute to innovative projects by building efficient and scalable web applications, while continuously learning new technologies.",
+      bio: "Fresh graduate in Informatics Engineering with strong skills in Frontend and Backend Development (React, Next.js, Laravel, MySQL, Postgres). Passionate about solving coding problems and experienced in using Linux as a daily operating system. Eager to contribute to innovative projects by building efficient and scalable web applications, while continuously learning new technologies.",
     }
   })
 
