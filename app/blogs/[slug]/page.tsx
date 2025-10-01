@@ -176,7 +176,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   }
   
   const readTime = calculateReadTime(blog.content || '')
-  const siteUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+  const siteUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
   return (
     <div className="max-w-7xl mx-auto py-8 text-text">

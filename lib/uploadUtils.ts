@@ -1,3 +1,4 @@
+'use server'
 // lib/uploadUtils.ts
 /**
  * Client-side function to delete uploaded files

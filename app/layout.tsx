@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 async function fetchSettings() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
     const res = await fetch(`${baseUrl}/api/settings`, { 
       // Tambahkan timeout untuk prevent hanging
       next: { revalidate: 60 } // Revalidate every 60 seconds
