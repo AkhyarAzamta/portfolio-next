@@ -1,8 +1,8 @@
 export default function Newsletter() {
   return (
-    <section className="py-20 text-text">
+    <section className="py-20 text-text bg">
        <div className="bg-card rounded-lg shadow-md overflow-hidden animate-slide-up">
-        <div className="p-8 md:p-12">
+        <div className="md:p-12">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div>

@@ -161,18 +161,6 @@ model Certificate {
   @@map("certificates")
 }
 
-model LanguageSkill {
-  id        Int      @id @default(autoincrement())
-  name      String
-  level     Int
-  category  String?
-  logo      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("language_skills")
-}
-
 model SiteSetting {
   id          String   @id @default(cuid())
   key         String   @unique

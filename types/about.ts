@@ -68,10 +68,3 @@ export interface Education {
   period: string;
   description?: string | null;
 }
-export interface LanguageSkill {
-  id: number;
-  name: string;
-  level: number;
-  category: string | null;
-  logo: string | null;
-}
