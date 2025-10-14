@@ -153,7 +153,7 @@ export default function ProjectsPage() {
 
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Manage Projects</h1>
-        <Button onClick={() => router.push('/dashboard/projects/new')}>
+        <Button variant="default" className='cursor-pointer' size="sm" onClick={() => router.push('/dashboard/projects/new')}>
           <Plus className="h-4 w-4 mr-2" />
           Add New Project
         </Button>

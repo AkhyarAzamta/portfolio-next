@@ -1,8 +1,8 @@
-// app/api/upload/image/route.ts
+// app/api/admin/upload/image/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
-import { v4 as uuidv4 } from 'uuid'
+import { uploadService } from '@/lib/uploadService'
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,35 +18,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File must be an image' }, { status: 400 })
     }
 
-    // Generate unique filename
-    const uniqueName = uuidv4()
-    const fileExtension = file.name.split('.').pop()
-    const filename = `${uniqueName}.${fileExtension}`
-
-    // Path to store images
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'images')
-    const filePath = path.join(uploadDir, filename)
-
-    // Ensure upload directory exists
-    await mkdir(uploadDir, { recursive: true })
+    // Validasi ukuran file
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json({ 
+        error: 'File size too large. Max 5MB allowed.' 
+      }, { status: 400 })
+    }
 
     // Convert file to buffer
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
-    // Write file to disk
-    await writeFile(filePath, buffer)
-
-    // Return the URL path (relative to public folder)
-    const url = `/uploads/images/${filename}`
+    // Upload file
+    const result = await uploadService.uploadImage(buffer, file.name)
 
     return NextResponse.json({ 
       success: true, 
-      url,
-      filename 
+      url: result.url,
+      filename: result.filename,
+      provider: uploadService.getProvider()
     })
   } catch (error) {
     console.error('Error uploading image:', error)
-    return NextResponse.json({ error: 'Error uploading image' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Error uploading image' 
+    }, { status: 500 })
   }
 }

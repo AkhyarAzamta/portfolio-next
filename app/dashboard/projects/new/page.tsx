@@ -1,7 +1,7 @@
 // app/dashboard/projects/new/page.tsx
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,30 +11,32 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ImageUpload } from '@/components/ImageUpload'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FileUpload } from '@/components/FileUpload'
+import { parsePrice, formatPriceRealTime } from '@/utils/currency'
 import { Project } from '@/types'
+import { toast } from 'sonner'
 
-type NewProjectFormData = Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'price'> & {
-  priceInput: string; // Temporary field for price input
-};
+type NewProjectFormData = Omit<Project, 'id' | 'createdAt' | 'updatedAt'>
 
 export default function NewProjectPage() {
   const [formData, setFormData] = useState<NewProjectFormData>({
     title: '',
     description: '',
     technologies: [],
-    sourceCode: '',
+    sourceCode: null,
+    demoLink: null,
     image: '',
+    archived: false,
+    price: null,
+    githubLink: null,
     env: null,
     password: null,
-    demoLink: null,
-    githubLink: null,
-    archived: false,
-    priceInput: '', // Initialize priceInput
   })
 
   const [techInput, setTechInput] = useState<string>('')
+  const [priceInput, setPriceInput] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
+  const priceInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
   const handleAddTech = () => {
@@ -52,6 +54,20 @@ export default function NewProjectPage() {
     }))
   }
 
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    
+    // Simpan nilai asli (numerik) ke formData
+    const parsedPrice = parsePrice(value)
+    setFormData(prev => ({
+      ...prev,
+      price: parsedPrice,
+    }))
+    
+    // Format nilai untuk ditampilkan
+    setPriceInput(formatPriceRealTime(value))
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
@@ -64,22 +80,15 @@ export default function NewProjectPage() {
         return
       }
 
-      let price: number | null | undefined = undefined
-      if (formData.priceInput.trim() !== '') {
-        const parsed = Number(formData.priceInput)
-        price = Number.isFinite(parsed) ? parsed : null
-      }
-
       const payload = {
         ...formData,
-        price,
         // Ensure empty strings are converted to null
         githubLink: formData.githubLink || null,
         env: formData.env || null,
         password: formData.password || null,
+        demoLink: formData.demoLink || null,
+        sourceCode: formData.sourceCode || null,
       }
-
-      delete (payload as Partial<typeof payload>).priceInput
 
       const tokenCookie = document.cookie
         .split('; ')
@@ -100,12 +109,15 @@ export default function NewProjectPage() {
         throw new Error(data.error || data.message || 'Failed to create project')
       }
 
+      toast.success('Project created successfully')
       router.push('/dashboard/projects')
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)
+        toast.error(err.message)
       } else {
         setError('An unknown error occurred')
+        toast.error('An unknown error occurred')
       }
     } finally {
       setLoading(false)
@@ -246,19 +258,17 @@ export default function NewProjectPage() {
               />
             </div>
 
-            {/* Price */}
+            {/* Price - DIPERBAIKI dengan format real-time */}
             <div className="space-y-2">
               <Label htmlFor="price">Price</Label>
               <Input
                 id="price"
-                type="number"
-                step="0.01"
-                min="0" // Ensure price is not negative
-                value={formData.priceInput}
-                onChange={(e) =>
-                  setFormData((p) => ({ ...p, price: e.target.value }))
-                }
-                placeholder="Leave empty for archived / not for sale"
+                ref={priceInputRef}
+                type="text"
+                value={priceInput}
+                onChange={handlePriceChange}
+                placeholder="Contoh: Rp 250.000"
+                autoComplete="off"
               />
             </div>
 
@@ -273,17 +283,28 @@ export default function NewProjectPage() {
               />
             </div>
 
-            {/* archived */}
+            {/* Archived */}
             <div className="flex gap-4">
               <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="archived"
-                  checked={formData.archived}
-                  onCheckedChange={(checked: boolean | 'indeterminate') =>
-                    setFormData((p) => ({ ...p, archived: checked === true }))
-                  }
-                />
-                <Label htmlFor="archived">archived</Label>
+                <Label
+                  htmlFor="archived"
+                  className="hover:bg-accept/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950"
+                >
+                  <Checkbox
+                    id="archived"
+                    checked={formData.archived}
+                    onCheckedChange={(checked: boolean | 'indeterminate') =>
+                      setFormData((p) => ({ ...p, archived: checked === true }))
+                    }
+                    className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+                  />
+                  <div className="grid gap-1.5 font-normal">
+                    <p className="text-sm leading-none font-medium">Archived</p>
+                    <p className="text-muted-foreground text-sm">
+                      You can enable or disable Archived at any time.
+                    </p>
+                  </div>
+                </Label>
               </div>
             </div>
 
