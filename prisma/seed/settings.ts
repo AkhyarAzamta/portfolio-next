@@ -281,7 +281,7 @@ const defaultSettings = [
   // Contact Information
   {
     key: 'contactEmail',
-    value: 'hello@devfolio.com',
+    value: 'ervan@akhyarazamta.com',
     type: 'string',
     category: 'contact',
     label: 'Contact Email',
@@ -290,7 +290,7 @@ const defaultSettings = [
   },
   {
     key: 'contactPhone',
-    value: '+1 (555) 123-4567',
+    value: '+6285173490114',
     type: 'string',
     category: 'contact',
     label: 'Contact Phone',
@@ -299,21 +299,12 @@ const defaultSettings = [
   },
   {
     key: 'contactAddress',
-    value: 'Jakarta, Indonesia',
+    value: 'Bandung, West Java, Indonesia',
     type: 'text',
     category: 'contact',
     label: 'Contact Address',
     description: 'Physical address for contact',
     order: 3,
-  },
-  {
-    key: 'contactFormEnabled',
-    value: 'true',
-    type: 'boolean',
-    category: 'contact',
-    label: 'Contact Form Enabled',
-    description: 'Enable or disable the contact form',
-    order: 4,
   },
   // Email Settings
   {

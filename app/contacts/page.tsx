@@ -7,6 +7,8 @@ import { motion } from 'framer-motion'
 import { fadeInUp, fadeIn, slideInLeft, slideInRight } from '@/utils/animations'
 import { useRouter } from 'next/navigation'
 import { Loading } from '@/components/ui/loading'
+import { contactInfoData } from '@/data/contactInfo'
+import { ContactInfo } from '@/types'
 
 interface FormData {
   name: string;
@@ -15,12 +17,6 @@ interface FormData {
 }
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
-
-interface ContactInfo {
-  id: string;
-  type: 'email' | 'phone' | 'location';
-  value: string;
-}
 
 export default function Contact() {
   const [formData, setFormData] = useState<FormData>({
@@ -43,14 +39,11 @@ export default function Contact() {
       if (!response.ok) throw new Error('Failed to fetch contact info')
       const data = await response.json()
       setContactInfos(data)
+      console.log(data)
     } catch (error) {
       console.error('Error fetching contact info:', error)
       // Fallback data jika API error
-      setContactInfos([
-        { id: '1', type: 'email', value: 'hello@devfolio.com' },
-        { id: '2', type: 'phone', value: '+1 (555) 123-4567' },
-        { id: '3', type: 'location', value: 'Jakarta, Indonesia' }
-      ])
+      setContactInfos(contactInfoData)
     } finally {
       setLoading(false)
     }

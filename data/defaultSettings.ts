@@ -282,7 +282,7 @@ export const defaultSettings = [
   // Contact Information
   {
     key: 'contactEmail',
-    value: 'hello@devfolio.com',
+    value: 'ervan@akhyarazamta.com',
     type: 'string' as SettingType,
     category: 'contact' as SettingCategory,
     label: 'Contact Email',
@@ -291,7 +291,7 @@ export const defaultSettings = [
   },
   {
     key: 'contactPhone',
-    value: '+1 (555) 123-4567',
+    value: '+6285173490114',
     type: 'string' as SettingType,
     category: 'contact' as SettingCategory,
     label: 'Contact Phone',
@@ -300,7 +300,7 @@ export const defaultSettings = [
   },
   {
     key: 'contactAddress',
-    value: 'Jakarta, Indonesia',
+    value: 'Bandung, West Java, Indonesia',
     type: 'text' as SettingType,
     category: 'contact' as SettingCategory,
     label: 'Contact Address',
