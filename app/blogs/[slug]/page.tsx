@@ -101,7 +101,8 @@ async function getRelatedPosts(currentSlug: string, tags: string[]): Promise<Blo
         slug: { not: currentSlug },
         published: true,
         tags: { 
-          array_contains: tags
+          // ✅ PERBAIKAN: Ganti array_contains dengan hasSome
+          hasSome: tags
         }
       },
       orderBy: { createdAt: 'desc' },
