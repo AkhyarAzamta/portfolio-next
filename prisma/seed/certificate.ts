@@ -60,7 +60,7 @@ export async function seedCertificate(prisma: PrismaClient) {
         issueDate: new Date("2023-08-25"),
         expiryDate: new Date("2026-08-25"),
         credentialURL: "https://www.dicoding.com/certificates/1OP8E3J8XQK0",
-        image: "/certificates/webdev.jpg"
+        image: "/certificates/networking.jpg"
       }
     ]
   })
