@@ -4,8 +4,6 @@ import { PrismaClient } from '@prisma/client'
 export async function seedProjects(prisma: PrismaClient) {
   console.log('🌱 Seeding projects...')
 
-  await prisma.project.deleteMany() // Clear existing data
-
   const projects = [
     {
       title: 'Smart FishFarm',

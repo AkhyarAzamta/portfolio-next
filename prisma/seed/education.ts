@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 
 export async function seedEducation(prisma: PrismaClient) {
   console.log('🌱 Seeding education...')
-  await prisma.education.deleteMany()
 
   const education = [
     {

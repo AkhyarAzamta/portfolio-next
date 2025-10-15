@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 
 export async function seedExperience(prisma: PrismaClient) {
   console.log('🌱 Seeding experience...')
-  await prisma.experience.deleteMany()
 
   await prisma.experience.createMany({
     data: [

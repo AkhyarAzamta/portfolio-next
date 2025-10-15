@@ -2,8 +2,6 @@ import { PrismaClient } from '@prisma/client'
 
 export async function seedSkills(prisma: PrismaClient) {
   console.log('🌱 Seeding skills...')
-  await prisma.skill.deleteMany()
-  await prisma.skillCategory.deleteMany()
   
   // Tambah kategori skill
   const frontendCategory = await prisma.skillCategory.create({

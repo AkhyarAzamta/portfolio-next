@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 
 export async function seedAbout(prisma: PrismaClient) {
   console.log('🌱 Seeding about data...')
-  await prisma.about.deleteMany()
 
   await prisma.about.create({
     data: {

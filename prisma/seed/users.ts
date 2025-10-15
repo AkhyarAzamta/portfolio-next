@@ -4,9 +4,6 @@ import bcrypt from 'bcryptjs'
 export async function seedUsers(prisma: PrismaClient) {
   console.log('🌱 Seeding users...')
 
-  await prisma.blog.deleteMany()
-  await prisma.user.deleteMany()
-
   const hashedPassword = await bcrypt.hash('password123', 12)
 
   const users = [

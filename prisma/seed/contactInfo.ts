@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 
 export async function seedContactInfo(prisma: PrismaClient) {
   console.log('🌱 Seeding contact info...')
-  await prisma.contactInfo.deleteMany()
 
   const contactInfos = [
     { type: 'email', value: 'akhyar.azamta@gmail.com' },

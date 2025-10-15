@@ -10,8 +10,6 @@ export async function seedBlogs(prisma: PrismaClient) {
     throw new Error('No users found. Please seed users first.')
   }
 
-  await prisma.blog.deleteMany() // Clear existing data
-
   const blogs = [
     {
       title: 'Deploy Aplikasi Next.js dengan mudah dan gratis menggunakan Vercel',

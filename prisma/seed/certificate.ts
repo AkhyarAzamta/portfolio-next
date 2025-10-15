@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 
 export async function seedCertificate(prisma: PrismaClient) {
   console.log('🌱 Seeding certificates...')
-  await prisma.certificate.deleteMany()
 
   await prisma.certificate.createMany({
     data: [
