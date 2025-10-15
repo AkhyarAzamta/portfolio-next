@@ -20,7 +20,7 @@ export default function RecentPostsSidebar({ posts }: RecentPostsSidebarProps) {
             <Link 
               key={post.id} 
               href={`/blogs/${post.slug}`}
-              className="block p-4 rounded-lg hover:bg-gray-50 transition-colors border border-gray-200 shadow-sm"
+              className="block bg-background p-4 rounded-lg hover:bg-gray-50 transition-colors border border-gray-200 shadow-sm"
             >
               <h3 className="font-semibold text-sm mb-1 hover:text-primary transition-colors line-clamp-2">
                 {post.title}

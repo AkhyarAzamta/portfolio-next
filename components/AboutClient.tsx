@@ -236,7 +236,7 @@ export default function AboutClient({ about, skillCategories, experience, educat
       {/* Bio Section */}
       <section className="mb-16">
         <p ref={bioRef} className="text-lg text-text max-w-3xl mx-auto text-center opacity-0">
-          {about?.bio || "I'm a passionate developer with expertise in modern web technologies."}
+          {about?.bio || ""}
         </p>
       </section>
 

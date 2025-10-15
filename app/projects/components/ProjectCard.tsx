@@ -15,7 +15,7 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project, layout = 'grid' }: ProjectCardProps) {
   // root element MUST have class "project-card opacity-0"
-  const rootClass = `project-card opacity-0 ${layout === 'list' ? 'p-6' : ''} bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden`
+  const rootClass = `project-card opacity-0 ${layout === 'list' ? 'p-6' : ''} bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden`
 
   if (layout === 'list') {
     return (

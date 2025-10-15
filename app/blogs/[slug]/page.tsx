@@ -180,7 +180,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const siteUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
   return (
-    <div className="max-w-7xl mx-auto py-8 text-text">
+    <div className="max-w-7xl bg-card mx-auto py-4 rounded-2xl text-text">
       {/* Back button with proper padding */}
       <div className="px-4 lg:px-8">
         <Link 
@@ -194,12 +194,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       
       <div className="flex flex-col lg:flex-row">
         {/* Main content */}
-        <article className="flex-1 px-4 lg:px-8">
+        <article className="flex-1 px-4 lg:px-8 mb-10">
           <header className="mb-8">
             <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>
-            <p className="text-xl text-gray-600 mb-6">{blog.excerpt}</p>
+            <p className="text-xl dark:text-gray-300 mb-6">{blog.excerpt}</p>
             
-            <div className="flex flex-wrap items-center text-sm text-gray-500 gap-4">
+            <div className="flex flex-wrap items-center text-sm dark:text-gray-300 text-gray-500 gap-4">
               <div className="flex items-center">
                 {blog.author.avatar && (
                   <div className="relative w-8 h-8 mr-2">
@@ -250,7 +250,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <ShareButtons title={blog.title} slug={blog.slug} siteUrl={siteUrl} />
 
           {/* View count */}
-          <div className="text-sm text-gray-500 mb-8">
+          <div className="text-sm dark:text-gray-300 text-gray-500 mb-8">
             Artikel ini dibaca sebanyak <b>{blog.viewCount}</b> kali.
           </div>
 

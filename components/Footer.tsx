@@ -16,7 +16,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+    <footer className="bg-card text-text border-t border-gray-200 dark:border-gray-800">
       <div className="container max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
